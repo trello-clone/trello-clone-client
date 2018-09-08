@@ -5,9 +5,13 @@ const defaultBoardState = {
 };
 
 const boardReducer = handleActions({
-  ADD_NEW_BOARD: (state, action) => ({
+  FETCH_ALL_BOARDS_SUCCESS: (state, action) => ({
     ...state,
-    boardsList: state.boardsList.concat(action.payload),
+    boardsList: action.payload.boardsList,
+  }),
+  UPDATE_BOARDS_SUCCESS: (state, action) => ({
+    ...state,
+    boardsList: action.payload.boardsList,
   }),
 }, defaultBoardState);
 
