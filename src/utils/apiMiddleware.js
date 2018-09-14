@@ -1,12 +1,12 @@
 // thanks to https://github.com/ohansemmanuel/fake-medium
 
 import axios from 'axios';
-import { accessDenied, apiError, apiStart, apiEnd, } from './apiActions';
+import { apiError, apiStart, apiEnd, } from './apiActions';
 
 const apiMiddleware = ({ dispatch, }) => next => action => {
   next(action);
 
-  if (action.type !== 'API') {return;}
+  if (!action.isAPI) {return;}
 
   const {
     url,
@@ -15,7 +15,6 @@ const apiMiddleware = ({ dispatch, }) => next => action => {
     // accessToken,
     onSuccess,
     onFailure,
-    actionName,
     headers,
   } = action.payload;
   const dataOrParams = ['GET', 'DELETE',].includes(method) ? 'params' : 'data';
@@ -25,8 +24,8 @@ const apiMiddleware = ({ dispatch, }) => next => action => {
   axios.defaults.headers.common['Content-Type'] = 'application/json';
   // axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
-  if (actionName) {
-    dispatch(apiStart(actionName));
+  if (action.type) {
+    dispatch(apiStart(action.type));
   }
 
   axios
@@ -48,8 +47,8 @@ const apiMiddleware = ({ dispatch, }) => next => action => {
       // }
     })
     .finally(() => {
-      if (actionName) {
-        dispatch(apiEnd(actionName));
+      if (action.type) {
+        dispatch(apiEnd(action.type));
       }
     });
 };

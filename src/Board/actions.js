@@ -1,16 +1,16 @@
 import createActions from 'utils/createActions';
-import {actions,} from './constants';
+import {actionLabels,} from './constants';
 import {apiRequest,} from 'utils/apiActions';
 import {API_URL,} from 'utils/constants';
 
 export const fetchAllBoards = () => apiRequest({
   url: API_URL,
   onSuccess: (response) => ({
-    type: actions.FETCH_ALL_BOARDS_SUCCESS,
+    type: actionLabels.FETCH_ALL_BOARDS_SUCCESS,
     payload: response,
   }),
-  onFailure: console.log('Error fetching boards'),
-  actionName: actions.FETCH_ALL_BOARDS,
+  onFailure: error => {console.log('Error fetching boards', error);},
+  actionName: actionLabels.ASYNC_FETCH_ALL_BOARDS,
 });
 
 export const updateBoards = (data) => apiRequest({
@@ -18,11 +18,11 @@ export const updateBoards = (data) => apiRequest({
   method: 'PUT',
   data,
   onSuccess: (response) => ({
-    type: actions.UPDATE_BOARDS_SUCCESS,
+    type: actionLabels.UPDATE_BOARDS_SUCCESS,
     payload: response,
   }),
   onFailure: console.log('Error updating boards'),
-  actionName: actions.UPDATE_BOARDS,
+  actionName: actionLabels.ASYNC_UPDATE_BOARDS,
 });
 
-export default {...createActions(actions),};
+export default {...createActions(actionLabels),};

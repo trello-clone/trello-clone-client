@@ -33,7 +33,8 @@ export const apiRequest = ({
   headersOverride = null,
 }) => {
   return {
-    type: 'API',
+    type: actionName,
+    isAPI: true,
     payload: {
       url,
       method,
@@ -41,7 +42,6 @@ export const apiRequest = ({
       // accessToken,
       onSuccess,
       onFailure,
-      actionName,
       headersOverride,
     },
   };

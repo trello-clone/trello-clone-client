@@ -2,6 +2,7 @@ import { handleActions, } from 'redux-actions';
 
 const defaultBoardState = {
   boardsList: [],
+  boardView: null,
 };
 
 const boardReducer = handleActions({
@@ -12,6 +13,10 @@ const boardReducer = handleActions({
   UPDATE_BOARDS_SUCCESS: (state, action) => ({
     ...state,
     boardsList: action.payload.boardsList,
+  }),
+  SET_BOARD_VIEW: (state, action) => ({
+    ...state,
+    boardView: action.payload,
   }),
 }, defaultBoardState);
 
