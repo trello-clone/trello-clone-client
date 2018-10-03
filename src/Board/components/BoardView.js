@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { DragDropContext, } from 'react-beautiful-dnd';
 
+import AddColumn from 'Column/components/AddColumn';
 import {history, paths,} from 'utils/routes';
 
 class BoardView extends React.Component {
@@ -34,6 +36,8 @@ class BoardView extends React.Component {
     }
   }
 
+  onDragEnd = () => {}
+
   render() {
     const {boardView,} = this.props;
 
@@ -44,6 +48,14 @@ class BoardView extends React.Component {
       <div className='board-view'>
         <button onClick={() => {history.push(paths.allBoard);}}>View all boards</button>
         <h4>{boardView.name}</h4>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <div className='board-wrapper'>
+            {boardView.columns && boardView.columns.map((column, index) => (
+              <div key={index}>{ column.name }</div>
+            ))}
+            <AddColumn />
+          </div>
+        </DragDropContext>
       </div>
     );
   }

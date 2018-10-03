@@ -1,0 +1,35 @@
+@import 'common/variables.scss';
+
+.add-column {
+  background-color: #007ac1;
+  border-radius: 8px;
+  color: $color-white;
+  font-weight: 500;
+  padding: 16px;
+  width: 150px;
+  @include material-shadow;
+  &:not(.active):hover {
+    cursor: pointer;
+  }
+  input {
+    background-color: transparent;
+    border: none;
+    caret-color: $color-white;
+    color: $color-white;
+    font-size: 15px;
+    outline: none;
+    width: 100%;
+    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        color: rgba($color-white, 0.8);
+        opacity: 1; /* Firefox */
+    }
+    
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: rgba($color-white, 0.8);
+    }
+    
+    &::-ms-input-placeholder { /* Microsoft Edge */
+        color: rgba($color-white, 0.8);
+    }
+   }
+}

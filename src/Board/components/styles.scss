@@ -1,6 +1,8 @@
+@import 'common/variables.scss';
+
 .board-card {
   padding: 16px 20px 12px;
-  background: #fff;
+  background: $color-white;
   border-radius: 3px;
   color: #5f6368;
   font-size: 13px;
@@ -10,7 +12,7 @@
   vertical-align: top;
   width: 240px;
   z-index: 1;
-  box-shadow: 0 1px 1px 0 rgba(60,64,67,.08), 0 1px 3px 1px rgba(60,64,67,.16);
+  @include material-shadow;
   .board-title {
     color: #202124;
     font-size: 13px;
@@ -19,6 +21,5 @@
   &:hover {
     background: rgba($color: #000, $alpha: 0.04);
     cursor: pointer;
-    box-shadow: 0 1px 3px 1px rgba(60,64,67,.2), 0 2px 8px 4px rgba(60,64,67,.1);
   }
 }

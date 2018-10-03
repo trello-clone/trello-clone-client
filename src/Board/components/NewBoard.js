@@ -20,9 +20,17 @@ class NewBoard extends React.Component {
     };
   }
 
+  componentDidMount() {
+    document.addEventListener('click', event => {
+      if (this.element && !this.element.contains(event.target) && this.state.isActive) {
+        this.setState({ isActive: false, });
+      }
+    });
+  }
+
   componentDidUpdate(prevProps) {
     if (this.state.newBoard && this.props.boardsList.find(item => item.id === this.state.newBoard.id)) {
-      this.setState({newBoard: null, newBoardName: '',});
+      this.setState({ newBoard: null, newBoardName: '', isActive: false, });
     }
   }
 
@@ -43,7 +51,7 @@ class NewBoard extends React.Component {
 
   render() {
     return (
-      <div className='board-card' onClick={() => {this.setState({isActive: true,});}}>
+      <div className='board-card' onClick={() => {this.setState({isActive: true,});}} ref={ref => {this.element = ref;}}>
         <div className='board-title'>Create a new board</div>
         {this.state.isActive &&
           <div className='new-board-info'>
