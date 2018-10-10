@@ -1,5 +1,11 @@
 @import 'common/variables.scss';
 
+.board-container, .board-view {
+  flex-grow: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
 .board-card {
   padding: 16px 20px 12px;
   background: $color-white;
@@ -21,5 +27,36 @@
   &:hover {
     background: rgba($color: #000, $alpha: 0.04);
     cursor: pointer;
+  }
+}
+.board-view {
+  .board-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    .board-header {
+      flex: none;
+      padding: 0 10%;
+    }
+    .board-wrapper {
+      flex-grow: 1;
+      position: relative;
+      #current-board {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        user-select: none;
+        white-space: nowrap;
+      }
+    }
   }
 }

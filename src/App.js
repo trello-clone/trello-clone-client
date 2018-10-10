@@ -8,8 +8,10 @@ class App extends Component {
   render() {
     return (
       <div className='app'>
-        <h2 className='app-heading'>A plain and simple copy of Trello</h2>
-        <p>* When you're done typing any thing, just press <b>Enter</b> to confirm your input.</p>
+        <div id='header'>
+          <h2 className='app-heading'>A plain and simple copy of Trello</h2>
+          <p>* When you're done typing any thing, just press <b>Enter</b> to confirm your input.</p>
+        </div>
         <Switch>
           {routes.map((route, index) => <Route exact={route.exact} path={route.path} component={route.component} key={index} />)}
           <Redirect to={paths.allBoard} />

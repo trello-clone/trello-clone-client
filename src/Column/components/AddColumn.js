@@ -76,7 +76,7 @@ class AddColumn extends React.Component {
             <Input type='text' placeholder='New column name...' autoFocus value={this.state.newColName} onChange={this.handleColNameChange} onKeyUp={this.submit} />
           </div>
           : <div onClick={() => {this.setState({isActive: true,});}}>
-            Add column
+            Add new column...
           </div>
         }
       </div>
