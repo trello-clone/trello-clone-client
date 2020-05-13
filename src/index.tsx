@@ -1,11 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { createGlobalStyle } from 'styled-components'
+
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    font-family: 'ProximaNova', sans-serif;
+  }
+`
 
 ReactDOM.render(
     <React.StrictMode>
+        <GlobalStyle />
         <App />
     </React.StrictMode>,
     document.getElementById('root')
