@@ -6,7 +6,9 @@ import BoardCard from './components/BoardCard';
 const App = () => {
     return (
         <div>
+            <div>Boards</div>
             <BoardCard></BoardCard>
+            <div>Teams</div>
             <TeamCard></TeamCard>
         </div>
     );

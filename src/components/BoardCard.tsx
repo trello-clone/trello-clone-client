@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import pen from '../icons/pen-36.svg';
 import trash from '../icons/trash-can.svg';
 import teamPic from '../icons/ray.jpg';
-import background from '../icons/background.jpg';
+import background from '../icons/teamBackground.jpg';
 
 const BoardCard = () => {
     return (
@@ -29,14 +29,24 @@ const CardContainer = styled.div`
     height: 85px;
     border-radius: 7.5px;
     position: relative;
-    background-color: #0e9594;
-    background: url(${background}) no-repeat;
-    background-size: 100%;
     overflow: hidden;
+    &::after {
+        content: '';
+        background-color: #0e9594;
+        background: url(${background});
+        background-size: 100% 100%;
+        opacity: 0.9;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        position: absolute;
+        z-index: -1;
+    }
 `;
 
 const CardHeader = styled.div`
-    margin-top: 15px;
+    margin-top: 12.5px;
     margin-left: 12.5px;
     display: flex;
 `;
@@ -49,7 +59,6 @@ const CardFooter = styled.div`
 
 const ProjectName = styled.div`
     width: 111px;
-    height: 28.5px;
     font-size: 11px;
     font-weight: 600;
     line-height: 1.36;
@@ -102,7 +111,7 @@ const TeamName = styled.div`
 const TimeCreated = styled.div`
     height: 8.5px;
     margin: auto;
-    margin-left:30px;
+    margin-left: 30px;
     font-family: ProximaNova;
     font-size: 7px;
     font-weight: 500;
