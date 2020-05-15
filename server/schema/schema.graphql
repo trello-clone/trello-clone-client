@@ -1,0 +1,16 @@
+type Query {
+    users(max: Int): [User!]!
+    user(id: ID!): User
+}
+
+type User {
+    _id: ID!
+    email: String!
+    name: String!
+}
+
+type Team {
+    _id: ID!
+    name: String!
+    description: String!
+}

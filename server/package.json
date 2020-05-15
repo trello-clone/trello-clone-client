@@ -1,0 +1,44 @@
+{
+  "name": "trello-clone-server",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "dependencies": {
+    "@types/node": "^12.12.37",
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "graphql-config": "^3.0.1",
+    "graphql-yoga": "^1.18.3",
+    "nodemon": "^2.0.3",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.7.5"
+  },
+  "scripts": {
+    "start": "concurrently --kill-others-on-fail \"npm:watch-schema\" \"npm:watch-dev\"",
+    "watch-schema": "nodemon -e graphql -x npm run generate",
+    "watch-dev": "nodemon -e ts -x run-s tsc serve",
+    "tsc": "node_modules/.bin/tsc",
+    "serve": "node -r dotenv/config dist/index.js",
+    "generate": "graphql-codegen"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@graphql-codegen/add": "^1.13.5",
+    "@graphql-codegen/cli": "^1.13.5",
+    "@graphql-codegen/typescript": "^1.13.5",
+    "@graphql-codegen/typescript-resolvers": "^1.13.5",
+    "concurrently": "^5.2.0",
+    "npm-run-all": "^4.1.5"
+  }
+}
