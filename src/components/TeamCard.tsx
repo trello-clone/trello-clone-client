@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import pen from '../icons/pen-36.svg';
-import trash from '../icons/trash-can.svg';
-
+import pen from '../icons/pen-01-white.svg';
+import trash from '../icons/trash-can-white.svg';
 import background from '../icons/background.jpg';
 import avatar from '../icons/avatar.jpg';
 
@@ -39,7 +38,7 @@ const CardContainer = styled.div`
     overflow: hidden;
     display: block;
     &::after {
-        content: "";
+        content: '';
         background-color: #0e9594;
         background: url(${background});
         background-size: 100% 100%;
@@ -49,8 +48,8 @@ const CardContainer = styled.div`
         bottom: 0;
         right: 0;
         position: absolute;
-        z-index: -1;   
-    };
+        z-index: -1;
+    }
 `;
 
 const CardHeader = styled.div`
@@ -62,13 +61,14 @@ const CardHeader = styled.div`
 const CardFooter = styled.div`
     margin-top: 7.5px;
     margin-left: 12.5px;
+    margin-bottom: 12.5px;
     display: flex;
 `;
 
 const TeamName = styled.div`
     width: 111px;
+    overflow: hidden;
     font-size: 11px;
-    font-weight: 600;
     line-height: 1.36;
     color: #ffffff;
 `;
@@ -77,6 +77,8 @@ const EditButton = styled.button`
     width: 10.4px;
     height: 10.4px;
     border: 0;
+    margin-left: 9.9px;
+    margin-right: 12.6px;
     background: url(${pen}) no-repeat;
     background-size: 10.4px;
     &:hover {
@@ -104,7 +106,6 @@ const CardBody = styled.div`
 `;
 const CardItem = styled.div`
     font-size: 8px;
-    font-weight: 500;
     color: #ffffff;
     line-height: 1.25;
     margin-left: 12.5px;
@@ -125,6 +126,5 @@ const TimeCreated = styled.div`
     margin-left: 25%;
     font-family: ProximaNova;
     font-size: 7px;
-    font-weight: 500;
     color: #ffffff;
 `;

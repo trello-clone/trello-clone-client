@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import pen from '../icons/pen-36.svg';
-import trash from '../icons/trash-can.svg';
+import pen from '../icons/pen-01-white.svg';
+import trash from '../icons/trash-can-white.svg';
 import teamPic from '../icons/ray.jpg';
 import background from '../icons/teamBackground.jpg';
 
@@ -25,7 +25,7 @@ const BoardCard = () => {
 export default BoardCard;
 
 const CardContainer = styled.div`
-    max-width: 163px;
+    width: 163px;
     height: 85px;
     border-radius: 7.5px;
     position: relative;
@@ -54,13 +54,15 @@ const CardHeader = styled.div`
 const CardFooter = styled.div`
     margin-top: 15px;
     margin-left: 12.5px;
+    margin-bottom: 11.5px;
     display: flex;
 `;
 
 const ProjectName = styled.div`
     width: 111px;
+    max-height:28.5px;
+    overflow: hidden;
     font-size: 11px;
-    font-weight: 600;
     line-height: 1.36;
     color: #ffffff;
 `;
@@ -69,6 +71,8 @@ const EditButton = styled.button`
     width: 10.4px;
     height: 10.4px;
     border: 0;
+    margin-left: 9.9px;
+    margin-right: 12.6px;
     background: url(${pen}) no-repeat;
     background-size: 10.4px;
     &:hover {
@@ -104,7 +108,7 @@ const TeamName = styled.div`
     margin-left: 5px;
     margin-right: 0;
     font-size: 8px;
-    font-weight: 600;
+
     margin-left: 5px;
     color: #ffffff;
 `;
@@ -114,6 +118,5 @@ const TimeCreated = styled.div`
     margin-left: 30px;
     font-family: ProximaNova;
     font-size: 7px;
-    font-weight: 500;
     color: #ffffff;
 `;
