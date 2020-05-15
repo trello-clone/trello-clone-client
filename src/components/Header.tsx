@@ -23,7 +23,7 @@ const Header = () => {
                     </ListItem>
                     <ListItem>
                         <TeamButton>
-                            <Icon src={userIcon} alt="board"></Icon>
+                            <Icon src={userIcon} alt="user"></Icon>
                         </TeamButton>
                     </ListItem>
                     <ListItem>
@@ -71,6 +71,7 @@ const BoardButton = styled.button`
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
     background-color: #d4db26;
+    cursor: pointer;
 `;
 const TeamButton = styled.button`
     padding: 0;
@@ -80,6 +81,7 @@ const TeamButton = styled.button`
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
     background-color: #214b8d;
+    cursor: pointer;
 `;
 
 const Icon = styled.img`
