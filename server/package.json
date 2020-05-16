@@ -14,7 +14,7 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"npm:watch-schema\" \"npm:watch-dev\"",
+    "start": "concurrently --kill-others \"npm:watch-schema\" \"npm:watch-dev\"",
     "watch-schema": "nodemon -e graphql -x npm run generate",
     "watch-dev": "nodemon -e ts -x run-s tsc serve",
     "tsc": "node_modules/.bin/tsc",
