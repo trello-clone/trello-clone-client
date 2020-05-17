@@ -64,12 +64,14 @@ const CardHeader = styled.div`
     margin-bottom: 14.5px;
     margin-left: 12.5px;
     display: flex;
+
 `;
 
 const CardFooter = styled.div`
     margin-top: 18%;
     margin-left: 12.5px;
     display: flex;
+    align-items: center;
 `;
 
 const TeamName = styled.div`
@@ -124,15 +126,17 @@ const CardItem = styled.div`
 const TeamMember = styled.img`
     width: 22.5px;
     height: 22.5px;
-    margin-right: 2.5px;
+    margin-right: 5px;
     border: solid 0.5px #ffffff;
     border-radius: 50%;
+    
 `;
 
 const TimeCreated = styled.div`
-    margin: auto;
-    margin-left: 25%;
     font-family: 'ProximaNovaMedium', sans-serif;
     font-size: 13px;
     color: #ffffff;
+    margin-left: auto;
+    margin-right: 12.5px;
+    
 `;

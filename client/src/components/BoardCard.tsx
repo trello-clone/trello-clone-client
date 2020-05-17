@@ -62,6 +62,7 @@ const CardFooter = styled.div`
     margin-top: 25%;
     margin-left: 12.5px;
     display: flex;
+    align-items: center;
 `;
 
 const ProjectName = styled.div`
@@ -78,7 +79,6 @@ const ProjectName = styled.div`
 const EditButton = styled.button`
     width: 15px;
     height: 15px;
-    
     border: 0;
     background: url(${pen}) no-repeat;
     background-size: 15px;
@@ -106,23 +106,20 @@ const DeleteButton = styled.button`
 const TeamPic = styled.img`
     width: 22.5px;
     height: 22.5px;
+    margin-right: 10px;
     border: solid 0.5px #ffffff;
     border-radius: 50%;
 `;
 
 const TeamName = styled.div`
-    height: 10px;
-    margin: auto;
-    margin-left: 5px;
-    margin-right: 0;
     font-family: 'ProximaNovaSemiBold', sans-serif;
     font-size: 14px;
     color: #ffffff;
 `;
 const TimeCreated = styled.div`
-    margin: auto;
-    margin-left: 30px;
     font-family: 'ProximaNovaMedium', sans-serif;
     font-size: 13px;
     color: #ffffff;
+    margin-left: auto;
+    margin-right: 12.5px;
 `;
