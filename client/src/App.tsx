@@ -24,16 +24,18 @@ function App() {
         <>
             <Header />
             <SideBar />
-            <CardWrapper>
-                <BoardContainer>
-                    Boards
-                    <BoardCard />
-                </BoardContainer>
-                <TeamContainer>
-                    Teams
-                    <TeamCard />
-                </TeamContainer>
-            </CardWrapper>
+            <DashBoardWrapper>
+                <CardWrapper>
+                    <BoardContainer>
+                        Boards
+                        <BoardCard />
+                    </BoardContainer>
+                    <TeamContainer>
+                        Teams
+                        <TeamCard />
+                    </TeamContainer>
+                </CardWrapper>
+            </DashBoardWrapper>
         </>
 
         // GrapqhQL query example
@@ -58,13 +60,34 @@ function App() {
 }
 
 export default App;
-
+const DashBoardWrapper = styled.div`
+    height: calc(100vh - 100px);
+    margin-left: 70px;
+    margin-top: 80px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    &::after {
+        content: '';
+        background: rgba(248, 250, 252);
+        width: calc(100vw - 51.5px);
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0.9;
+    }
+`;
+const CardWrapper = styled.div`
+    margin-left: 30.5px;
+`;
 const BoardContainer = styled.div`
-    margin-top: 100px;
+    position: relative;
+    z-index: 1;
 `;
 
-const TeamContainer = styled.div``;
-
-const CardWrapper = styled.div`
-    margin-left: 82px;
+const TeamContainer = styled.div`
+    font-family: 'ProximaNovaBold', sans-serif;
+    position: relative;
+    z-index: 1;
 `;

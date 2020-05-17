@@ -5,25 +5,29 @@ import trash from '../icons/trash-can-white.svg';
 import background from '../icons/background.jpg';
 import avatar from '../icons/avatar.jpg';
 
+
+
 const TeamCard = () => {
     return (
         <CardContainer>
-            <CardHeader>
-                <TeamName>Piccial Media</TeamName>
-                <DeleteButton />
-                <EditButton />
-            </CardHeader>
-            <CardBody>
-                <CardItem>Member: 25</CardItem>
-                <CardItem>Project(s): 12</CardItem>
-                <CardItem>In progress: Food Delivery Tracking Application</CardItem>
-            </CardBody>
-            <CardFooter>
-                <TeamMember src={avatar} />
-                <TeamMember src={avatar} />
-                <TeamMember src={avatar} />
-                <TimeCreated>12 hours ago</TimeCreated>
-            </CardFooter>
+            <CardWrapper>
+                <CardHeader>
+                    <TeamName>Piccial Media</TeamName>
+                    <DeleteButton />
+                    <EditButton/>
+                </CardHeader>
+                <CardBody>
+                    <CardItem>Member: 25</CardItem>
+                    <CardItem>Project(s): 12</CardItem>
+                    <CardItem>In progress: Food Delivery Tracking Application</CardItem>
+                </CardBody>
+                <CardFooter>
+                    <TeamMember src={avatar} />
+                    <TeamMember src={avatar} />
+                    <TeamMember src={avatar} />
+                    <TimeCreated>12 hours ago</TimeCreated>
+                </CardFooter>
+            </CardWrapper>
         </CardContainer>
     );
 };
@@ -31,8 +35,8 @@ const TeamCard = () => {
 export default TeamCard;
 
 const CardContainer = styled.div`
-    max-width: 163px;
-    height: 135.5px;
+    width: 280px;
+    height: 230px;
     border-radius: 7.5px;
     position: relative;
     overflow: hidden;
@@ -42,45 +46,48 @@ const CardContainer = styled.div`
         background-color: #0e9594;
         background: url(${background});
         background-size: 100% 100%;
-        opacity: 0.9;
+        opacity: 0.85;
+        position: absolute;
         top: 0;
         left: 0;
         bottom: 0;
         right: 0;
-        position: absolute;
-        z-index: -1;
     }
+`;
+const CardWrapper = styled.div`
+    position: relative;
+    z-index: 1;
 `;
 
 const CardHeader = styled.div`
     margin-top: 11.5px;
+    margin-bottom: 14.5px;
     margin-left: 12.5px;
     display: flex;
 `;
 
 const CardFooter = styled.div`
-    margin-top: 7.5px;
+    margin-top: 18%;
     margin-left: 12.5px;
-    margin-bottom: 12.5px;
     display: flex;
 `;
 
 const TeamName = styled.div`
-    width: 111px;
+    width: 75%;
     overflow: hidden;
-    font-size: 11px;
+    font-size: 17px;
+    font-family: 'ProximaNovaSemiBold', sans-serif;
     line-height: 1.36;
     color: #ffffff;
 `;
 
-const EditButton = styled.button`
-    width: 10.4px;
-    height: 10.4px;
+const DeleteButton = styled.button`
+    width: 15px;
+    height: 15px;
     border: 0;
-    margin-left: 9.9px;
-    margin-right: 12.6px;
-    background: url(${pen}) no-repeat;
-    background-size: 10.4px;
+    margin-right: 12px;
+    background: url(${trash}) no-repeat;
+    background-size: 15px;
     &:hover {
         cursor: pointer;
     }
@@ -88,12 +95,13 @@ const EditButton = styled.button`
         outline: 0;
     }
 `;
-const DeleteButton = styled.button`
-    width: 10.4px;
-    height: 10.4px;
+
+const EditButton = styled.button`
+    width: 15px;
+    height: 15px;
     border: 0;
-    background: url(${trash}) no-repeat;
-    background-size: 10.4px;
+    background: url(${pen}) no-repeat;
+    background-size: 15px;
     &:hover {
         cursor: pointer;
     }
@@ -105,26 +113,26 @@ const CardBody = styled.div`
     margin-top: 14.5px;
 `;
 const CardItem = styled.div`
-    font-size: 8px;
+    font-family: 'ProximaNovaMedium', sans-serif;
+    font-size: 14px;
     color: #ffffff;
     line-height: 1.25;
     margin-left: 12.5px;
-    margin-bottom: 7.5px;
+    margin-bottom: 8px;
 `;
 
 const TeamMember = styled.img`
-    width: 17.5px;
-    height: 17.5px;
+    width: 22.5px;
+    height: 22.5px;
     margin-right: 2.5px;
     border: solid 0.5px #ffffff;
     border-radius: 50%;
 `;
 
 const TimeCreated = styled.div`
-    height: 8.5px;
     margin: auto;
     margin-left: 25%;
-    font-family: ProximaNova;
-    font-size: 7px;
+    font-family: 'ProximaNovaMedium', sans-serif;
+    font-size: 13px;
     color: #ffffff;
 `;

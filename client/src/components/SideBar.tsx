@@ -11,10 +11,10 @@ const SideBar = () => {
                 <HomeIcon src={homeIcon} alt="Home Icon" />
             </SideNavItem>
             <SideNavItem href="#">
-                <TeamIcon src={teamIcon} alt="Team Icon" />
+                <Icon src={teamIcon} alt="Team Icon" />
             </SideNavItem>
             <SideNavItem href="#">
-                <BoardIcon src={boardIcon} alt="Board Icon"/>
+                <Icon src={boardIcon} alt="Board Icon"/>
             </SideNavItem>
         </Wrapper>
     );
@@ -23,11 +23,13 @@ const SideBar = () => {
 export default SideBar;
 
 const Wrapper = styled.div`
-    width: 51.5px;
+    width: 70px;
+    height: 100%;
     position: fixed;
     z-index: 1;
-    top: 77.5px;
+    top: 60px;
     left: 0;
+
 `;
 
 const SideNavItem = styled.a`
@@ -41,19 +43,17 @@ const SideNavItem = styled.a`
 `;
 
 const HomeIcon = styled.img`
-    width: 13.5px;
-    height: 13.5px;
+    width: 20px;
+    height: 20px;
     border-radius: 2.5px;
     background: #fc8f66;
     padding: 9px;
+    margin-top: 17.5px;
 `;
-const TeamIcon = styled.img`
-    width: 15px;
-    height: 12.7px;
+const Icon = styled.img`
+    width: 20px;
+    height: 20px;
 `;
 
-const BoardIcon = styled.img`
-    width: 15px;
-    height: 12.7px;
-`;
+
 

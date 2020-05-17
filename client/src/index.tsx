@@ -4,7 +4,12 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { createGlobalStyle } from 'styled-components';
+import GlobalFonts from './fonts/fonts';
+
+
+ 
+
+
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -18,16 +23,11 @@ const client = new ApolloClient({
     cache: new InMemoryCache(),
 });
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    font-family: 'ProximaNova', sans-serif;
-  }
-`
 
 ReactDOM.render(
     <React.StrictMode>
         <ApolloProvider client={client}>
-            <GlobalStyle />
+            <GlobalFonts />
             <App />
         </ApolloProvider>
     </React.StrictMode>,

@@ -8,16 +8,18 @@ import background from '../icons/teamBackground.jpg';
 const BoardCard = () => {
     return (
         <CardContainer>
-            <CardHeader>
-                <ProjectName>Food Delivery Tracking Application</ProjectName>
-                <DeleteButton />
-                <EditButton />
-            </CardHeader>
-            <CardFooter>
-                <TeamPic src={teamPic} />
-                <TeamName>Piccial Media</TeamName>
-                <TimeCreated>12 hours ago</TimeCreated>
-            </CardFooter>
+            <CardWrapper>
+                <CardHeader>
+                    <ProjectName>Food Delivery Tracking Application</ProjectName>
+                    <DeleteButton />
+                    <EditButton />
+                </CardHeader>
+                <CardFooter>
+                    <TeamPic src={teamPic} />
+                    <TeamName>Piccial Media</TeamName>
+                    <TimeCreated>12 hours ago</TimeCreated>
+                </CardFooter>
+            </CardWrapper>
         </CardContainer>
     );
 };
@@ -25,8 +27,8 @@ const BoardCard = () => {
 export default BoardCard;
 
 const CardContainer = styled.div`
-    width: 163px;
-    height: 85px;
+    width: 280px;
+    height: 170px;
     border-radius: 7.5px;
     position: relative;
     overflow: hidden;
@@ -35,46 +37,51 @@ const CardContainer = styled.div`
         background-color: #0e9594;
         background: url(${background});
         background-size: 100% 100%;
-        opacity: 0.9;
+        opacity: 0.85;
+        position: absolute;
         top: 0;
         left: 0;
         bottom: 0;
         right: 0;
-        position: absolute;
-        z-index: -1;
     }
+`;
+
+const CardWrapper = styled.div`
+    position: relative;
+    z-index: 1;
 `;
 
 const CardHeader = styled.div`
     margin-top: 12.5px;
     margin-left: 12.5px;
     display: flex;
+
 `;
 
 const CardFooter = styled.div`
-    margin-top: 15px;
+    margin-top: 25%;
     margin-left: 12.5px;
-    margin-bottom: 11.5px;
     display: flex;
 `;
 
 const ProjectName = styled.div`
-    width: 111px;
-    max-height:28.5px;
+    width: 75%;
+    max-height: 6vh;
     overflow: hidden;
-    font-size: 11px;
+    font-size: 17px;
+    font-family: 'ProximaNovaSemiBold', sans-serif;
     line-height: 1.36;
     color: #ffffff;
+    
 `;
 
 const EditButton = styled.button`
-    width: 10.4px;
-    height: 10.4px;
+    width: 15px;
+    height: 15px;
+    
     border: 0;
-    margin-left: 9.9px;
-    margin-right: 12.6px;
     background: url(${pen}) no-repeat;
-    background-size: 10.4px;
+    background-size: 15px;
     &:hover {
         cursor: pointer;
     }
@@ -83,11 +90,12 @@ const EditButton = styled.button`
     }
 `;
 const DeleteButton = styled.button`
-    width: 10.4px;
-    height: 10.4px;
+    width: 15px;
+    height: 15px;
     border: 0;
+    margin-right: 12px;
     background: url(${trash}) no-repeat;
-    background-size: 10.4px;
+    background-size: 15px;
     &:hover {
         cursor: pointer;
     }
@@ -96,8 +104,8 @@ const DeleteButton = styled.button`
     }
 `;
 const TeamPic = styled.img`
-    width: 17.5px;
-    height: 17.5px;
+    width: 22.5px;
+    height: 22.5px;
     border: solid 0.5px #ffffff;
     border-radius: 50%;
 `;
@@ -107,16 +115,14 @@ const TeamName = styled.div`
     margin: auto;
     margin-left: 5px;
     margin-right: 0;
-    font-size: 8px;
-
-    margin-left: 5px;
+    font-family: 'ProximaNovaSemiBold', sans-serif;
+    font-size: 14px;
     color: #ffffff;
 `;
 const TimeCreated = styled.div`
-    height: 8.5px;
     margin: auto;
     margin-left: 30px;
-    font-family: ProximaNova;
-    font-size: 7px;
+    font-family: 'ProximaNovaMedium', sans-serif;
+    font-size: 13px;
     color: #ffffff;
 `;

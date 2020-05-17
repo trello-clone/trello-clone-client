@@ -43,14 +43,17 @@ const PageHeader = styled.header`
     top: 0;
     left: 0;
     width: 100%;
-    height: 60px;
-
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 `;
+
 const PageWrapper = styled.div`
     display: flex;
-    margin-top: 16px;
     height: 26.5px;
     align-items: center;
+    margin-right: 40px;
 `;
 
 const List = styled.ul`
@@ -65,8 +68,8 @@ const ListItem = styled.li`
 `;
 const BoardButton = styled.button`
     padding: 0;
-    height: 27px;
-    width: 27px;
+    height: 42px;
+    width: 42px;
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
@@ -75,8 +78,8 @@ const BoardButton = styled.button`
 `;
 const TeamButton = styled.button`
     padding: 0;
-    height: 27px;
-    width: 27px;
+    height: 42px;
+    width: 42px;
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
@@ -85,25 +88,24 @@ const TeamButton = styled.button`
 `;
 
 const Icon = styled.img`
-    height: 11.9px;
-    width: 14.5px;
+    height: 20px;
+    width: 20px;
 `;
 
 const UserAva = styled.button`
     padding: 0;
-    height: 27px;
-    width: 27px;
+    height: 42px;
+    width: 42px;
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
-    background-image: url(${userAva});
-    background-size: 27px;
+    background-image: url(${userAva}) ;
+    background-size: 42px;
 `;
 
 const Username = styled.div`
-    height: 10px;
-    font-size: 8px;
-    font-weight: 600;
+    font-family: 'ProximaNovaSemiBold', sans-serif;
+    font-size: 14px;
     line-height: 1.25;
     margin-left: 10px;
     color: #0c1226;
@@ -111,30 +113,31 @@ const Username = styled.div`
 
 const SearchBox = styled.div`
     background: #f8fafc;
-    width: 155px;
-    height: 27px;
+    width: 222px;
+    height: 42px;
     border-radius: 5px;
-    margin-left: 586.5px;
-`;
-const SearchButton = styled.a`
-    color: #e84118;
-    float: right;
-    width: 27px;
-    height: 27px;
     display: flex;
     justify-content: center;
+`;
+const SearchButton = styled.a`
+    width: 32px;
+    height: 42px;
+    display: flex;
     align-items: center;
+
 `;
 const SearchInput = styled.input`
     border: none;
     background: none;
     outline: none;
     padding: 0;
+    font-size: 12px;
     margin-left: 12.5px;
-    font-size: 7px;
-    line-height: 27px;
+    flex-grow: 2;
+
 `;
 const SearchIcon = styled.img`
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
+    
 `;
