@@ -7,6 +7,8 @@ import TeamCard from './components/TeamCard';
 import BoardCard from './components/BoardCard';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
+import AddBoard from './components/AddBoard';
+import AddTeam from './components/AddTeam';
 
 // import { User } from './types.js';
 
@@ -26,13 +28,17 @@ function App() {
             <SideBar />
             <DashBoardWrapper>
                 <CardWrapper>
+                    <Title>Boards</Title>
                     <BoardContainer>
-                        Boards
                         <BoardCard />
+                        <BoardCard />
+                        <AddBoard></AddBoard>
                     </BoardContainer>
+                    <Title>Teams</Title>
                     <TeamContainer>
-                        Teams
                         <TeamCard />
+                        <TeamCard />
+                        <AddTeam />
                     </TeamContainer>
                 </CardWrapper>
             </DashBoardWrapper>
@@ -78,16 +84,25 @@ const DashBoardWrapper = styled.div`
         opacity: 0.9;
     }
 `;
+
+const Title = styled.div`
+    position: relative;
+    z-index: 1;
+    margin-bottom: 10px;
+`;
+
 const CardWrapper = styled.div`
     margin-left: 30.5px;
 `;
+
 const BoardContainer = styled.div`
     position: relative;
     z-index: 1;
+    display: flex;
 `;
 
 const TeamContainer = styled.div`
-    font-family: 'ProximaNovaBold', sans-serif;
     position: relative;
     z-index: 1;
+    display: flex;
 `;

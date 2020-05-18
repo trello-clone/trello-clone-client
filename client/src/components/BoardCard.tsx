@@ -28,8 +28,10 @@ export default BoardCard;
 
 const CardContainer = styled.div`
     width: 280px;
-    height: 170px;
+    height: 160px;
     border-radius: 7.5px;
+    margin-bottom: 25px;
+    margin-right: 17.5px;
     position: relative;
     overflow: hidden;
     &::after {
@@ -55,11 +57,10 @@ const CardHeader = styled.div`
     margin-top: 12.5px;
     margin-left: 12.5px;
     display: flex;
-
 `;
 
 const CardFooter = styled.div`
-    margin-top: 25%;
+    margin-top: 22%;
     margin-left: 12.5px;
     display: flex;
     align-items: center;
