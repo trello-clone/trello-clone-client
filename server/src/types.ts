@@ -1,5 +1,6 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -8,12 +9,50 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateTime: any;
+};
+
+export type Board = {
+   __typename?: 'Board';
+  _id: Scalars['ID'];
+  title: Scalars['String'];
+  team: Array<Team>;
+  background?: Maybe<Scalars['String']>;
+};
+
+
+export type Mutation = {
+   __typename?: 'Mutation';
+  createBoardByMembers: Board;
+  createBoardByTeam: Board;
+  createTeam: Team;
+};
+
+
+export type MutationCreateBoardByMembersArgs = {
+  title: Scalars['String'];
+  members: Array<Scalars['ID']>;
+};
+
+
+export type MutationCreateBoardByTeamArgs = {
+  title: Scalars['String'];
+  team: Scalars['ID'];
+};
+
+
+export type MutationCreateTeamArgs = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  members: Array<Scalars['ID']>;
 };
 
 export type Query = {
    __typename?: 'Query';
   users: Array<User>;
   user?: Maybe<User>;
+  boards: Array<Maybe<Board>>;
+  teams: Array<Team>;
 };
 
 
@@ -26,11 +65,24 @@ export type QueryUserArgs = {
   id: Scalars['ID'];
 };
 
-export type Team = {
-   __typename?: 'Team';
+export type Team = TeamWithMemberObj | TeamWithMemberId;
+
+export type TeamWithMemberId = {
+   __typename?: 'TeamWithMemberID';
   _id: Scalars['ID'];
-  name: Scalars['String'];
-  description: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  members: Array<Scalars['ID']>;
+  personal: Scalars['Boolean'];
+};
+
+export type TeamWithMemberObj = {
+   __typename?: 'TeamWithMemberObj';
+  _id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  members: Array<User>;
+  personal: Scalars['Boolean'];
 };
 
 export type User = {
@@ -38,6 +90,8 @@ export type User = {
   _id: Scalars['ID'];
   email: Scalars['String'];
   name: Scalars['String'];
+  avatar: Array<Maybe<Scalars['String']>>;
+  _created: Scalars['DateTime'];
 };
 
 
@@ -118,8 +172,13 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
   String: ResolverTypeWrapper<Scalars['String']>,
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']>,
+  Board: ResolverTypeWrapper<Omit<Board, 'team'> & { team: Array<ResolversTypes['Team']> }>,
+  Team: ResolversTypes['TeamWithMemberObj'] | ResolversTypes['TeamWithMemberID'],
+  TeamWithMemberObj: ResolverTypeWrapper<TeamWithMemberObj>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
-  Team: ResolverTypeWrapper<Team>,
+  TeamWithMemberID: ResolverTypeWrapper<TeamWithMemberId>,
+  Mutation: ResolverTypeWrapper<{}>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -129,19 +188,59 @@ export type ResolversParentTypes = {
   User: User,
   ID: Scalars['ID'],
   String: Scalars['String'],
+  DateTime: Scalars['DateTime'],
+  Board: Omit<Board, 'team'> & { team: Array<ResolversParentTypes['Team']> },
+  Team: ResolversParentTypes['TeamWithMemberObj'] | ResolversParentTypes['TeamWithMemberID'],
+  TeamWithMemberObj: TeamWithMemberObj,
   Boolean: Scalars['Boolean'],
-  Team: Team,
+  TeamWithMemberID: TeamWithMemberId,
+  Mutation: {},
+};
+
+export type BoardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  team?: Resolver<Array<ResolversTypes['Team']>, ParentType, ContextType>,
+  background?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime'
+}
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createBoardByMembers?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardByMembersArgs, 'title' | 'members'>>,
+  createBoardByTeam?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardByTeamArgs, 'title' | 'team'>>,
+  createTeam?: Resolver<ResolversTypes['Team'], ParentType, ContextType, RequireFields<MutationCreateTeamArgs, 'name' | 'members'>>,
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUsersArgs, never>>,
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>,
+  boards?: Resolver<Array<Maybe<ResolversTypes['Board']>>, ParentType, ContextType>,
+  teams?: Resolver<Array<ResolversTypes['Team']>, ParentType, ContextType>,
 };
 
 export type TeamResolvers<ContextType = any, ParentType extends ResolversParentTypes['Team'] = ResolversParentTypes['Team']> = {
+  __resolveType: TypeResolveFn<'TeamWithMemberObj' | 'TeamWithMemberID', ParentType, ContextType>
+};
+
+export type TeamWithMemberIdResolvers<ContextType = any, ParentType extends ResolversParentTypes['TeamWithMemberID'] = ResolversParentTypes['TeamWithMemberID']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  members?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>,
+  personal?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type TeamWithMemberObjResolvers<ContextType = any, ParentType extends ResolversParentTypes['TeamWithMemberObj'] = ResolversParentTypes['TeamWithMemberObj']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>,
+  personal?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -149,12 +248,19 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  avatar?: Resolver<Array<Maybe<ResolversTypes['String']>>, ParentType, ContextType>,
+  _created?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export type Resolvers<ContextType = any> = {
+  Board?: BoardResolvers<ContextType>,
+  DateTime?: GraphQLScalarType,
+  Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
-  Team?: TeamResolvers<ContextType>,
+  Team?: TeamResolvers,
+  TeamWithMemberID?: TeamWithMemberIdResolvers<ContextType>,
+  TeamWithMemberObj?: TeamWithMemberObjResolvers<ContextType>,
   User?: UserResolvers<ContextType>,
 };
 
