@@ -1,16 +1,47 @@
 type Query {
     users(max: Int): [User!]!
     user(id: ID!): User
+    boards: [Board]!
+    teams: [Team!]!
+}
+
+type Mutation {
+    createBoardByMembers(title: String!, members: [ID!]!): Board!
+    createBoardByTeam(title: String!, team: ID!): Board!
+    createTeam(name: String!, description: String, members: [ID!]!): Team!
 }
 
 type User {
     _id: ID!
     email: String!
     name: String!
+    avatar: [String]!
+    _created: DateTime!
 }
 
-type Team {
+type Board {
     _id: ID!
-    name: String!
-    description: String!
+    title: String!
+    team: [Team!]!
+    background: String
 }
+
+type TeamWithMemberObj {
+    _id: ID!
+    name: String
+    description: String
+    members: [User!]!
+    personal: Boolean!
+}
+
+type TeamWithMemberID {
+    _id: ID!
+    name: String
+    description: String
+    members: [ID!]!
+    personal: Boolean!
+}
+
+union Team = TeamWithMemberObj | TeamWithMemberID
+
+scalar DateTime
