@@ -9,6 +9,7 @@ import Header from './components/Header';
 import SideBar from './components/SideBar';
 import AddBoard from './components/AddBoard';
 import AddTeam from './components/AddTeam';
+import NewBoard from './components/NewBoard';
 
 // import { User } from './types.js';
 
@@ -41,6 +42,7 @@ function App() {
                         <AddTeam />
                     </TeamContainer>
                 </CardWrapper>
+                <NewBoard />
             </DashBoardWrapper>
         </>
 

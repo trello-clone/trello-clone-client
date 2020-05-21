@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
+
 const AddBoard = ()=>{
     return(
         <Wrapper>
             <AddBtn>+</AddBtn>
+            
         </Wrapper>
     );
 };
