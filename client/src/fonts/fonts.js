@@ -23,5 +23,9 @@ export default createGlobalStyle`
     body {
         font-family: 'ProximaNovaBold', sans-serif;
         font-size: 20px;
+        box-sizing: border-box;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 `;

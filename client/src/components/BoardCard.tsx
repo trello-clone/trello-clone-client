@@ -8,18 +8,16 @@ import background from '../icons/teamBackground.jpg';
 const BoardCard = () => {
     return (
         <CardContainer>
-            <CardWrapper>
-                <CardHeader>
-                    <ProjectName>Food Delivery Tracking Application</ProjectName>
-                    <DeleteButton />
-                    <EditButton />
-                </CardHeader>
-                <CardFooter>
-                    <TeamPic src={teamPic} />
-                    <TeamName>Piccial Media</TeamName>
-                    <TimeCreated>12 hours ago</TimeCreated>
-                </CardFooter>
-            </CardWrapper>
+            <CardHeader>
+                <ProjectName>Food Delivery Tracking Application</ProjectName>
+                <DeleteButton />
+                <EditButton />
+            </CardHeader>
+            <CardFooter>
+                <TeamPic src={teamPic} />
+                <TeamName>Piccial Media</TeamName>
+                <TimeCreated>12 hours ago</TimeCreated>
+            </CardFooter>
         </CardContainer>
     );
 };
@@ -28,10 +26,15 @@ export default BoardCard;
 
 const CardContainer = styled.div`
     width: 280px;
-    height: 170px;
-    border-radius: 7.5px;
+    height: 150px;
+    border-radius: 8px;
     position: relative;
     overflow: hidden;
+    margin: 16px 16px 16px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     &::after {
         content: '';
         background-color: #0e9594;
@@ -46,23 +49,19 @@ const CardContainer = styled.div`
     }
 `;
 
-const CardWrapper = styled.div`
-    position: relative;
+const CardHeader = styled.div`
+    margin: 12px;
+    display: flex;
+    justify-content: space-between;
     z-index: 1;
 `;
 
-const CardHeader = styled.div`
-    margin-top: 12.5px;
-    margin-left: 12.5px;
-    display: flex;
-
-`;
-
 const CardFooter = styled.div`
-    margin-top: 25%;
-    margin-left: 12.5px;
+    margin-left: 12px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
+    z-index: 1;
 `;
 
 const ProjectName = styled.div`
@@ -73,7 +72,6 @@ const ProjectName = styled.div`
     font-family: 'ProximaNovaSemiBold', sans-serif;
     line-height: 1.36;
     color: #ffffff;
-    
 `;
 
 const EditButton = styled.button`
@@ -121,5 +119,5 @@ const TimeCreated = styled.div`
     font-size: 13px;
     color: #ffffff;
     margin-left: auto;
-    margin-right: 12.5px;
+    margin-right: 12px;
 `;

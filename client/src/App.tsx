@@ -2,11 +2,14 @@ import React from 'react';
 // import gql from 'graphql-tag';
 // import { Query, QueryResult } from 'react-apollo';
 import styled from 'styled-components';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { rgba } from 'polished';
 
 import TeamCard from './components/TeamCard';
 import BoardCard from './components/BoardCard';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
+import BoardView from './components/BoardView';
 
 // import { User } from './types.js';
 
@@ -21,22 +24,27 @@ import SideBar from './components/SideBar';
 
 function App() {
     return (
-        <>
+        <Router>
             <Header />
             <SideBar />
-            <DashBoardWrapper>
-                <CardWrapper>
-                    <BoardContainer>
-                        Boards
-                        <BoardCard />
-                    </BoardContainer>
-                    <TeamContainer>
-                        Teams
-                        <TeamCard />
-                    </TeamContainer>
-                </CardWrapper>
-            </DashBoardWrapper>
-        </>
+            <Switch>
+                <Route path="/board/:board_id">
+                    <BoardView />
+                </Route>
+                <Route path="/">
+                    <DashBoardWrapper>
+                        <BoardContainer>
+                            Boards
+                            <BoardCard />
+                        </BoardContainer>
+                        <TeamContainer>
+                            Teams
+                            <TeamCard />
+                        </TeamContainer>
+                    </DashBoardWrapper>
+                </Route>
+            </Switch>
+        </Router>
 
         // GrapqhQL query example
         // <Query query={USERS_QUERY}>
@@ -61,33 +69,18 @@ function App() {
 
 export default App;
 const DashBoardWrapper = styled.div`
-    height: calc(100vh - 100px);
-    margin-left: 70px;
-    margin-top: 80px;
-    border-radius: 20px;
-    position: relative;
-    overflow: hidden;
-    &::after {
-        content: '';
-        background: rgba(248, 250, 252);
-        width: calc(100vw - 51.5px);
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        opacity: 0.9;
-    }
-`;
-const CardWrapper = styled.div`
-    margin-left: 30.5px;
+    background-color: ${props => rgba(props.theme.colors.blue, 0.03)};
+    position: fixed;
+    top: 80px;
+    left: 70px;
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 20px;
+    padding: 24px 36px;
 `;
 const BoardContainer = styled.div`
-    position: relative;
-    z-index: 1;
+    padding-bottom: 16px;
 `;
 
 const TeamContainer = styled.div`
-    font-family: 'ProximaNovaBold', sans-serif;
-    position: relative;
-    z-index: 1;
 `;

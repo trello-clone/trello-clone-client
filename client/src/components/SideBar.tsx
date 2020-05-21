@@ -24,12 +24,11 @@ export default SideBar;
 
 const Wrapper = styled.div`
     width: 70px;
-    height: 100%;
     position: fixed;
     z-index: 1;
-    top: 60px;
+    top: 80px;
     left: 0;
-
+    bottom: 0;
 `;
 
 const SideNavItem = styled.a`

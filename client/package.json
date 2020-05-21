@@ -13,6 +13,7 @@
     "apollo-boost": "^0.4.9",
     "axios": "^0.19.2",
     "graphql": "^15.0.0",
+    "polished": "^3.6.3",
     "react": "^16.13.1",
     "react-apollo": "^3.1.5",
     "react-beautiful-dnd": "^13.0.0",
@@ -48,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.0",
     "@types/webfontloader": "^1.6.30"
   }
