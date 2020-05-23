@@ -6,6 +6,9 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import GlobalFonts from './fonts/fonts';
 import { DialogProvider } from './contexts/DialogContext';
+import { ThemeProvider } from 'styled-components';
+import { myTheme } from './theme';
+
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -22,10 +25,12 @@ const client = new ApolloClient({
 ReactDOM.render(
     <React.StrictMode>
         <ApolloProvider client={client}>
-            <GlobalFonts />
-            <DialogProvider>
-                <App />
-            </DialogProvider>
+            <ThemeProvider theme={myTheme}>
+                <GlobalFonts />
+                <DialogProvider>
+                  <App />
+                </DialogProvider>
+            </ThemeProvider>
         </ApolloProvider>
     </React.StrictMode>,
     document.getElementById('root')
