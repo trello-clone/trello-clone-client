@@ -29,9 +29,9 @@ export default BoardCard;
 const CardContainer = styled.div`
     width: 280px;
     height: 160px;
-    border-radius: 7.5px;
+    border-radius: 8px;
     margin-bottom: 25px;
-    margin-right: 17.5px;
+    margin-right: 16px;
     position: relative;
     overflow: hidden;
     &::after {
@@ -54,14 +54,14 @@ const CardWrapper = styled.div`
 `;
 
 const CardHeader = styled.div`
-    margin-top: 12.5px;
-    margin-left: 12.5px;
+    margin-top: 12px;
+    margin-left: 12px;
     display: flex;
 `;
 
 const CardFooter = styled.div`
     margin-top: 22%;
-    margin-left: 12.5px;
+    margin-left: 12px;
     display: flex;
     align-items: center;
 `;
@@ -105,8 +105,8 @@ const DeleteButton = styled.button`
     }
 `;
 const TeamPic = styled.img`
-    width: 22.5px;
-    height: 22.5px;
+    width: 20px;
+    height: 20px;
     margin-right: 10px;
     border: solid 0.5px #ffffff;
     border-radius: 50%;
@@ -122,5 +122,5 @@ const TimeCreated = styled.div`
     font-size: 13px;
     color: #ffffff;
     margin-left: auto;
-    margin-right: 12.5px;
+    margin-right: 12px;
 `;

@@ -1,23 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 
-
-const AddBoard = ()=>{
+const AddTeamCard = ()=>{
     return(
         <Wrapper>
             <AddBtn>+</AddBtn>
-            
         </Wrapper>
     );
 };
 
-export default AddBoard;
+export default AddTeamCard;
 
 const Wrapper = styled.div`
     width: 280px;
-    height: 160px;
+    height: 230px;
     border: solid 1px #707070;
-    border-radius: 7.5px;
+    border-radius: 8px;
     border-style: dashed;
     opacity: 0.25;
    
@@ -27,7 +25,7 @@ const AddBtn = styled.button`
     width: 100%;
     height: 100%;
     font-family: 'ProximaNovaMedium', sans-serif;
-    font-size: 60px;
+    font-size: 70px;
     border: none;
     &:hover {
         cursor: pointer;

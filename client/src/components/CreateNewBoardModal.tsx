@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
+import { DialogContext, ModalTypes } from '../contexts/DialogContext';
 
-const NewBoard = () => {
+const CreateNewBoardModal = () => {
+    const context = useContext(DialogContext);
+    const modalRef = useRef<HTMLDivElement>(null);
+
+    const onClickOutside = (e: any) => {
+        const element = e.target;
+        if (modalRef.current && !modalRef.current.contains(element)) {
+            e.preventDefault();
+            e.stopPropagation();
+            context.closeModalByType();
+        }
+    };
+
+    useEffect(() => {
+        document.body.addEventListener('click', onClickOutside);
+    });
+
     return (
-        <>
-            <Wrapper>
+        <Container>
+            <Modal ref={modalRef}>
                 <Header>Create board</Header>
                 <TypeWrapper>
                     <TypeNav href="#">With team</TypeNav>
@@ -23,17 +40,32 @@ const NewBoard = () => {
                     <BackgroundItem src={background} alt="background" />
                 </BackgroundContainer>
                 <ButtonContainer>
-                    <CancelButton href="#">Cancel</CancelButton>
+                    <CancelButton
+                        href="#"
+                        onClick={() => {
+                            context.closeModalByType(ModalTypes.CreateBoard);
+                        }}
+                    >
+                        Cancel
+                    </CancelButton>
                     <CreateNewBoardBtn>Create new board</CreateNewBoardBtn>
                 </ButtonContainer>
-            </Wrapper>
-        </>
+            </Modal>
+        </Container>
     );
 };
 
-export default NewBoard;
-
-const Wrapper = styled.div`
+export default CreateNewBoardModal;
+const Container = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.5);
+`;
+const Modal = styled.div`
     background-color: #ffffff;
     width: 380px;
     height: 430px;
@@ -41,7 +73,6 @@ const Wrapper = styled.div`
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1;
     padding: 20px;
     border-radius: 7.5px;
     font-size: 15px;
@@ -64,7 +95,7 @@ const TypeNav = styled.a`
     &:first-child {
         border-right: 1.5px solid #707070;
     }
-    &:hover{
+    &:hover {
         cursor: pointer;
     }
 `;
@@ -103,8 +134,8 @@ const BackgroundItem = styled.img`
     height: 70px;
     border-radius: 2.5px;
     margin-right: 7.5px;
-    
 `;
+
 const CancelButton = styled.a`
     text-decoration: none;
     color: #707070;

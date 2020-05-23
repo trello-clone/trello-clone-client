@@ -1,11 +1,15 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 import boardIcon from '../icons/add-board.svg';
 import userIcon from '../icons/users-mmm-white.svg';
 import userAva from '../icons/ray.jpg';
 import searchIcon from '../icons/search.svg';
+import { DialogContext, ModalTypes } from "../contexts/DialogContext";
+
 
 const Header = () => {
+    const context = useContext(DialogContext);
+    
     return (
         <PageHeader>
             <PageWrapper>
@@ -17,7 +21,7 @@ const Header = () => {
                 </SearchBox>
                 <List>
                     <ListItem>
-                        <BoardButton>
+                        <BoardButton onClick={()=>{context.openModalByType(ModalTypes.CreateBoard)}}>
                             <Icon src={boardIcon} alt="board"></Icon>
                         </BoardButton>
                     </ListItem>

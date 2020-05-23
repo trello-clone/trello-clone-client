@@ -37,9 +37,9 @@ export default TeamCard;
 const CardContainer = styled.div`
     width: 280px;
     height: 230px;
-    border-radius: 7.5px;
+    border-radius: 8px;
     margin-bottom: 25px;
-    margin-right: 17.5px;
+    margin-right: 16px;
     position: relative;
     overflow: hidden;
     display: block;
@@ -62,16 +62,16 @@ const CardWrapper = styled.div`
 `;
 
 const CardHeader = styled.div`
-    margin-top: 11.5px;
-    margin-bottom: 14.5px;
-    margin-left: 12.5px;
+    margin-top: 12px;
+    margin-bottom: 14px;
+    margin-left: 12px;
     display: flex;
 
 `;
 
 const CardFooter = styled.div`
     margin-top: 18%;
-    margin-left: 12.5px;
+    margin-left: 12px;
     display: flex;
     align-items: center;
 `;
@@ -139,6 +139,6 @@ const TimeCreated = styled.div`
     font-size: 13px;
     color: #ffffff;
     margin-left: auto;
-    margin-right: 12.5px;
+    margin-right: 12px;
     
 `;
