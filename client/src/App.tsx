@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import gql from 'graphql-tag';
 import { Query, QueryResult } from 'react-apollo';
 import styled from 'styled-components';
@@ -17,7 +17,6 @@ import { ModalTypes, DialogContext } from './contexts/DialogContext';
 
 import BoardView from './components/BoardView';
 
-
 import { User } from './types.js';
 
 const USERS_QUERY = gql`
@@ -32,59 +31,55 @@ const USERS_QUERY = gql`
 function App() {
     const context = useContext(DialogContext);
     return (
-
         <Router>
-              
-                <Header />
-                <SideBar />
-                <Switch>
-                    <Route path="/board/:board_id">
-                      <BoardView />
-                    </Route>
-                    <Route path="/">
-                      <DashBoardWrapper>
-                              <Title>Boards</Title>
-                              <BoardContainer>
-                                  <BoardCard />
-                                  <BoardCard />
-                                  <AddBoard></AddBoard>
-                              </BoardContainer>
-                              <Title>Teams</Title>
-                              <TeamContainer>
-                                  <TeamCard />
-                                  <TeamCard />
-                                  <AddTeam />
-                              </TeamContainer>
-                          {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal />}
-                      </DashBoardWrapper>
-                     </Route>
-                  </Switch>
-                {/* // GrapqhQL query example */}
-                <Query query={USERS_QUERY}>
-                    {({ loading, error, data }: QueryResult) => {
-                        if (loading) return <div>Loading...</div>;
-                        if (error) return <div>Error: {error.message}</div>;
-                        return (
-                            <div>
-                                {(data.users as User[]).map((user, index) => (
-                                    <div key={index}>
-                                        <h3>{user.name}</h3>
-                                        <br />
+            <Header />
+            <SideBar />
+            <Switch>
+                <Route path="/board/:board_id">
+                    <BoardView />
+                </Route>
+                <Route path="/">
+                    <DashBoardWrapper>
+                        <Title>Boards</Title>
+                        <BoardContainer>
+                            <BoardCard />
+                            <BoardCard />
+                            <AddBoard></AddBoard>
+                        </BoardContainer>
+                        <Title>Teams</Title>
+                        <TeamContainer>
+                            <TeamCard />
+                            <TeamCard />
+                            <AddTeam />
+                        </TeamContainer>
+                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal />}
+                        {/* // GrapqhQL query example */}
+                        <Query query={USERS_QUERY}>
+                            {({ loading, error, data }: QueryResult) => {
+                                if (loading) return <div>Loading...</div>;
+                                if (error) return <div>Error: {error.message}</div>;
+                                return (
+                                    <div>
+                                        {(data.users as User[]).map((user, index) => (
+                                            <div key={index}>
+                                                <h3>{user.name}</h3>
+                                                <br />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                        );
-                    }}
-                </Query>
-            
+                                );
+                            }}
+                        </Query>
+                    </DashBoardWrapper>
+                </Route>
+            </Switch>
         </Router>
-
     );
 }
 
 export default App;
 const DashBoardWrapper = styled.div`
-    background-color: ${props => rgba(props.theme.colors.blue, 0.03)};
+    background-color: ${(props) => rgba(props.theme.colors.blue, 0.03)};
     position: fixed;
     top: 80px;
     left: 70px;
@@ -101,9 +96,10 @@ const Title = styled.div`
 `;
 
 const BoardContainer = styled.div`
+    display: flex;
     padding-bottom: 16px;
 `;
 
 const TeamContainer = styled.div`
-
+    display: flex;
 `;

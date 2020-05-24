@@ -15,7 +15,8 @@ export default AddBoardCard;
 
 const Wrapper = styled.div`
     width: 280px;
-    height: 160px;
+    height: 150px;
+    margin: 16px 16px 16px 0;
     border: solid 1px #707070;
     border-radius: 8px;
     border-style: dashed;

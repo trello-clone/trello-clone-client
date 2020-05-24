@@ -13,7 +13,8 @@ export default AddTeamCard;
 
 const Wrapper = styled.div`
     width: 280px;
-    height: 230px;
+    height: 220px;
+    margin: 16px 16px 16px 0;
     border: solid 1px #707070;
     border-radius: 8px;
     border-style: dashed;
