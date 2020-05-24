@@ -4,11 +4,11 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import GlobalFonts from './fonts/fonts';
-import { DialogProvider } from './contexts/DialogContext';
 import { ThemeProvider } from 'styled-components';
-import { myTheme } from './theme';
 
+import { DialogProvider } from './contexts/DialogContext';
+import { myTheme } from './theme';
+import GlobalFonts from './fonts/fonts';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';

@@ -9,9 +9,6 @@ interface DialogContextValue {
     openModalByType: any;
     closeModalByType: any;
 }
-interface DialogProviderProps {
-    children: React.ReactNode;
-}
 
 const DialogProvider = (props: any) => {
     const [openModals, setOpenModals] = useState<ModalTypes[]>([]);

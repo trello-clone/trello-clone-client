@@ -1,5 +1,6 @@
 import React, { useContext, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import { rgba } from 'polished';
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
@@ -13,21 +14,21 @@ const CreateNewBoardModal = () => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModalByType();
+            context.closeModalByType(ModalTypes.CreateBoard);
         }
     };
 
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
-    });
+    },[]);
 
     return (
         <Container>
             <Modal ref={modalRef}>
                 <Header>Create board</Header>
                 <TypeWrapper>
-                    <TypeNav href="#">With team</TypeNav>
-                    <TypeNav href="#">With members</TypeNav>
+                    <TypeNav >With team</TypeNav>
+                    <TypeNav >With members</TypeNav>
                 </TypeWrapper>
                 <Input type="text" placeholder="Enter member's name" />
                 <TeamMember src={avatar} />
@@ -41,7 +42,6 @@ const CreateNewBoardModal = () => {
                 </BackgroundContainer>
                 <ButtonContainer>
                     <CancelButton
-                        href="#"
                         onClick={() => {
                             context.closeModalByType(ModalTypes.CreateBoard);
                         }}
@@ -66,7 +66,7 @@ const Container = styled.div`
     background-color: rgba(0, 0, 0, 0.5);
 `;
 const Modal = styled.div`
-    background-color: #ffffff;
+    background-color: white;
     width: 380px;
     height: 430px;
     position: absolute;
@@ -74,7 +74,7 @@ const Modal = styled.div`
     top: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
-    border-radius: 7.5px;
+    border-radius: 8px;
     font-size: 15px;
 `;
 const Header = styled.div`
@@ -91,9 +91,9 @@ const TypeNav = styled.a`
     line-height: 40px;
     text-align: center;
     text-decoration: none;
-    color: #707070;
+    color: ${(props) => rgba(props.theme.colors.black,0.9)};
     &:first-child {
-        border-right: 1.5px solid #707070;
+        border-right: 1px solid ${(props) => rgba(props.theme.colors.black,0.9)};
     }
     &:hover {
         cursor: pointer;
@@ -104,18 +104,18 @@ const Input = styled.input`
     font-family: 'ProximaNovaMedium', sans-serif;
     opacity: 0.55;
     width: 100%;
-    padding: 5px;
+    padding: 6px;
     margin-bottom: 20px;
     border: 0;
-    border-bottom: 1.5px solid #707070;
+    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black,0.9)};
 `;
 
 const TeamMember = styled.img`
-    width: 22.5px;
-    height: 22.5px;
-    margin-right: 5px;
-    margin-bottom: 15px;
-    border: solid 0.5px #ffffff;
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    margin-bottom: 16px;
+    border: solid 1px white;
     border-radius: 50%;
 `;
 
@@ -132,13 +132,16 @@ const BackgroundContainer = styled.div`
 const BackgroundItem = styled.img`
     width: 70px;
     height: 70px;
-    border-radius: 2.5px;
-    margin-right: 7.5px;
+    border-radius: 4px;
+    margin-right: 8px;
 `;
 
 const CancelButton = styled.a`
     text-decoration: none;
-    color: #707070;
+    color: ${(props) => rgba(props.theme.colors.navy_blue, 0.55)};
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const ButtonContainer = styled.div`
@@ -151,8 +154,8 @@ const ButtonContainer = styled.div`
 const CreateNewBoardBtn = styled.button`
     font-size: 15px;
     font-family: 'ProximaNovaMedium', sans-serif;
-    color: #ffffff;
-    background: #d4db2e;
+    color: white;
+    background: ${(props) => rgba(props.theme.colors.lemon,1)} ;
     padding: 5px 15px;
     margin-left: 30px;
     border-radius: 3px;

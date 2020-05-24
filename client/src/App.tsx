@@ -10,8 +10,8 @@ import BoardCard from './components/BoardCard';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
 
-import AddBoard from './components/AddBoardCard';
-import AddTeam from './components/AddTeamCard';
+import AddBoardCard from './components/AddBoardCard';
+import AddTeamCard from './components/AddTeamCard';
 import CreateNewBoardModal from './components/CreateNewBoardModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 
@@ -44,13 +44,13 @@ function App() {
                         <BoardContainer>
                             <BoardCard />
                             <BoardCard />
-                            <AddBoard></AddBoard>
+                            <AddBoardCard/>
                         </BoardContainer>
                         <Title>Teams</Title>
                         <TeamContainer>
                             <TeamCard />
                             <TeamCard />
-                            <AddTeam />
+                            <AddTeamCard />
                         </TeamContainer>
                         {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal />}
                         {/* // GrapqhQL query example */}
