@@ -1,6 +1,7 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import React, { useContext, useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
+
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
@@ -8,6 +9,12 @@ import { DialogContext, ModalTypes } from '../contexts/DialogContext';
 const CreateNewBoardModal = () => {
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
+    const [boardModalOption, setBoardModalOption] = useState('Member');
+
+    enum BoardModalOptions {
+        Team = 'Team',
+        Member = 'Member',
+    }
 
     const onClickOutside = (e: any) => {
         const element = e.target;
@@ -18,22 +25,40 @@ const CreateNewBoardModal = () => {
         }
     };
 
+    const selectOption = (option: BoardModalOptions) => {
+        setBoardModalOption(option);
+    };
+
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
-    },[]);
+
+        return () => window.removeEventListener('click', onClickOutside);
+    });
 
     return (
         <Container>
             <Modal ref={modalRef}>
                 <Header>Create board</Header>
                 <TypeWrapper>
-                    <TypeNav >With team</TypeNav>
-                    <TypeNav >With members</TypeNav>
+                    <TypeNav
+                        onClick={() => {
+                            selectOption(BoardModalOptions.Team);
+                        }}
+                    >
+                        With team
+                    </TypeNav>
+                    <TypeNav
+                        onClick={() => {
+                            selectOption(BoardModalOptions.Member);
+                        }}
+                    >
+                        With members
+                    </TypeNav>
                 </TypeWrapper>
-                <Input type="text" placeholder="Enter member's name" />
+                {boardModalOption === BoardModalOptions.Member && <Input type="text" placeholder="Enter member's name" />}
+                {/* <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
-                <TeamMember src={avatar} />
-                <TeamMember src={avatar} />
+                <TeamMember src={avatar} /> */}
                 <Input type="text" placeholder="Title" />
                 <BackgroundLabel>Select background</BackgroundLabel>
                 <BackgroundContainer>
@@ -91,9 +116,9 @@ const TypeNav = styled.a`
     line-height: 40px;
     text-align: center;
     text-decoration: none;
-    color: ${(props) => rgba(props.theme.colors.black,0.9)};
+    color: ${(props) => rgba(props.theme.colors.black, 0.9)};
     &:first-child {
-        border-right: 1px solid ${(props) => rgba(props.theme.colors.black,0.9)};
+        border-right: 1px solid ${(props) => rgba(props.theme.colors.black, 0.9)};
     }
     &:hover {
         cursor: pointer;
@@ -107,7 +132,7 @@ const Input = styled.input`
     padding: 6px;
     margin-bottom: 20px;
     border: 0;
-    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black,0.9)};
+    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.9)};
 `;
 
 const TeamMember = styled.img`
@@ -138,7 +163,7 @@ const BackgroundItem = styled.img`
 
 const CancelButton = styled.a`
     text-decoration: none;
-    color: ${(props) => rgba(props.theme.colors.navy_blue, 0.55)};
+    color: ${(props) => rgba(props.theme.colors.dark_blue, 0.55)};
     &:hover {
         cursor: pointer;
     }
@@ -155,7 +180,7 @@ const CreateNewBoardBtn = styled.button`
     font-size: 15px;
     font-family: 'ProximaNovaMedium', sans-serif;
     color: white;
-    background: ${(props) => rgba(props.theme.colors.lemon,1)} ;
+    background: ${(props) => rgba(props.theme.colors.lemon, 1)};
     padding: 5px 15px;
     margin-left: 30px;
     border-radius: 3px;

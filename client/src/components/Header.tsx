@@ -82,7 +82,7 @@ const TeamButton = styled.button`
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
-    background-color: ${(props) => rgba(props.theme.colors.navy_blue,1)};
+    background-color: ${(props) => rgba(props.theme.colors.dark_blue,1)};
     cursor: pointer;
 `;
 
