@@ -6,6 +6,7 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ThemeProvider } from 'styled-components';
 
+import { DialogProvider } from './contexts/DialogContext';
 import { myTheme } from './theme';
 import GlobalFonts from './fonts/fonts';
 
@@ -26,7 +27,9 @@ ReactDOM.render(
         <ApolloProvider client={client}>
             <ThemeProvider theme={myTheme}>
                 <GlobalFonts />
-                <App />
+                <DialogProvider>
+                  <App />
+                </DialogProvider>
             </ThemeProvider>
         </ApolloProvider>
     </React.StrictMode>,

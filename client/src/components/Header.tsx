@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 import boardIcon from '../icons/add-board.svg';
 import userIcon from '../icons/users-mmm-white.svg';
 import userAva from '../icons/ray.jpg';
 import searchIcon from '../icons/search.svg';
+import { rgba } from 'polished';
+import { DialogContext, ModalTypes } from "../contexts/DialogContext";
+
 
 const Header = () => {
+    const context = useContext(DialogContext);
+    
     return (
+
         <AppHeader>
             <SearchBox>
                 <SearchInput type="text" placeholder="Search something..." />
@@ -16,7 +22,7 @@ const Header = () => {
             </SearchBox>
             <List>
                 <ListItem>
-                    <BoardButton>
+                    <BoardButton onClick={()=>{context.openModalByType(ModalTypes.CreateBoard)}}>
                         <Icon src={boardIcon} alt="board"></Icon>
                     </BoardButton>
                 </ListItem>
@@ -31,6 +37,7 @@ const Header = () => {
             </List>
             <Username>Thomas Eton</Username>
         </AppHeader>
+
     );
 };
 
@@ -75,7 +82,7 @@ const TeamButton = styled.button`
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
-    background-color: #214b8d;
+    background-color: ${(props) => rgba(props.theme.colors.dark_blue,1)};
     cursor: pointer;
 `;
 

@@ -102,8 +102,8 @@ const DeleteButton = styled.button`
     }
 `;
 const TeamPic = styled.img`
-    width: 22.5px;
-    height: 22.5px;
+    width: 20px;
+    height: 20px;
     margin-right: 10px;
     border: solid 0.5px #ffffff;
     border-radius: 50%;
