@@ -1,14 +1,33 @@
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
+import gql from 'graphql-tag';
+import { Query, QueryResult } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
+import AsyncSelect from 'react-select/async';
 
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
+import { User } from '../types.js';
+
+import CustomSelect from './CustomSelect';
+
+
+const USERS_QUERY = gql`
+    {
+        getAllUsers{
+            _id
+            name
+        }
+    }
+`;
+
 
 const CreateNewBoardModal = () => {
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
+
     const [boardModalOption, setBoardModalOption] = useState('Member');
 
     enum BoardModalOptions {
@@ -29,6 +48,7 @@ const CreateNewBoardModal = () => {
         setBoardModalOption(option);
     };
 
+
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
 
@@ -41,6 +61,7 @@ const CreateNewBoardModal = () => {
                 <Header>Create board</Header>
                 <TypeWrapper>
                     <TypeNav
+                        active={boardModalOption === BoardModalOptions.Team ? true : false}
                         onClick={() => {
                             selectOption(BoardModalOptions.Team);
                         }}
@@ -48,6 +69,7 @@ const CreateNewBoardModal = () => {
                         With team
                     </TypeNav>
                     <TypeNav
+                        active={boardModalOption === BoardModalOptions.Member ? true : false}
                         onClick={() => {
                             selectOption(BoardModalOptions.Member);
                         }}
@@ -55,7 +77,8 @@ const CreateNewBoardModal = () => {
                         With members
                     </TypeNav>
                 </TypeWrapper>
-                {boardModalOption === BoardModalOptions.Member && <Input type="text" placeholder="Enter member's name" />}
+                {/* {boardModalOption === BoardModalOptions.Member && <Input type="text" placeholder="Enter member's name" />} */}
+                {boardModalOption === BoardModalOptions.Member && <CustomSelect/>}
                 {/* <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} /> */}
@@ -76,11 +99,28 @@ const CreateNewBoardModal = () => {
                     <CreateNewBoardBtn>Create new board</CreateNewBoardBtn>
                 </ButtonContainer>
             </Modal>
+            {/* <Query query={USERS_QUERY}>
+                {({ loading, error, data }: QueryResult) => {
+                    if (loading) return <div>Loading...</div>;
+                    if (error) return <div>Error: {error.message}</div>;
+                    return (
+                        <div>
+                            {(data.getAllUsers as User[]).map((user, index) => (
+                                <div key={index}>
+                                    <h3>{user.name}</h3>
+                                    <br />
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }}
+            </Query> */}
         </Container>
     );
 };
 
 export default CreateNewBoardModal;
+
 const Container = styled.div`
     position: fixed;
     top: 0;
@@ -111,12 +151,12 @@ const TypeWrapper = styled.div`
     display: flex;
     opacity: 0.5;
 `;
-const TypeNav = styled.a`
+const TypeNav = styled.a<{ active: boolean }>`
     width: 50%;
     line-height: 40px;
     text-align: center;
     text-decoration: none;
-    color: ${(props) => rgba(props.theme.colors.black, 0.9)};
+    color: ${(props) => (props.active ? rgba(props.theme.colors.lemon, 1) : rgba(props.theme.colors.black, 0.9))};
     &:first-child {
         border-right: 1px solid ${(props) => rgba(props.theme.colors.black, 0.9)};
     }
@@ -127,12 +167,17 @@ const TypeNav = styled.a`
 
 const Input = styled.input`
     font-family: 'ProximaNovaMedium', sans-serif;
+    font-size: 11px;
     opacity: 0.55;
     width: 100%;
-    padding: 6px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-right: 0;
+    margin-top: 5px;
     margin-bottom: 20px;
     border: 0;
     border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.9)};
+    outline: 0;
 `;
 
 const TeamMember = styled.img`

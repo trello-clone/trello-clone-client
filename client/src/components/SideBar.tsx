@@ -25,7 +25,7 @@ export default SideBar;
 const Wrapper = styled.div`
     width: 70px;
     position: fixed;
-    z-index: 1;
+    z-index: -1;
     top: 80px;
     left: 0;
     bottom: 0;

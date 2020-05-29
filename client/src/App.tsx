@@ -9,24 +9,21 @@ import TeamCard from './components/TeamCard';
 import BoardCard from './components/BoardCard';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
-
 import AddBoardCard from './components/AddBoardCard';
 import AddTeamCard from './components/AddTeamCard';
 import CreateNewBoardModal from './components/CreateNewBoardModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
-
 import BoardView from './components/BoardView';
-
 import { User } from './types.js';
 
-const USERS_QUERY = gql`
-    {
-        users(max: 10) {
-            _id
-            name
-        }
-    }
-`;
+// const USERS_QUERY = gql`
+//     {
+    //         users(max: 10) {
+    //             _id
+    //             name
+    //         
+    //     }
+    // `;}
 
 function App() {
     const context = useContext(DialogContext);
@@ -54,7 +51,7 @@ function App() {
                         </TeamContainer>
                         {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal />}
                         {/* // GrapqhQL query example */}
-                        <Query query={USERS_QUERY}>
+                        {/* <Query query={USERS_QUERY}>
                             {({ loading, error, data }: QueryResult) => {
                                 if (loading) return <div>Loading...</div>;
                                 if (error) return <div>Error: {error.message}</div>;
@@ -69,7 +66,7 @@ function App() {
                                     </div>
                                 );
                             }}
-                        </Query>
+                        </Query> */}
                     </DashBoardWrapper>
                 </Route>
             </Switch>
