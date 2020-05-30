@@ -8,5 +8,6 @@ export const myTheme: DefaultTheme = {
         black: '#11182E',
         dark_blue: '#214B8D',
         orange: '#FC8F66',
+        light_blue: '#f0f5fd',
     },
 };

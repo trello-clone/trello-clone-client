@@ -24,6 +24,8 @@ type Board {
     title: String!
     team: [Team!]!
     background: String
+    _created: DateTime!
+    _changed: DateTime!
 }
 
 type TeamWithMemberObj {
@@ -31,7 +33,7 @@ type TeamWithMemberObj {
     name: String
     description: String
     members: [User!]!
-    personal: Boolean!
+    personal: Boolean
 }
 
 type TeamWithMemberID {
@@ -39,7 +41,19 @@ type TeamWithMemberID {
     name: String
     description: String
     members: [ID!]!
-    personal: Boolean!
+    personal: Boolean
+}
+
+type List {
+    _id: ID!
+    title: String!
+    board_id: ID!
+    cards: [Card]!
+}
+
+type Card {
+    _id: ID!
+    description: String
 }
 
 union Team = TeamWithMemberObj | TeamWithMemberID
