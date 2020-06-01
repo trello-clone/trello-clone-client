@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactSelect from 'react-select';
 import Select from 'react-select';
 import styled from 'styled-components';
+import { rgba } from 'polished';
 import gql from 'graphql-tag';
+
+import { selectTheme } from '../theme';
+
 // import { Query, QueryResult } from 'react-apollo';
 // import { useQuery } from '@apollo/react-hooks';
 
@@ -30,25 +34,27 @@ const colourOptions = [
 ];
 
 const CustomSelect = (props: any, state: any) => {
+    const handleChange = (item: any) => {
+        props.onSelectionChange(item.value)
+    };
+    const boardMembers = props.selectedItems;
     const customStyles = {
         option: (provided: any, state: any) => ({
             ...provided,
             borderBottom: '1px dotted pink',
             color: state.isSelected ? 'red' : 'blue',
             padding: 20,
-            
         }),
         control: (provided: any) => ({
             ...provided,
-        
             border: state.isFocused ? 0 : 0,
             // This line disable the blue border
             boxShadow: state.isFocused ? 0 : 0,
             '&:hover': {
                 border: state.isFocused ? 0 : 0,
-                borderBottom: '1px solid rgba(17, 24, 46,0.55)',
+                borderBottom: `1px solid ${rgba(selectTheme.black, 0.55)}`,
             },
-            borderBottom: '1px solid rgba(17, 24, 46,0.55)',
+            borderBottom: `1px solid ${rgba(selectTheme.black, 0.55)}`,
             borderRadius: 0,
         }),
         dropdownIndicator: (provided: any) => ({
@@ -73,12 +79,26 @@ const CustomSelect = (props: any, state: any) => {
         }),
     };
     return (
-        <div>
+        <>
             {/* <MultiSelect multi {...props} /> */}
-            <Select styles={customStyles} options={colourOptions} placeholder="Enter member's name" isMulti />
-        </div>
+            <Select
+                styles={customStyles}
+                options={colourOptions}
+                placeholder="Enter member's name"
+                // isMulti
+                isSearchable
+                onChange={handleChange}
+                value= {boardMembers}
+            />
+            <MemberList>
+                {boardMembers.map((item: any, index: any) => (
+                    <Member key={index}>{item}</Member>
+                ))}
+            </MemberList>
+        </>
     );
 };
+
 export default CustomSelect;
 // const MultiSelect = styled(ReactSelect)`
 //     &.Select--multi {
@@ -92,3 +112,9 @@ export default CustomSelect;
 //         font-size: smaller;
 //     }
 // `;
+const MemberList = styled.div`
+    display: flex;
+`;
+const Member = styled.div`
+    margin-right: 5px;
+`;

@@ -10,3 +10,8 @@ export const myTheme: DefaultTheme = {
         orange: '#FC8F66',
     },
 };
+
+export const selectTheme = {
+    black: '#11182E',
+    blue: '#2259B1',
+}

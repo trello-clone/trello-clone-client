@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { rgba } from 'polished';
 import gql from 'graphql-tag';
 import { Query, QueryResult } from 'react-apollo';
-import { useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import AsyncSelect from 'react-select/async';
 
 import avatar from '../icons/avatar.jpg';
@@ -13,27 +13,30 @@ import { User } from '../types.js';
 
 import CustomSelect from './CustomSelect';
 
-
-const USERS_QUERY = gql`
-    {
-        getAllUsers{
-            _id
-            name
+// mutation createBoardByMembers($title: String!, $members:[ID!]!){
+const CREATE_BOARD_BY_MEMBERS = gql`
+    mutation createBoardByMembers($title: String!, $members: [ID!]!) {
+        createBoardByMembers(title: $title, members: $members) {
+            title
         }
     }
 `;
 
+enum BoardModalOptions {
+    Team = 'Team',
+    Member = 'Member',
+}
 
 const CreateNewBoardModal = () => {
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-
     const [boardModalOption, setBoardModalOption] = useState('Member');
+    const [selectState, setSelectState] = useState({
+        selectedItems: [],
+        titleInput: "",
+    });
 
-    enum BoardModalOptions {
-        Team = 'Team',
-        Member = 'Member',
-    }
+    const [addBoard] = useMutation(CREATE_BOARD_BY_MEMBERS);
 
     const onClickOutside = (e: any) => {
         const element = e.target;
@@ -48,7 +51,25 @@ const CreateNewBoardModal = () => {
         setBoardModalOption(option);
     };
 
+    const onSelectionChange = (item: any) => {
+        setSelectState({
+            ...selectState,
+            selectedItems: Array.from(new Set(selectState.selectedItems.concat(item))),
+        });
+    };
 
+    const handletitleChange = (input: any) => {
+        setSelectState({
+            ...selectState,
+            titleInput: input.target.value
+        });
+    }
+    
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        addBoard({ variables: { title: selectState.titleInput, members: selectState.selectedItems } });
+        context.closeModalByType(ModalTypes.CreateBoard);
+    };
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
 
@@ -78,11 +99,13 @@ const CreateNewBoardModal = () => {
                     </TypeNav>
                 </TypeWrapper>
                 {/* {boardModalOption === BoardModalOptions.Member && <Input type="text" placeholder="Enter member's name" />} */}
-                {boardModalOption === BoardModalOptions.Member && <CustomSelect/>}
+                {boardModalOption === BoardModalOptions.Member && (
+                    <CustomSelect selectedItems={selectState.selectedItems} onSelectionChange={onSelectionChange} />
+                )}
                 {/* <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} /> */}
-                <Input type="text" placeholder="Title" />
+                <Input onChange={handletitleChange} type="text" placeholder="Title" />
                 <BackgroundLabel>Select background</BackgroundLabel>
                 <BackgroundContainer>
                     <BackgroundItem src={background} alt="background" />
@@ -96,7 +119,7 @@ const CreateNewBoardModal = () => {
                     >
                         Cancel
                     </CancelButton>
-                    <CreateNewBoardBtn>Create new board</CreateNewBoardBtn>
+                    <CreateNewBoardBtn onClick={handleSubmit}>Create new board</CreateNewBoardBtn>
                 </ButtonContainer>
             </Modal>
             {/* <Query query={USERS_QUERY}>
@@ -169,6 +192,7 @@ const Input = styled.input`
     font-family: 'ProximaNovaMedium', sans-serif;
     font-size: 11px;
     opacity: 0.55;
+    height: 23px;
     width: 100%;
     padding-top: 6px;
     padding-bottom: 6px;
