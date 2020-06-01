@@ -1,59 +1,58 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 import boardIcon from '../icons/add-board.svg';
 import userIcon from '../icons/users-mmm-white.svg';
 import userAva from '../icons/ray.jpg';
 import searchIcon from '../icons/search.svg';
+import { rgba } from 'polished';
+import { DialogContext, ModalTypes } from "../contexts/DialogContext";
+
 
 const Header = () => {
+    const context = useContext(DialogContext);
+    
     return (
-        <PageHeader>
-            <PageWrapper>
-                <SearchBox>
-                    <SearchInput type="text" placeholder="Search something..." />
-                    <SearchButton href="#">
-                        <SearchIcon src={searchIcon} alt="search"></SearchIcon>
-                    </SearchButton>
-                </SearchBox>
-                <List>
-                    <ListItem>
-                        <BoardButton>
-                            <Icon src={boardIcon} alt="board"></Icon>
-                        </BoardButton>
-                    </ListItem>
-                    <ListItem>
-                        <TeamButton>
-                            <Icon src={userIcon} alt="user"></Icon>
-                        </TeamButton>
-                    </ListItem>
-                    <ListItem>
-                        <UserAva />
-                    </ListItem>
-                </List>
-                <Username>Thomas Eton</Username>
-            </PageWrapper>
-        </PageHeader>
+
+        <AppHeader>
+            <SearchBox>
+                <SearchInput type="text" placeholder="Search something..." />
+                <SearchButton href="#">
+                    <SearchIcon src={searchIcon} alt="search"></SearchIcon>
+                </SearchButton>
+            </SearchBox>
+            <List>
+                <ListItem>
+                    <BoardButton onClick={()=>{context.openModalByType(ModalTypes.CreateBoard)}}>
+                        <Icon src={boardIcon} alt="board"></Icon>
+                    </BoardButton>
+                </ListItem>
+                <ListItem>
+                    <TeamButton>
+                        <Icon src={userIcon} alt="user"></Icon>
+                    </TeamButton>
+                </ListItem>
+                <ListItem>
+                    <UserAva />
+                </ListItem>
+            </List>
+            <Username>Thomas Eton</Username>
+        </AppHeader>
+
     );
 };
 
 export default Header;
 
-const PageHeader = styled.header`
+const AppHeader = styled.header`
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    right: 0;
     height: 80px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-`;
-
-const PageWrapper = styled.div`
-    display: flex;
-    height: 26.5px;
-    align-items: center;
-    margin-right: 40px;
+    padding-right: 40px;
 `;
 
 const List = styled.ul`
@@ -83,7 +82,7 @@ const TeamButton = styled.button`
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
-    background-color: #214b8d;
+    background-color: ${(props) => rgba(props.theme.colors.dark_blue,1)};
     cursor: pointer;
 `;
 
@@ -99,7 +98,7 @@ const UserAva = styled.button`
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
-    background-image: url(${userAva}) ;
+    background-image: url(${userAva});
     background-size: 42px;
 `;
 
@@ -124,7 +123,6 @@ const SearchButton = styled.a`
     height: 42px;
     display: flex;
     align-items: center;
-
 `;
 const SearchInput = styled.input`
     border: none;
@@ -134,10 +132,8 @@ const SearchInput = styled.input`
     font-size: 12px;
     margin-left: 12.5px;
     flex-grow: 2;
-
 `;
 const SearchIcon = styled.img`
     width: 15px;
     height: 15px;
-    
 `;

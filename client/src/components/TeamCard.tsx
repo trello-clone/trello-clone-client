@@ -5,29 +5,25 @@ import trash from '../icons/trash-can-white.svg';
 import background from '../icons/background.jpg';
 import avatar from '../icons/avatar.jpg';
 
-
-
 const TeamCard = () => {
     return (
         <CardContainer>
-            <CardWrapper>
-                <CardHeader>
-                    <TeamName>Piccial Media</TeamName>
-                    <DeleteButton />
-                    <EditButton/>
-                </CardHeader>
-                <CardBody>
-                    <CardItem>Member: 25</CardItem>
-                    <CardItem>Project(s): 12</CardItem>
-                    <CardItem>In progress: Food Delivery Tracking Application</CardItem>
-                </CardBody>
-                <CardFooter>
-                    <TeamMember src={avatar} />
-                    <TeamMember src={avatar} />
-                    <TeamMember src={avatar} />
-                    <TimeCreated>12 hours ago</TimeCreated>
-                </CardFooter>
-            </CardWrapper>
+            <CardHeader>
+                <TeamName>Piccial Media</TeamName>
+                <DeleteButton />
+                <EditButton />
+            </CardHeader>
+            <CardBody>
+                <CardItem>Member: 25</CardItem>
+                <CardItem>Project(s): 12</CardItem>
+                <CardItem>In progress: Food Delivery Tracking Application</CardItem>
+            </CardBody>
+            <CardFooter>
+                <TeamMember src={avatar} />
+                <TeamMember src={avatar} />
+                <TeamMember src={avatar} />
+                <TimeCreated>12 hours ago</TimeCreated>
+            </CardFooter>
         </CardContainer>
     );
 };
@@ -36,13 +32,15 @@ export default TeamCard;
 
 const CardContainer = styled.div`
     width: 280px;
-    height: 230px;
-    border-radius: 7.5px;
-    margin-bottom: 25px;
-    margin-right: 17.5px;
+    height: 220px;
+    border-radius: 8px;
     position: relative;
     overflow: hidden;
-    display: block;
+    margin: 16px 16px 16px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     &::after {
         content: '';
         background-color: #0e9594;
@@ -56,24 +54,20 @@ const CardContainer = styled.div`
         right: 0;
     }
 `;
-const CardWrapper = styled.div`
-    position: relative;
+
+const CardHeader = styled.div`
+    margin: 12px 12px 16px;
+    display: flex;
+    justify-content: space-between;
     z-index: 1;
 `;
 
-const CardHeader = styled.div`
-    margin-top: 11.5px;
-    margin-bottom: 14.5px;
-    margin-left: 12.5px;
-    display: flex;
-
-`;
-
 const CardFooter = styled.div`
-    margin-top: 18%;
-    margin-left: 12.5px;
+    margin-left: 12px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
+    z-index: 1;
 `;
 
 const TeamName = styled.div`
@@ -114,24 +108,23 @@ const EditButton = styled.button`
     }
 `;
 const CardBody = styled.div`
-    margin-top: 14.5px;
+    z-index: 1;
 `;
 const CardItem = styled.div`
     font-family: 'ProximaNovaMedium', sans-serif;
     font-size: 14px;
     color: #ffffff;
     line-height: 1.25;
-    margin-left: 12.5px;
+    margin-left: 12px;
     margin-bottom: 8px;
 `;
 
 const TeamMember = styled.img`
-    width: 22.5px;
-    height: 22.5px;
+    width: 22px;
+    height: 22px;
     margin-right: 5px;
-    border: solid 0.5px #ffffff;
+    border: solid 0px #ffffff;
     border-radius: 50%;
-    
 `;
 
 const TimeCreated = styled.div`
@@ -139,6 +132,5 @@ const TimeCreated = styled.div`
     font-size: 13px;
     color: #ffffff;
     margin-left: auto;
-    margin-right: 12.5px;
-    
+    margin-right: 12px;
 `;

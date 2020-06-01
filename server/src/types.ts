@@ -18,8 +18,24 @@ export type Board = {
   title: Scalars['String'];
   team: Array<Team>;
   background?: Maybe<Scalars['String']>;
+  _created: Scalars['DateTime'];
+  _changed: Scalars['DateTime'];
 };
 
+export type Card = {
+   __typename?: 'Card';
+  _id: Scalars['ID'];
+  description?: Maybe<Scalars['String']>;
+};
+
+
+export type List = {
+   __typename?: 'List';
+  _id: Scalars['ID'];
+  title: Scalars['String'];
+  board_id: Scalars['ID'];
+  cards: Array<Maybe<Card>>;
+};
 
 export type Mutation = {
    __typename?: 'Mutation';
@@ -73,7 +89,7 @@ export type TeamWithMemberId = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   members: Array<Scalars['ID']>;
-  personal: Scalars['Boolean'];
+  personal?: Maybe<Scalars['Boolean']>;
 };
 
 export type TeamWithMemberObj = {
@@ -82,7 +98,7 @@ export type TeamWithMemberObj = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   members: Array<User>;
-  personal: Scalars['Boolean'];
+  personal?: Maybe<Scalars['Boolean']>;
 };
 
 export type User = {
@@ -179,6 +195,8 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   TeamWithMemberID: ResolverTypeWrapper<TeamWithMemberId>,
   Mutation: ResolverTypeWrapper<{}>,
+  List: ResolverTypeWrapper<List>,
+  Card: ResolverTypeWrapper<Card>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -195,6 +213,8 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'],
   TeamWithMemberID: TeamWithMemberId,
   Mutation: {},
+  List: List,
+  Card: Card,
 };
 
 export type BoardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = {
@@ -202,12 +222,28 @@ export type BoardResolvers<ContextType = any, ParentType extends ResolversParent
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   team?: Resolver<Array<ResolversTypes['Team']>, ParentType, ContextType>,
   background?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  _created?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
+  _changed?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
+export type CardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Card'] = ResolversParentTypes['Card']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime'
 }
+
+export type ListResolvers<ContextType = any, ParentType extends ResolversParentTypes['List'] = ResolversParentTypes['List']> = {
+  _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  board_id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  cards?: Resolver<Array<Maybe<ResolversTypes['Card']>>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createBoardByMembers?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardByMembersArgs, 'title' | 'members'>>,
@@ -231,7 +267,7 @@ export type TeamWithMemberIdResolvers<ContextType = any, ParentType extends Reso
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   members?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>,
-  personal?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  personal?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -240,7 +276,7 @@ export type TeamWithMemberObjResolvers<ContextType = any, ParentType extends Res
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>,
-  personal?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  personal?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 
@@ -255,7 +291,9 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   Board?: BoardResolvers<ContextType>,
+  Card?: CardResolvers<ContextType>,
   DateTime?: GraphQLScalarType,
+  List?: ListResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Team?: TeamResolvers,

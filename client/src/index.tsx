@@ -4,12 +4,11 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
+import { ThemeProvider } from 'styled-components';
+
+import { DialogProvider } from './contexts/DialogContext';
+import { myTheme } from './theme';
 import GlobalFonts from './fonts/fonts';
-
-
- 
-
-
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -23,12 +22,15 @@ const client = new ApolloClient({
     cache: new InMemoryCache(),
 });
 
-
 ReactDOM.render(
     <React.StrictMode>
         <ApolloProvider client={client}>
-            <GlobalFonts />
-            <App />
+            <ThemeProvider theme={myTheme}>
+                <GlobalFonts />
+                <DialogProvider>
+                  <App />
+                </DialogProvider>
+            </ThemeProvider>
         </ApolloProvider>
     </React.StrictMode>,
     document.getElementById('root')
