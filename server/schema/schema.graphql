@@ -22,7 +22,8 @@ type User {
 type Board {
     _id: ID!
     title: String!
-    team: [Team!]!
+    team: [Team]!
+    members: [User]!
     background: String
     _created: DateTime!
     _changed: DateTime!

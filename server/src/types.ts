@@ -16,7 +16,8 @@ export type Board = {
    __typename?: 'Board';
   _id: Scalars['ID'];
   title: Scalars['String'];
-  team: Array<Team>;
+  team: Array<Maybe<Team>>;
+  members: Array<Maybe<User>>;
   background?: Maybe<Scalars['String']>;
   _created: Scalars['DateTime'];
   _changed: Scalars['DateTime'];
@@ -188,7 +189,7 @@ export type ResolversTypes = {
   User: ResolverTypeWrapper<User>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>,
-  Board: ResolverTypeWrapper<Omit<Board, 'team'> & { team: Array<ResolversTypes['Team']> }>,
+  Board: ResolverTypeWrapper<Omit<Board, 'team'> & { team: Array<Maybe<ResolversTypes['Team']>> }>,
   Team: ResolversTypes['TeamWithMemberObj'] | ResolversTypes['TeamWithMemberID'],
   TeamWithMemberObj: ResolverTypeWrapper<TeamWithMemberObj>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
@@ -205,7 +206,7 @@ export type ResolversParentTypes = {
   User: User,
   ID: Scalars['ID'],
   DateTime: Scalars['DateTime'],
-  Board: Omit<Board, 'team'> & { team: Array<ResolversParentTypes['Team']> },
+  Board: Omit<Board, 'team'> & { team: Array<Maybe<ResolversParentTypes['Team']>> },
   Team: ResolversParentTypes['TeamWithMemberObj'] | ResolversParentTypes['TeamWithMemberID'],
   TeamWithMemberObj: TeamWithMemberObj,
   Boolean: Scalars['Boolean'],
@@ -218,7 +219,8 @@ export type ResolversParentTypes = {
 export type BoardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Board'] = ResolversParentTypes['Board']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  team?: Resolver<Array<ResolversTypes['Team']>, ParentType, ContextType>,
+  team?: Resolver<Array<Maybe<ResolversTypes['Team']>>, ParentType, ContextType>,
+  members?: Resolver<Array<Maybe<ResolversTypes['User']>>, ParentType, ContextType>,
   background?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   _created?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
   _changed?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
