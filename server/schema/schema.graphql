@@ -1,5 +1,5 @@
 type Query {
-    users(max: Int): [User!]!
+    users(keyword: String): [User]!
     user(id: ID!): User
     boards: [Board]!
     teams: [Team!]!
