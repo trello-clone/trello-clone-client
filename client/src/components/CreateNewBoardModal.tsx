@@ -126,8 +126,6 @@ const CreateNewBoardModal = () => {
                     <CreateNewBoardBtn onClick={handleSubmit}>Create new board</CreateNewBoardBtn>
                 </ButtonContainer>
             </Modal>
-            props.selectedItems[0]
-
         </Container>
     );
 };
