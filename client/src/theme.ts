@@ -11,3 +11,8 @@ export const myTheme: DefaultTheme = {
         light_blue: '#f0f5fd',
     },
 };
+
+export const selectTheme = {
+    black: '#11182E',
+    blue: '#2259B1',
+}

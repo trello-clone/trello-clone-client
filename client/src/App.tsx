@@ -9,11 +9,11 @@ import TeamCard from './components/TeamCard';
 import BoardCard from './components/BoardCard';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
-
 import AddBoardCard from './components/AddBoardCard';
 import AddTeamCard from './components/AddTeamCard';
 import CreateNewBoardModal from './components/CreateNewBoardModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
+
 
 import BoardView from './components/BoardView';
 
@@ -56,6 +56,7 @@ function App() {
         <Router>
             <Header />
             <SideBar />
+
             <MainContentWrapper>
                 <Switch>
                     <Route path="/board/:board_id">
@@ -65,7 +66,7 @@ function App() {
                         <Title>Boards</Title>
                         <BoardContainer>
                             {!loading && (data.boards as Board[]).map((board) => <BoardCard key={board._id} data={board} />)}
-                            <AddBoardCard />
+                            <AddBoardCard/>
                         </BoardContainer>
                         <Title>Teams</Title>
                         <TeamContainer>
@@ -91,6 +92,7 @@ function App() {
                                 );
                             }}
                         </Query> */}
+
                     </Route>
                 </Switch>
             </MainContentWrapper>
@@ -99,6 +101,7 @@ function App() {
 }
 
 export default App;
+
 const MainContentWrapper = styled.div`
     background-color: ${(props) => rgba(props.theme.colors.blue, 0.03)};
     position: fixed;

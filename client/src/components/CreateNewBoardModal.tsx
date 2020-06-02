@@ -1,21 +1,44 @@
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
+import gql from 'graphql-tag';
+import { Query, QueryResult } from 'react-apollo';
+import { useMutation } from '@apollo/react-hooks';
 
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
 
+import { User } from '../types.js';
+
+import CustomSelect from './CustomSelect';
+
+// mutation createBoardByMembers($title: String!, $members:[ID!]!){
+const CREATE_BOARD_BY_MEMBERS = gql`
+    mutation createBoardByMembers($title: String!, $members: [ID!]!) {
+        createBoardByMembers(title: $title, members: $members) {
+            title
+        }
+    }
+`;
+
+
 const CreateNewBoardModal = () => {
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
     const [boardModalOption, setBoardModalOption] = useState('Member');
+ 
+    const [selectState, setSelectState] = useState({
+        selectedItems: [],
+        titleInput: "",
+    });
+
+    const [addBoard] = useMutation(CREATE_BOARD_BY_MEMBERS);
 
     enum BoardModalOptions {
         Team = 'Team',
         Member = 'Member',
     }
-
     const onClickOutside = (e: any) => {
         const element = e.target;
         if (modalRef.current && !modalRef.current.contains(element)) {
@@ -27,6 +50,26 @@ const CreateNewBoardModal = () => {
 
     const selectOption = (option: BoardModalOptions) => {
         setBoardModalOption(option);
+    };
+
+    const onSelectionChange = (item: any) => {
+        setSelectState({
+            ...selectState,
+            selectedItems: Array.from(new Set(selectState.selectedItems.concat(item))),
+        });
+    };
+
+    const handletitleChange = (input: any) => {
+        setSelectState({
+            ...selectState,
+            titleInput: input.target.value
+        });
+    }
+    
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        addBoard({ variables: { title: selectState.titleInput, members: selectState.selectedItems } });
+        context.closeModalByType(ModalTypes.CreateBoard);
     };
 
     useEffect(() => {
@@ -41,6 +84,7 @@ const CreateNewBoardModal = () => {
                 <Header>Create board</Header>
                 <TypeWrapper>
                     <TypeNav
+                        active={boardModalOption === BoardModalOptions.Team ? true : false}
                         onClick={() => {
                             selectOption(BoardModalOptions.Team);
                         }}
@@ -48,6 +92,7 @@ const CreateNewBoardModal = () => {
                         With team
                     </TypeNav>
                     <TypeNav
+                        active={boardModalOption === BoardModalOptions.Member ? true : false}
                         onClick={() => {
                             selectOption(BoardModalOptions.Member);
                         }}
@@ -55,11 +100,16 @@ const CreateNewBoardModal = () => {
                         With members
                     </TypeNav>
                 </TypeWrapper>
-                {boardModalOption === BoardModalOptions.Member && <Input type="text" placeholder="Enter member's name" />}
+
+                {/* {boardModalOption === BoardModalOptions.Member && <Input type="text" placeholder="Enter member's name" />} */}
+                {boardModalOption === BoardModalOptions.Member && (
+                    <CustomSelect selectedItems={selectState.selectedItems} onSelectionChange={onSelectionChange} />
+                )}
                 {/* <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} /> */}
-                <Input type="text" placeholder="Title" />
+                <Input onChange={handletitleChange} type="text" placeholder="Title" />
+
                 <BackgroundLabel>Select background</BackgroundLabel>
                 <BackgroundContainer>
                     <BackgroundItem src={background} alt="background" />
@@ -73,7 +123,7 @@ const CreateNewBoardModal = () => {
                     >
                         Cancel
                     </CancelButton>
-                    <CreateNewBoardBtn>Create new board</CreateNewBoardBtn>
+                    <CreateNewBoardBtn onClick={handleSubmit}>Create new board</CreateNewBoardBtn>
                 </ButtonContainer>
             </Modal>
         </Container>
@@ -81,6 +131,7 @@ const CreateNewBoardModal = () => {
 };
 
 export default CreateNewBoardModal;
+
 const Container = styled.div`
     position: fixed;
     top: 0;
@@ -111,12 +162,14 @@ const TypeWrapper = styled.div`
     display: flex;
     opacity: 0.5;
 `;
-const TypeNav = styled.a`
+
+const TypeNav = styled.a<{ active: boolean }>`
+
     width: 50%;
     line-height: 40px;
     text-align: center;
     text-decoration: none;
-    color: ${(props) => rgba(props.theme.colors.black, 0.9)};
+    color: ${(props) => (props.active ? rgba(props.theme.colors.lemon, 1) : rgba(props.theme.colors.black, 0.9))};
     &:first-child {
         border-right: 1px solid ${(props) => rgba(props.theme.colors.black, 0.9)};
     }
@@ -127,8 +180,12 @@ const TypeNav = styled.a`
 
 const Input = styled.input`
     font-family: 'ProximaNovaMedium', sans-serif;
+    font-size: 11px;
     opacity: 0.55;
+    height: 23px;
     width: 100%;
+    outline: 0;
+    opacity: 0.55;
     padding: 6px;
     margin-bottom: 20px;
     border: 0;
