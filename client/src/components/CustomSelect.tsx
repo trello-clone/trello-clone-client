@@ -1,25 +1,14 @@
-import React, { useState } from 'react';
-import ReactSelect from 'react-select';
-import Select from 'react-select';
+import React from 'react';
+import Select, { components } from 'react-select';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
 
 import { selectTheme } from '../theme';
+import { User } from '../types.js';
 
-// import { Query, QueryResult } from 'react-apollo';
-// import { useQuery } from '@apollo/react-hooks';
 
-// import { User } from '../types.js';
-
-const USERS_QUERY = gql`
-    {
-        getAllUsers {
-            _id
-            name
-        }
-    }
-`;
 const colourOptions = [
     { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
     { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
@@ -33,9 +22,14 @@ const colourOptions = [
     { value: 'silver', label: 'Silver', color: '#666666' },
 ];
 
+
+
+
 const CustomSelect = (props: any, state: any) => {
     const handleChange = (item: any) => {
-        props.onSelectionChange(item.value)
+        props.onSelectionChange(item.value);
+        
+        
     };
     const boardMembers = props.selectedItems;
     const customStyles = {
@@ -80,15 +74,13 @@ const CustomSelect = (props: any, state: any) => {
     };
     return (
         <>
-            {/* <MultiSelect multi {...props} /> */}
             <Select
                 styles={customStyles}
                 options={colourOptions}
                 placeholder="Enter member's name"
-                // isMulti
                 isSearchable
                 onChange={handleChange}
-                value= {boardMembers}
+                value={props.selectedItems[0]}
             />
             <MemberList>
                 {boardMembers.map((item: any, index: any) => (
@@ -100,18 +92,7 @@ const CustomSelect = (props: any, state: any) => {
 };
 
 export default CustomSelect;
-// const MultiSelect = styled(ReactSelect)`
-//     &.Select--multi {
-//         .Select-value {
-//             display: inline-flex;
-//             align-items: center;
-//         }
-//     }
 
-//     & .Select-placeholder {
-//         font-size: smaller;
-//     }
-// `;
 const MemberList = styled.div`
     display: flex;
 `;

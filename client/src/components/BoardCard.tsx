@@ -1,22 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
+import { useHistory } from 'react-router-dom';
 import pen from '../icons/pen-01-white.svg';
 import trash from '../icons/trash-can-white.svg';
 import teamPic from '../icons/ray.jpg';
 import background from '../icons/teamBackground.jpg';
+import { Board } from '../types.js';
 
-const BoardCard = () => {
+interface BoardCardProps {
+    data: Board;
+}
+
+const BoardCard = (props: BoardCardProps) => {
+    const { data } = props;
+    const history = useHistory();
+
+    const openBoard = () => {
+        history.push('/board/' + data._id);
+    };
+
     return (
-        <CardContainer>
+        <CardContainer onClick={openBoard}>
             <CardHeader>
-                <ProjectName>Food Delivery Tracking Application</ProjectName>
+                <ProjectName>{data.title}</ProjectName>
                 <DeleteButton />
                 <EditButton />
             </CardHeader>
             <CardFooter>
                 <TeamPic src={teamPic} />
-                <TeamName>Piccial Media</TeamName>
-                <TimeCreated>12 hours ago</TimeCreated>
+                <TeamName>{data.team[0].name}</TeamName>
+                <TimeCreated>{moment(data._changed).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>
     );
@@ -34,6 +48,7 @@ const CardContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    cursor: pointer;
 
     &::after {
         content: '';

@@ -6,15 +6,15 @@ export const resolvers: Resolvers = {
     DateTime: new GraphQLScalarType({
         name: 'DateTime',
         description: 'A date and time, represented as an ISO-8601 string',
-        serialize: (value) => value.toISOString(),
+        serialize: (value) => value,
         parseValue: (value) => new Date(value),
         parseLiteral: (ast) => new Date(ast.kind),
     }),
     Query: {
         users: (parent, args) => API.get(`/users${args.max ? `?max=${args.max}` : ''}`).then((res) => res.data as User[]),
         user: (parent, args) => API.get(`/users/${args.id}`).then((res) => res.data as User),
-        boards: (parent, args) => API.get(`/board`).then((res) => {console.log(res.data[0].team); return res.data as Board[]}),
-        teams: (parent, args) => API.get(`/team`).then((res) => res.data as Team[]),
+        boards: (parent, args) => API.get(`/board?metafields=true`).then((res) => {console.log(res.data[1]); return res.data as Board[]}),
+        teams: (parent, args) => API.get(`/team?metafields=true`).then((res) => res.data as Team[]),
     },
     Mutation: {
         createBoardByMembers: (parent, args) => API.post(`/board`, { ...args }).then((res) => res.data as Board),

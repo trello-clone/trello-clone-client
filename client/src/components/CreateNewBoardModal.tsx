@@ -4,11 +4,11 @@ import { rgba } from 'polished';
 import gql from 'graphql-tag';
 import { Query, QueryResult } from 'react-apollo';
 import { useMutation } from '@apollo/react-hooks';
-import AsyncSelect from 'react-select/async';
 
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
+
 import { User } from '../types.js';
 
 import CustomSelect from './CustomSelect';
@@ -22,15 +22,12 @@ const CREATE_BOARD_BY_MEMBERS = gql`
     }
 `;
 
-enum BoardModalOptions {
-    Team = 'Team',
-    Member = 'Member',
-}
 
 const CreateNewBoardModal = () => {
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
     const [boardModalOption, setBoardModalOption] = useState('Member');
+ 
     const [selectState, setSelectState] = useState({
         selectedItems: [],
         titleInput: "",
@@ -38,6 +35,10 @@ const CreateNewBoardModal = () => {
 
     const [addBoard] = useMutation(CREATE_BOARD_BY_MEMBERS);
 
+    enum BoardModalOptions {
+        Team = 'Team',
+        Member = 'Member',
+    }
     const onClickOutside = (e: any) => {
         const element = e.target;
         if (modalRef.current && !modalRef.current.contains(element)) {
@@ -70,6 +71,7 @@ const CreateNewBoardModal = () => {
         addBoard({ variables: { title: selectState.titleInput, members: selectState.selectedItems } });
         context.closeModalByType(ModalTypes.CreateBoard);
     };
+
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
 
@@ -98,6 +100,7 @@ const CreateNewBoardModal = () => {
                         With members
                     </TypeNav>
                 </TypeWrapper>
+
                 {/* {boardModalOption === BoardModalOptions.Member && <Input type="text" placeholder="Enter member's name" />} */}
                 {boardModalOption === BoardModalOptions.Member && (
                     <CustomSelect selectedItems={selectState.selectedItems} onSelectionChange={onSelectionChange} />
@@ -106,6 +109,7 @@ const CreateNewBoardModal = () => {
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} /> */}
                 <Input onChange={handletitleChange} type="text" placeholder="Title" />
+
                 <BackgroundLabel>Select background</BackgroundLabel>
                 <BackgroundContainer>
                     <BackgroundItem src={background} alt="background" />
@@ -122,22 +126,8 @@ const CreateNewBoardModal = () => {
                     <CreateNewBoardBtn onClick={handleSubmit}>Create new board</CreateNewBoardBtn>
                 </ButtonContainer>
             </Modal>
-            {/* <Query query={USERS_QUERY}>
-                {({ loading, error, data }: QueryResult) => {
-                    if (loading) return <div>Loading...</div>;
-                    if (error) return <div>Error: {error.message}</div>;
-                    return (
-                        <div>
-                            {(data.getAllUsers as User[]).map((user, index) => (
-                                <div key={index}>
-                                    <h3>{user.name}</h3>
-                                    <br />
-                                </div>
-                            ))}
-                        </div>
-                    );
-                }}
-            </Query> */}
+            props.selectedItems[0]
+
         </Container>
     );
 };
@@ -174,7 +164,9 @@ const TypeWrapper = styled.div`
     display: flex;
     opacity: 0.5;
 `;
+
 const TypeNav = styled.a<{ active: boolean }>`
+
     width: 50%;
     line-height: 40px;
     text-align: center;
@@ -194,14 +186,12 @@ const Input = styled.input`
     opacity: 0.55;
     height: 23px;
     width: 100%;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-right: 0;
-    margin-top: 5px;
+    outline: 0;
+    opacity: 0.55;
+    padding: 6px;
     margin-bottom: 20px;
     border: 0;
     border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.9)};
-    outline: 0;
 `;
 
 const TeamMember = styled.img`

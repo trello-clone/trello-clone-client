@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import gql from 'graphql-tag';
-import { Query, QueryResult } from 'react-apollo';
+import { Query, QueryResult, useQuery } from 'react-apollo';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { rgba } from 'polished';
@@ -13,34 +13,59 @@ import AddBoardCard from './components/AddBoardCard';
 import AddTeamCard from './components/AddTeamCard';
 import CreateNewBoardModal from './components/CreateNewBoardModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
-import BoardView from './components/BoardView';
-import { User } from './types.js';
 
-// const USERS_QUERY = gql`
-//     {
-    //         users(max: 10) {
-    //             _id
-    //             name
-    //         
-    //     }
-    // `;}
+
+import BoardView from './components/BoardView';
+
+import { Board } from './types.js';
+
+const USERS_QUERY = gql`
+    {
+        users(max: 10) {
+            _id
+            name
+        }
+    }
+`;
+
+const GET_BOARDS = gql`
+    query {
+        boards {
+            _id
+            title
+            team {
+                ... on TeamWithMemberID {
+                    _id
+                    name
+                    description
+                    members
+                    personal
+                }
+            }
+            background
+            _created
+            _changed
+        }
+    }
+`;
 
 function App() {
     const context = useContext(DialogContext);
+    const { data, loading } = useQuery(GET_BOARDS);
     return (
         <Router>
             <Header />
             <SideBar />
-            <Switch>
-                <Route path="/board/:board_id">
-                    <BoardView />
-                </Route>
-                <Route path="/">
-                    <DashBoardWrapper>
+
+            <MainContentWrapper>
+                <Switch>
+                    <Route path="/board/:board_id">
+                        <BoardView />
+                    </Route>
+                    <Route path="/">
                         <Title>Boards</Title>
                         <BoardContainer>
-                            <BoardCard />
-                            <BoardCard />
+                            {!loading && (data.boards as Board[]).map((board) => <BoardCard key={board._id} data={board} />)}
                             <AddBoardCard/>
                         </BoardContainer>
                         <Title>Teams</Title>
@@ -67,15 +92,17 @@ function App() {
                                 );
                             }}
                         </Query> */}
-                    </DashBoardWrapper>
-                </Route>
-            </Switch>
+
+                    </Route>
+                </Switch>
+            </MainContentWrapper>
         </Router>
     );
 }
 
 export default App;
-const DashBoardWrapper = styled.div`
+
+const MainContentWrapper = styled.div`
     background-color: ${(props) => rgba(props.theme.colors.blue, 0.03)};
     position: fixed;
     top: 80px;
