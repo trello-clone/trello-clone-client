@@ -2,18 +2,14 @@ import React, { useContext, useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import gql from 'graphql-tag';
-import { Query, QueryResult } from 'react-apollo';
 import { useMutation } from '@apollo/react-hooks';
 
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
-
 import { User } from '../types.js';
-
 import CustomSelect from './CustomSelect';
 
-// mutation createBoardByMembers($title: String!, $members:[ID!]!){
 const CREATE_BOARD_BY_MEMBERS = gql`
     mutation createBoardByMembers($title: String!, $members: [ID!]!) {
         createBoardByMembers(title: $title, members: $members) {

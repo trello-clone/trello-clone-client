@@ -7,12 +7,9 @@ import { useMutation } from '@apollo/react-hooks';
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
-
 import { User } from '../types.js';
-
 import CustomSelect from './CustomSelect';
 
-// mutation createBoardByMembers($title: String!, $members:[ID!]!){
 const CREATE_BOARD_BY_MEMBERS = gql`
     mutation createBoardByMembers($title: String!, $members: [ID!]!) {
         createBoardByMembers(title: $title, members: $members) {
@@ -27,7 +24,8 @@ const CreateNewBoardModal = () => {
     const [boardModalOption, setBoardModalOption] = useState('Member');
 
     const [selectState, setSelectState] = useState({
-        selectedItems: [],
+        selectedItemName: [],
+        selectedItemID: [],
     });
 
     const [titleInput, setTitleInput] = useState('');
@@ -38,7 +36,7 @@ const CreateNewBoardModal = () => {
         Team = 'Team',
         Member = 'Member',
     }
-    const boardMembers = selectState.selectedItems;
+    const boardMembers = selectState.selectedItemName;
 
     const onClickOutside = (e: any) => {
         const element = e.target;
@@ -56,7 +54,8 @@ const CreateNewBoardModal = () => {
     const onSelectionChange = (item: any) => {
         setSelectState({
             ...selectState,
-            selectedItems: Array.from(new Set(selectState.selectedItems.concat(item))),
+            selectedItemName: Array.from(new Set(selectState.selectedItemName.concat(item.name))),
+            selectedItemID: Array.from(new Set(selectState.selectedItemID.concat(item._id))),
         });
     };
 
@@ -66,7 +65,7 @@ const CreateNewBoardModal = () => {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        addBoard({ variables: { title: titleInput, members: selectState.selectedItems } });
+        addBoard({ variables: { title: titleInput, members: selectState.selectedItemID } });
         context.closeModalByType(ModalTypes.CreateBoard);
     };
 
@@ -109,7 +108,7 @@ const CreateNewBoardModal = () => {
                 )}
                 {boardModalOption === BoardModalOptions.Member && (
                     <>
-                        <CustomSelect selectedItems={selectState.selectedItems} onSelectionChange={onSelectionChange} />
+                        <CustomSelect selectedItems={selectState.selectedItemName} onSelectionChange={onSelectionChange} />
                         <MemberContainer>
                             <MemberList>
                                 {boardMembers.map((item: any, index: any) => (

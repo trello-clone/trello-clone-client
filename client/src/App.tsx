@@ -20,14 +20,14 @@ import BoardView from './components/BoardView';
 
 import { Board } from './types.js';
 
-const USERS_QUERY = gql`
-    {
-        users(max: 10) {
-            _id
-            name
-        }
-    }
-`;
+// const USERS_QUERY = gql`
+//     {
+//         users(max: 10) {
+//             _id
+//             name
+//         }
+//     }
+// `;
 
 const GET_BOARDS = gql`
     query {
@@ -49,10 +49,28 @@ const GET_BOARDS = gql`
         }
     }
 `;
-
+const GET_USERS = gql`
+query users($keyword : String!){
+    users(keyword: $keyword){
+      _id
+      name
+      email
+      avatar
+    }
+  }
+`;
 function App() {
     const context = useContext(DialogContext);
     const { data, loading } = useQuery(GET_BOARDS);
+    const { data: userdata, loading: usersLoading} = useQuery(GET_USERS, {
+        variables: {keyword : "victoria"} 
+    });
+    // if(!loading){
+    //     console.log(data)
+    // }
+    // if(!usersLoading){
+    //     console.log(userdata)
+    // }
     return (
         <Router>
             <Header />
@@ -124,7 +142,6 @@ const BoardContainer = styled.div`
     display: flex;
     flex-grow: row wrap;
     padding-bottom: 16px;
-    overflow: auto;
 `;
 
 const TeamContainer = styled.div`
