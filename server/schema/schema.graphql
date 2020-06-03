@@ -1,5 +1,5 @@
 type Query {
-    users(max: Int): [User!]!
+    users(keyword: String): [User]!
     user(id: ID!): User
     boards: [Board]!
     teams: [Team!]!
@@ -22,7 +22,8 @@ type User {
 type Board {
     _id: ID!
     title: String!
-    team: [Team!]!
+    team: [Team]!
+    members: [User]!
     background: String
     _created: DateTime!
     _changed: DateTime!
