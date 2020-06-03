@@ -31,7 +31,7 @@ const TeamCard = () => {
 export default TeamCard;
 
 const CardContainer = styled.div`
-    width: 280px;
+    min-width: 280px;
     height: 220px;
     border-radius: 8px;
     position: relative;

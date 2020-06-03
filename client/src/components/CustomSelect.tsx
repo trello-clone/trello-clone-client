@@ -23,24 +23,23 @@ const colourOptions = [
 ];
 
 
-
-
 const CustomSelect = (props: any, state: any) => {
     const handleChange = (item: any) => {
         props.onSelectionChange(item.value);
         
         
     };
-    const boardMembers = props.selectedItems;
     const customStyles = {
         option: (provided: any, state: any) => ({
             ...provided,
             borderBottom: '1px dotted pink',
             color: state.isSelected ? 'red' : 'blue',
             padding: 20,
+
         }),
         control: (provided: any) => ({
             ...provided,
+            minHeight: '23px',
             border: state.isFocused ? 0 : 0,
             // This line disable the blue border
             boxShadow: state.isFocused ? 0 : 0,
@@ -50,6 +49,7 @@ const CustomSelect = (props: any, state: any) => {
             },
             borderBottom: `1px solid ${rgba(selectTheme.black, 0.55)}`,
             borderRadius: 0,
+            marginBottom: '12px',
         }),
         dropdownIndicator: (provided: any) => ({
             ...provided,
@@ -59,18 +59,29 @@ const CustomSelect = (props: any, state: any) => {
         valueContainer: (provided: any) => ({
             ...provided,
             padding: 0,
+            marginBottom: '5px',
             fontFamily: `ProximaNovaMedium`,
-            opacity: 0.55,
-            fontSize: '11px',
-        }),
-        indicatorsContainer: (provided: any) => ({
-            ...provided,
-            opacity: 0.55,
+            height: '23px',
+            fontSize: '16px',
+            alignItem: 'center',
         }),
         placeholder: (provided: any) => ({
             ...provided,
-            fontSize: '11px',
+            margin: 0,
+            padding: 0,
+            paddingLeft: '2px',
+            fontSize: '16px',
+            
         }),
+        input: (provided: any) => ({
+            ...provided,
+            padding: 0,
+            paddingLeft: '2px',
+            margin: 0,
+            fontFamily: 'ProximaNovaMedium',
+            fontSize: '16px',
+         
+        })
     };
     return (
         <>
@@ -80,22 +91,10 @@ const CustomSelect = (props: any, state: any) => {
                 placeholder="Enter member's name"
                 isSearchable
                 onChange={handleChange}
-                value={props.selectedItems[0]}
+                value={null}
             />
-            <MemberList>
-                {boardMembers.map((item: any, index: any) => (
-                    <Member key={index}>{item}</Member>
-                ))}
-            </MemberList>
         </>
     );
 };
 
 export default CustomSelect;
-
-const MemberList = styled.div`
-    display: flex;
-`;
-const Member = styled.div`
-    margin-right: 5px;
-`;

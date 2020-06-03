@@ -27,7 +27,7 @@ const Header = () => {
                     </BoardButton>
                 </ListItem>
                 <ListItem>
-                    <TeamButton>
+                    <TeamButton onClick={()=>{context.openModalByType(ModalTypes.CreateTeam)}}>
                         <Icon src={userIcon} alt="user"></Icon>
                     </TeamButton>
                 </ListItem>

@@ -12,6 +12,7 @@ import SideBar from './components/SideBar';
 import AddBoardCard from './components/AddBoardCard';
 import AddTeamCard from './components/AddTeamCard';
 import CreateNewBoardModal from './components/CreateNewBoardModal';
+import CreateNewTeamModal from './components/CreateNewTeamModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 
 
@@ -75,6 +76,7 @@ function App() {
                             <AddTeamCard />
                         </TeamContainer>
                         {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal />}
+                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal />}
                         {/* // GrapqhQL query example */}
                         {/* <Query query={USERS_QUERY}>
                             {({ loading, error, data }: QueryResult) => {
@@ -92,7 +94,6 @@ function App() {
                                 );
                             }}
                         </Query> */}
-
                     </Route>
                 </Switch>
             </MainContentWrapper>
@@ -121,9 +122,12 @@ const Title = styled.div`
 
 const BoardContainer = styled.div`
     display: flex;
+    flex-grow: row wrap;
     padding-bottom: 16px;
+    overflow: auto;
 `;
 
 const TeamContainer = styled.div`
     display: flex;
+    flex-grow: row wrap;
 `;

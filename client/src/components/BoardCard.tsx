@@ -19,7 +19,7 @@ const BoardCard = (props: BoardCardProps) => {
     const openBoard = () => {
         history.push('/board/' + data._id);
     };
-
+    
     return (
         <CardContainer onClick={openBoard}>
             <CardHeader>
@@ -29,7 +29,7 @@ const BoardCard = (props: BoardCardProps) => {
             </CardHeader>
             <CardFooter>
                 <TeamPic src={teamPic} />
-                <TeamName>{data.team[0].name}</TeamName>
+                {data.team.length === 1 &&<TeamName>{data.team[0].name}</TeamName>}
                 <TimeCreated>{moment(data._changed).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>
@@ -39,7 +39,7 @@ const BoardCard = (props: BoardCardProps) => {
 export default BoardCard;
 
 const CardContainer = styled.div`
-    width: 280px;
+    min-width: 280px;
     height: 150px;
     border-radius: 8px;
     position: relative;
