@@ -14,19 +14,22 @@ import CreateNewBoardModal from './components/CreateNewBoardModal';
 import CreateNewTeamModal from './components/CreateNewTeamModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
-import { Board } from './types.js';
-import { GET_BOARDS } from './common/Queries'
+import { Board, Team} from './types.js';
+import { GET_BOARDS, GET_TEAMS } from './common/Queries'
 
 function App() {
     const context = useContext(DialogContext);
-    const { data, loading, refetch} = useQuery(GET_BOARDS);
+    const { data: boardData, loading: boardLoading, refetch: boardRefetch} = useQuery(GET_BOARDS);
+    const { data: teamData, loading: teamLoading, refetch: teamRefetch} = useQuery(GET_TEAMS);
     const [needToRefetch, setNeedToRefetch] = useState(false)
     const handleRefetchBoardData = () => {
         setNeedToRefetch(true)
     }
     useEffect(()=> {
         if(needToRefetch === true){
-            refetch()
+            boardRefetch();
+            teamRefetch()
+
         }
         return ()=>{
             setNeedToRefetch(false)
@@ -44,13 +47,12 @@ function App() {
                     <Route path="/">
                         <Title>Boards</Title>
                         <BoardContainer>
-                            {!loading && (data.boards as Board[]).map((board) => <BoardCard key={board._id} data={board} />)}
+                            {!boardLoading && (boardData.boards as Board[]).map((board) => <BoardCard key={board._id} data={board} />)}
                             <AddBoardCard/>
                         </BoardContainer>
                         <Title>Teams</Title>
                         <TeamContainer>
-                            <TeamCard />
-                            <TeamCard />
+                            {!teamLoading && (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} />)}
                             <AddTeamCard />
                         </TeamContainer>
                         {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoardData}/>}

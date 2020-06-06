@@ -1,7 +1,6 @@
 import React, { useContext, useRef, useEffect, useState, MouseEvent} from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
-import gql from 'graphql-tag';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import avatar from '../icons/avatar.jpg';
@@ -9,45 +8,9 @@ import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { Team } from '../types.js';
-import { GET_BOARDS } from '../common/Queries';
+import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM, GET_TEAMS } from '../common/Queries';
 
-// The mutation query is used to create a new board by members
-const CREATE_BOARD_BY_MEMBERS = gql`
-    mutation createBoardByMembers($title: String!, $members: [ID!]!) {
-        createBoardByMembers(title: $title, members: $members) {
-            _id
-            title
-        }
-    }
-`;
 
-// The mutation query is used to create a new board by team
-const CREATE_BOARD_BY_TEAM = gql`
-    mutation createBoardByTeam($title: String!, $team: [ID!]!) {
-        createBoardByTeam(title: $title, team: $team) {
-            title
-        }
-    }
-`;
-
-// The query is used to get the teams' info from the database
-const GET_TEAMS = gql`
-    {
-        teams {
-            ... on TeamWithMemberObj {
-                _id
-                name
-                description
-                members {
-                    _id
-                    email
-                    name
-                }
-                personal
-            }
-        }
-    }
-`;
 interface BoardModalProps {
     dataRefetch: any
 }

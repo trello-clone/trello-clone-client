@@ -1,20 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
+
 import pen from '../icons/pen-01-white.svg';
 import trash from '../icons/trash-can-white.svg';
 import background from '../icons/background.jpg';
 import avatar from '../icons/avatar.jpg';
+import { Team } from '../types.js';
 
-const TeamCard = () => {
+interface TeamCardProps {
+    data: Team;
+}
+const TeamCard = (props: TeamCardProps) => {
+    const { data } = props;
+    console.log(data);
+
     return (
         <CardContainer>
             <CardHeader>
-                <TeamName>Piccial Media</TeamName>
+                <TeamName>{data.name}</TeamName>
                 <DeleteButton />
                 <EditButton />
             </CardHeader>
             <CardBody>
-                <CardItem>Member: 25</CardItem>
+                <CardItem>Member: {data.members.length}</CardItem>
                 <CardItem>Project(s): 12</CardItem>
                 <CardItem>In progress: Food Delivery Tracking Application</CardItem>
             </CardBody>
