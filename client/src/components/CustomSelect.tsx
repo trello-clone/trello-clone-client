@@ -7,6 +7,8 @@ import { useQuery } from '@apollo/react-hooks';
 import { selectTheme } from '../theme';
 import { User } from '../types.js';
 
+
+// The query is used to request a user from database with specific keywords
 const GET_USERS = gql`
 query users($keyword : String!){
     users(keyword: $keyword){
@@ -50,9 +52,9 @@ const CustomSelect = (props: any, state: any) => {
             boxShadow: state.isFocused ? 0 : 0,
             '&:hover': {
                 border: state.isFocused ? 0 : 0,
-                borderBottom: `1px solid ${rgba(selectTheme.black, 0.55)}`,
+                borderBottom: `1px solid ${rgba(selectTheme.black, 0.25)}`,
             },
-            borderBottom: `1px solid ${rgba(selectTheme.black, 0.55)}`,
+            borderBottom: `1px solid ${rgba(selectTheme.black, 0.25)}`,
             borderRadius: 0,
             marginBottom: '12px',
         }),
@@ -76,6 +78,7 @@ const CustomSelect = (props: any, state: any) => {
             padding: 0,
             paddingLeft: '2px',
             fontSize: '16px',
+            color: ` ${rgba(selectTheme.black, 0.25)}`,
         }),
         input: (provided: any) => ({
             ...provided,

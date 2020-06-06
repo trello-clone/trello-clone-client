@@ -1,35 +1,31 @@
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
-import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
-import { User } from '../types.js';
 import CustomSelect from './CustomSelect';
+import { CREATE_TEAM } from '../common/Queries';
 
-const CREATE_BOARD_BY_MEMBERS = gql`
-    mutation createBoardByMembers($title: String!, $members: [ID!]!) {
-        createBoardByMembers(title: $title, members: $members) {
-            title
-        }
-    }
-`;
-
-const CreateNewTeamdModal = () => {
+interface TeamModalProps {
+    dataRefetch: any
+}
+const CreateNewTeamdModal = (props: TeamModalProps ) => {
+    const { dataRefetch } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
 
     const [selectState, setSelectState] = useState({
-        selectedItems: [],
-        titleInput: '',
+        selectedItemName: [],
+        selectedItemID: [],
     });
+    const [teamName, setTeamName] = useState('');
 
-    const [addBoard] = useMutation(CREATE_BOARD_BY_MEMBERS);
+    const [addTeam] = useMutation(CREATE_TEAM);
 
-    const teamMembers = selectState.selectedItems;
+    const teamMembers = selectState.selectedItemName;
 
     const onClickOutside = (e: any) => {
         const element = e.target;
@@ -40,24 +36,24 @@ const CreateNewTeamdModal = () => {
         }
     };
 
+    // handle changes from custom select
     const onSelectionChange = (item: any) => {
         setSelectState({
             ...selectState,
-            selectedItems: Array.from(new Set(selectState.selectedItems.concat(item))),
+            selectedItemName: Array.from(new Set(selectState.selectedItemName.concat(item.name))),
+            selectedItemID: Array.from(new Set(selectState.selectedItemID.concat(item._id))),
         });
     };
 
-    const handletitleChange = (input: any) => {
-        setSelectState({
-            ...selectState,
-            titleInput: input.target.value,
-        });
+    const handleTeamNameChange = (input: any) => {
+        setTeamName(input.target.value);
     };
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: any, refetch: any) => {
         e.preventDefault();
-        addBoard({ variables: { title: selectState.titleInput, members: selectState.selectedItems } });
+        addTeam({ variables: { name: teamName, members: selectState.selectedItemID } });
         context.closeModalByType(ModalTypes.CreateBoard);
+        refetch();
     };
 
     useEffect(() => {
@@ -70,8 +66,8 @@ const CreateNewTeamdModal = () => {
         <Container>
             <Modal ref={modalRef}>
                 <Header>Create team</Header>
-                <Input onChange={handletitleChange} type="text" placeholder="Enter team's name" />
-                <CustomSelect selectedItems={selectState.selectedItems} onSelectionChange={onSelectionChange} />
+                <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" />
+                <CustomSelect selectedItems={selectState.selectedItemName} onSelectionChange={onSelectionChange} />
                 <MemberContainer>
                     <MemberList>
                         {teamMembers.map((item: any, index: any) => (
@@ -93,7 +89,7 @@ const CreateNewTeamdModal = () => {
                     >
                         Cancel
                     </CancelButton>
-                    <CreateNewTeamBtn onClick={handleSubmit}>Create new team</CreateNewTeamBtn>
+                    <CreateNewTeamBtn onClick={e =>handleSubmit(e,dataRefetch)}>Create new team</CreateNewTeamBtn>
                 </ButtonContainer>
             </Modal>
         </Container>
@@ -137,10 +133,11 @@ const Input = styled.input`
     padding-bottom: 5px;
     padding-right: 0;
     margin-bottom: 36px;
-    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.55)};
+    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.25)};
     font-size: 16px;
     &::placeholder {
         font-size: 16px;
+        color: ${(props) => rgba(props.theme.colors.black, 0.25)};
     }
 `;
 const MemberContainer = styled.div`

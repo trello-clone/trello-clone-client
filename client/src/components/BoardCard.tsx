@@ -29,7 +29,7 @@ const BoardCard = (props: BoardCardProps) => {
             </CardHeader>
             <CardFooter>
                 <TeamPic src={teamPic} />
-                {data.team.length === 1 &&<TeamName>{data.team[0].name}</TeamName>}
+                {data.team && data.team.length === 1 &&<TeamName>{data.team[0].name}</TeamName>}
                 <TimeCreated>{moment(data._changed).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>
@@ -39,7 +39,7 @@ const BoardCard = (props: BoardCardProps) => {
 export default BoardCard;
 
 const CardContainer = styled.div`
-    min-width: 280px;
+    width: 280px;
     height: 150px;
     border-radius: 8px;
     position: relative;
@@ -80,7 +80,7 @@ const CardFooter = styled.div`
 `;
 
 const ProjectName = styled.div`
-    width: 75%;
+    width: 200px;
     max-height: 6vh;
     overflow: hidden;
     font-size: 17px;

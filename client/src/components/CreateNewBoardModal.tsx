@@ -1,43 +1,84 @@
-import React, { useContext, useRef, useEffect, useState } from 'react';
+import React, { useContext, useRef, useEffect, useState, MouseEvent} from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 
 import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
-import { User } from '../types.js';
 import CustomSelect from './CustomSelect';
+import { Team } from '../types.js';
+import { GET_BOARDS } from '../common/Queries';
 
+// The mutation query is used to create a new board by members
 const CREATE_BOARD_BY_MEMBERS = gql`
     mutation createBoardByMembers($title: String!, $members: [ID!]!) {
         createBoardByMembers(title: $title, members: $members) {
+            _id
             title
         }
     }
 `;
 
-const CreateNewBoardModal = () => {
+// The mutation query is used to create a new board by team
+const CREATE_BOARD_BY_TEAM = gql`
+    mutation createBoardByTeam($title: String!, $team: [ID!]!) {
+        createBoardByTeam(title: $title, team: $team) {
+            title
+        }
+    }
+`;
+
+// The query is used to get the teams' info from the database
+const GET_TEAMS = gql`
+    {
+        teams {
+            ... on TeamWithMemberObj {
+                _id
+                name
+                description
+                members {
+                    _id
+                    email
+                    name
+                }
+                personal
+            }
+        }
+    }
+`;
+interface BoardModalProps {
+    dataRefetch: any
+}
+const CreateNewBoardModal = (props: BoardModalProps) => {
+    const { dataRefetch } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
     const [boardModalOption, setBoardModalOption] = useState('Member');
-
     const [selectState, setSelectState] = useState({
         selectedItemName: [],
         selectedItemID: [],
     });
-
     const [titleInput, setTitleInput] = useState('');
-
-    const [addBoard] = useMutation(CREATE_BOARD_BY_MEMBERS);
-
+    const [teamIDSelected, setTeamIDSelected] = useState<string[] | null>(null);
+    const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
+    const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
+    const { data: teamData, loading: teamLoading } = useQuery(GET_TEAMS);
     enum BoardModalOptions {
         Team = 'Team',
         Member = 'Member',
     }
+
+    // Switch between the board options
+    const selectOption = (option: BoardModalOptions) => {
+        setBoardModalOption(option);
+    };
+
+    // get a board's members from users' selections
     const boardMembers = selectState.selectedItemName;
 
+    // Close the modal by clicking outside
     const onClickOutside = (e: any) => {
         const element = e.target;
         if (modalRef.current && !modalRef.current.contains(element)) {
@@ -47,10 +88,7 @@ const CreateNewBoardModal = () => {
         }
     };
 
-    const selectOption = (option: BoardModalOptions) => {
-        setBoardModalOption(option);
-    };
-
+    // handle changes from custom select
     const onSelectionChange = (item: any) => {
         setSelectState({
             ...selectState,
@@ -59,19 +97,30 @@ const CreateNewBoardModal = () => {
         });
     };
 
-    const handletitleChange = (input: any) => {
+    // Handle changes of a board's title
+    const handleTitleChange = (input: any) => {
         setTitleInput(input.target.value);
     };
 
-    const handleSubmit = (e: any) => {
+    //create a new board by members
+    const handleSubmitWithMembers = (e: MouseEvent, refetch: any) => {
         e.preventDefault();
-        addBoard({ variables: { title: titleInput, members: selectState.selectedItemID } });
+        addBoardByMembers({ variables: { title: titleInput, members: selectState.selectedItemID } });
         context.closeModalByType(ModalTypes.CreateBoard);
+        refetch();
+    };
+
+    //create a new board by team
+    const handleSubmitWithTeam = (e: MouseEvent, refetch: any) => {
+        e.preventDefault();
+        console.log(teamIDSelected);
+        addBoardByTeam({ variables: { title: titleInput, team: teamIDSelected } });
+        context.closeModalByType(ModalTypes.CreateBoard);
+        refetch();
     };
 
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
-
         return () => window.removeEventListener('click', onClickOutside);
     });
 
@@ -99,11 +148,16 @@ const CreateNewBoardModal = () => {
                 </TypeWrapper>
                 {boardModalOption === BoardModalOptions.Team && (
                     <>
-                        <BackgroundLabel>Select team</BackgroundLabel>
-                        <BackgroundContainer>
-                            <BackgroundItem src={background} alt="background" />
-                            <BackgroundItem src={background} alt="background" />
-                        </BackgroundContainer>
+                        <SectionTitle>Select team</SectionTitle>
+                        <TeamContainer>
+                            {!teamLoading &&
+                                (teamData.teams as Team[]).map((team) => (
+                                    <TeamItem onClick={() => setTeamIDSelected([team._id])}>
+                                        <TeamImage src={background} alt="background" />
+                                        <TeamLabel>{team.name}</TeamLabel>
+                                    </TeamItem>
+                                ))}
+                        </TeamContainer>
                     </>
                 )}
                 {boardModalOption === BoardModalOptions.Member && (
@@ -121,9 +175,9 @@ const CreateNewBoardModal = () => {
                 )}
                 {/* <MemberAvatar src={avatar} />
                 <MemberAvatar src={avatar} /> */}
-                <Input onChange={handletitleChange} type="text" placeholder="Title" />
+                <Input onChange={handleTitleChange} type="text" placeholder="Title" />
 
-                <BackgroundLabel>Select background</BackgroundLabel>
+                <SectionTitle>Select background</SectionTitle>
                 <BackgroundContainer>
                     <BackgroundItem src={background} alt="background" />
                     <BackgroundItem src={background} alt="background" />
@@ -136,7 +190,11 @@ const CreateNewBoardModal = () => {
                     >
                         Cancel
                     </CancelButton>
-                    <CreateNewBoardBtn onClick={handleSubmit}>Create new board</CreateNewBoardBtn>
+                    {boardModalOption === BoardModalOptions.Member ? (
+                        <CreateNewBoardBtn onClick={e=>handleSubmitWithMembers(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
+                    ) : (
+                        <CreateNewBoardBtn onClick={e => handleSubmitWithTeam(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
+                    )}
                 </ButtonContainer>
             </Modal>
         </Container>
@@ -157,7 +215,7 @@ const Container = styled.div`
 const Modal = styled.div`
     background-color: white;
     width: 350px;
-    height: 430px;
+    min-height: 430px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -198,10 +256,11 @@ const Input = styled.input`
     padding-bottom: 5px;
     padding-right: 0;
     margin-bottom: 20px;
-    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.55)};
+    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.25)};
     font-size: 16px;
     &::placeholder {
         font-size: 16px;
+        color: ${(props) => rgba(props.theme.colors.black, 0.25)};
     }
 `;
 const MemberContainer = styled.div`
@@ -226,10 +285,32 @@ const Member = styled.div`
     margin-right: 5px;
 `;
 
-const BackgroundLabel = styled.div`
+const TeamContainer = styled.div`
+    display: flex;
+    margin-bottom: 8px;
+`;
+const TeamItem = styled.div`
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    margin-right: 12px;
+`;
+const TeamImage = styled.img`
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+`;
+const TeamLabel = styled.div`
+    margin-top: 4px;
+    font-family: 'ProximaNovaMedium', sans-serif;
+    color: ${(props) => rgba(props.theme.colors.black, 1)};
+    font-size: 12px;
+`;
+
+const SectionTitle = styled.div`
     margin-bottom: 10px;
     font-family: 'ProximaNovaMedium', sans-serif;
-    color: ${(props) => rgba(props.theme.colors.black, 0.9)};
+    color: ${(props) => rgba(props.theme.colors.black, 1)};
 `;
 
 const BackgroundContainer = styled.div`

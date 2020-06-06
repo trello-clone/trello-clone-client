@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
-import gql from 'graphql-tag';
-import { Query, QueryResult, useQuery } from 'react-apollo';
+import React, { useContext, useEffect, useState } from 'react';
+import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { rgba } from 'polished';
@@ -14,68 +13,29 @@ import AddTeamCard from './components/AddTeamCard';
 import CreateNewBoardModal from './components/CreateNewBoardModal';
 import CreateNewTeamModal from './components/CreateNewTeamModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
-
-
 import BoardView from './components/BoardView';
-
 import { Board } from './types.js';
+import { GET_BOARDS } from './common/Queries'
 
-// const USERS_QUERY = gql`
-//     {
-//         users(max: 10) {
-//             _id
-//             name
-//         }
-//     }
-// `;
-
-const GET_BOARDS = gql`
-    query {
-        boards {
-            _id
-            title
-            team {
-                ... on TeamWithMemberID {
-                    _id
-                    name
-                    description
-                    members
-                    personal
-                }
-            }
-            background
-            _created
-            _changed
-        }
-    }
-`;
-const GET_USERS = gql`
-query users($keyword : String!){
-    users(keyword: $keyword){
-      _id
-      name
-      email
-      avatar
-    }
-  }
-`;
 function App() {
     const context = useContext(DialogContext);
-    const { data, loading } = useQuery(GET_BOARDS);
-    const { data: userdata, loading: usersLoading} = useQuery(GET_USERS, {
-        variables: {keyword : "victoria"} 
-    });
-    // if(!loading){
-    //     console.log(data)
-    // }
-    // if(!usersLoading){
-    //     console.log(userdata)
-    // }
+    const { data, loading, refetch} = useQuery(GET_BOARDS);
+    const [needToRefetch, setNeedToRefetch] = useState(false)
+    const handleRefetchBoardData = () => {
+        setNeedToRefetch(true)
+    }
+    useEffect(()=> {
+        if(needToRefetch === true){
+            refetch()
+        }
+        return ()=>{
+            setNeedToRefetch(false)
+        }
+    })
     return (
         <Router>
             <Header />
             <SideBar />
-
             <MainContentWrapper>
                 <Switch>
                     <Route path="/board/:board_id">
@@ -93,25 +53,8 @@ function App() {
                             <TeamCard />
                             <AddTeamCard />
                         </TeamContainer>
-                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal />}
-                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal />}
-                        {/* // GrapqhQL query example */}
-                        {/* <Query query={USERS_QUERY}>
-                            {({ loading, error, data }: QueryResult) => {
-                                if (loading) return <div>Loading...</div>;
-                                if (error) return <div>Error: {error.message}</div>;
-                                return (
-                                    <div>
-                                        {(data.users as User[]).map((user, index) => (
-                                            <div key={index}>
-                                                <h3>{user.name}</h3>
-                                                <br />
-                                            </div>
-                                        ))}
-                                    </div>
-                                );
-                            }}
-                        </Query> */}
+                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoardData}/>}
+                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={handleRefetchBoardData}/>}
                     </Route>
                 </Switch>
             </MainContentWrapper>
@@ -140,11 +83,11 @@ const Title = styled.div`
 
 const BoardContainer = styled.div`
     display: flex;
-    flex-grow: row wrap;
+    flex-flow: row wrap;
     padding-bottom: 16px;
 `;
 
 const TeamContainer = styled.div`
     display: flex;
-    flex-grow: row wrap;
+    flex-flow: row wrap;
 `;
