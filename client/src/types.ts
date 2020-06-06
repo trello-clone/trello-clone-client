@@ -2,8 +2,9 @@ export type Team = {
     _id: string;
     name?: string;
     description?: string;
-    members: User[] | string [];
+    members: User[] | string[];
     personal: boolean;
+    _created: string;
 };
 
 export type User = {
@@ -15,25 +16,27 @@ export type User = {
 };
 
 export type Board = {
-   _id: string;
-   title: string;
-   team: Team[];
-   background?: string;
-   _created: string;
-   _changed: string;
- };
+    _id: string;
+    title: string;
+    team: Team[];
+    background?: string;
+    lists_order?: string;
+    _created: string;
+    _changed: string;
+};
 
 export type Column = {
     _id: string;
     title: string;
     board_id: string;
-    index: number;
-    cards: Card[];
+    cards?: Card[];
+    cards_order?: string;
 };
 
 export type Card = {
     _id: string;
     title: string;
     description: string;
-    index: number;
+    _created: string;
+    _changed: string;
 };

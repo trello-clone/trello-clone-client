@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect, useState, MouseEvent} from 'react';
+import React, { useContext, useRef, useEffect, useState, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation, useQuery } from '@apollo/react-hooks';
@@ -8,11 +8,11 @@ import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { Team } from '../types.js';
-import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM, GET_TEAMS } from '../common/Queries';
-
+import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM } from 'graphql/mutations';
+import { GET_TEAMS } from 'graphql/queries';
 
 interface BoardModalProps {
-    dataRefetch: any
+    dataRefetch: any;
 }
 const CreateNewBoardModal = (props: BoardModalProps) => {
     const { dataRefetch } = props;
@@ -47,7 +47,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModalByType(ModalTypes.CreateBoard);
+            context.closeModalByType!(ModalTypes.CreateBoard);
         }
     };
 
@@ -69,16 +69,15 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const handleSubmitWithMembers = (e: MouseEvent, refetch: any) => {
         e.preventDefault();
         addBoardByMembers({ variables: { title: titleInput, members: selectState.selectedItemID } });
-        context.closeModalByType(ModalTypes.CreateBoard);
+        context.closeModalByType!(ModalTypes.CreateBoard);
         refetch();
     };
 
     //create a new board by team
     const handleSubmitWithTeam = (e: MouseEvent, refetch: any) => {
         e.preventDefault();
-        console.log(teamIDSelected);
         addBoardByTeam({ variables: { title: titleInput, team: teamIDSelected } });
-        context.closeModalByType(ModalTypes.CreateBoard);
+        context.closeModalByType!(ModalTypes.CreateBoard);
         refetch();
     };
 
@@ -148,15 +147,15 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModalByType(ModalTypes.CreateBoard);
+                            context.closeModalByType!(ModalTypes.CreateBoard);
                         }}
                     >
                         Cancel
                     </CancelButton>
                     {boardModalOption === BoardModalOptions.Member ? (
-                        <CreateNewBoardBtn onClick={e=>handleSubmitWithMembers(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
+                        <CreateNewBoardBtn onClick={(e) => handleSubmitWithMembers(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
                     ) : (
-                        <CreateNewBoardBtn onClick={e => handleSubmitWithTeam(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
+                        <CreateNewBoardBtn onClick={(e) => handleSubmitWithTeam(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
                     )}
                 </ButtonContainer>
             </Modal>

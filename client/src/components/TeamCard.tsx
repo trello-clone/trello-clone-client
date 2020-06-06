@@ -31,7 +31,7 @@ const TeamCard = (props: TeamCardProps) => {
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
-                <TimeCreated>12 hours ago</TimeCreated>
+                <TimeCreated>{moment(data._created).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>
     );

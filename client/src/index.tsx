@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
+import { ApolloLink, from } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ThemeProvider } from 'styled-components';
 
@@ -17,8 +18,18 @@ const httpLink = createHttpLink({
     uri: 'http://localhost:4000/api',
 });
 
+const cleanTypeName = new ApolloLink((operation, forward) => {
+    if (operation.variables) {
+        const omitTypename = (key: string, value: any) => (key === '__typename' ? undefined : value);
+        operation.variables = JSON.parse(JSON.stringify(operation.variables), omitTypename);
+    }
+    return forward(operation).map((data) => {
+        return data;
+    });
+});
+
 const client = new ApolloClient({
-    link: httpLink,
+    link: from([cleanTypeName, httpLink]),
     cache: new InMemoryCache(),
 });
 
@@ -28,7 +39,7 @@ ReactDOM.render(
             <ThemeProvider theme={myTheme}>
                 <GlobalFonts />
                 <DialogProvider>
-                  <App />
+                    <App />
                 </DialogProvider>
             </ThemeProvider>
         </ApolloProvider>

@@ -7,12 +7,12 @@ import avatar from '../icons/avatar.jpg';
 import background from '../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { CREATE_TEAM } from '../common/Queries';
+import { CREATE_TEAM } from 'graphql/mutations';
 
 interface TeamModalProps {
-    dataRefetch: any
+    dataRefetch: any;
 }
-const CreateNewTeamdModal = (props: TeamModalProps ) => {
+const CreateNewTeamdModal = (props: TeamModalProps) => {
     const { dataRefetch } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
@@ -32,7 +32,7 @@ const CreateNewTeamdModal = (props: TeamModalProps ) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModalByType(ModalTypes.CreateBoard);
+            context.closeModalByType!(ModalTypes.CreateBoard);
         }
     };
 
@@ -52,7 +52,7 @@ const CreateNewTeamdModal = (props: TeamModalProps ) => {
     const handleSubmit = (e: any, refetch: any) => {
         e.preventDefault();
         addTeam({ variables: { name: teamName, members: selectState.selectedItemID } });
-        context.closeModalByType(ModalTypes.CreateBoard);
+        context.closeModalByType!(ModalTypes.CreateBoard);
         refetch();
     };
 
@@ -84,12 +84,12 @@ const CreateNewTeamdModal = (props: TeamModalProps ) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModalByType(ModalTypes.CreateTeam);
+                            context.closeModalByType!(ModalTypes.CreateTeam);
                         }}
                     >
                         Cancel
                     </CancelButton>
-                    <CreateNewTeamBtn onClick={e =>handleSubmit(e,dataRefetch)}>Create new team</CreateNewTeamBtn>
+                    <CreateNewTeamBtn onClick={(e) => handleSubmit(e, dataRefetch)}>Create new team</CreateNewTeamBtn>
                 </ButtonContainer>
             </Modal>
         </Container>
@@ -169,7 +169,6 @@ const BackgroundLabel = styled.div`
 
 const BackgroundContainer = styled.div`
     display: flex;
-
 `;
 
 const BackgroundItem = styled.img`

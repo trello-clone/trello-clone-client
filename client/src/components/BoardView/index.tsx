@@ -1,47 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { DragDropContext, DraggingStyle, NotDraggingStyle, DropResult, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import Column from './Column';
-import { Column as ColumnT } from '../../types';
-
-const testColumns: ColumnT[] = [
-    {
-        _id: '5ecd89ea1b6cb2770001872e',
-        title: 'First list',
-        board_id: '5ec440901b6cb2770001010b',
-        index: 0,
-        cards: [
-            {
-                _id: '5ecd92cf1b6cb277000187ab',
-                title: 'First card',
-                description: 'The very first card ever created in the first list of the first board in the first team',
-                index: 0,
-            },
-            {
-                _id: '23v4ur876c44563y7000187ab',
-                title: 'Second card',
-                description: 'The second card, no more special...',
-                index: 1,
-            },
-        ],
-    },
-    {
-        _id: '34sgfh9edgf78rwetqwer781872e',
-        title: 'Second list',
-        board_id: '5ec440901b6cb2770001010b',
-        index: 1,
-        cards: [],
-    },
-];
+import AddColumn from './AddColumn';
+import { Column as ColumnT, Board, Card } from '../../types';
+import { GET_LISTS_BY_BOARD_ID, GET_BOARD } from '../../graphql/queries';
+import { UPDATE_CARDS_IN_LIST, UPDATE_LISTS_ORDER } from '../../graphql/mutations';
+import { useDebounce, arrangeDataByOrder, getItemsOrderArray } from '../../utils';
+import BoardViewContext from 'contexts/BoardViewContext';
 
 interface BoardViewProps {}
 
 const BoardView = (props: BoardViewProps) => {
+    // get board ID from url params
     const match = useRouteMatch<{ board_id: string }>();
-    const [columns, setColumns] = useState(testColumns);
 
+    // fetch data of board and lists in board
+    const listsData = useQuery<{ lists: ColumnT[] }>(GET_LISTS_BY_BOARD_ID, { variables: { board_id: match.params.board_id } });
+    const boardData = useQuery<{ board: Board }>(GET_BOARD, { variables: { id: match.params.board_id } });
+
+    // Graphql mutation to persist columns data into DB
+    const [gqlUpdateCardsInList] = useMutation<
+        { updateCardsInList: { _id: string } },
+        { list_id: string; cards: Card[]; cards_order: string }
+    >(UPDATE_CARDS_IN_LIST);
+
+    // Graphql mutation to update lists order in board
+    const [gqlUpdateListsOrder] = useMutation<{ updateListOrder: Board }, { board_id: string; lists_order: string }>(UPDATE_LISTS_ORDER);
+
+    // init columns data in state
+    const [columns, setColumns] = useState<ColumnT[] | undefined>();
+    const columnsLoaded = useRef(false);
+
+    // debounced value of columns, because columns data may change rapidly
+    const debouncedColumns = useDebounce<ColumnT[]>(columns, 1000);
+
+    useEffect(() => {
+        // load columns into state when data fetching finishes
+        if (listsData.data && boardData.data) {
+            setColumns(arrangeDataByOrder(listsData.data.lists, boardData.data.board.lists_order));
+        }
+    }, [listsData, boardData]);
+
+    useEffect(() => {
+        // persist columns data into DB whenever it updates on UI
+        // this operation has a debounce of 1s, thanks to `debouncedColumns`
+        if (debouncedColumns) {
+            if (columnsLoaded.current) {
+                const listsOrder = debouncedColumns.map((column) => column._id).join(',');
+                // update lists order in board to DB
+                gqlUpdateListsOrder({
+                    variables: {
+                        board_id: match.params.board_id,
+                        lists_order: listsOrder,
+                    },
+                });
+
+                // update cards data and cards order in each list to DB
+                debouncedColumns.forEach((column) => {
+                    gqlUpdateCardsInList({
+                        variables: {
+                            list_id: column._id,
+                            cards: column.cards || [],
+                            cards_order: column.cards_order || '',
+                        },
+                    });
+                });
+            } else {
+                columnsLoaded.current = true;
+            }
+        }
+    }, [debouncedColumns, gqlUpdateCardsInList, gqlUpdateListsOrder, match.params.board_id]);
+
+    /** UI logics to update cards order in columns, and columns order in board.
+     * These changes are immediately reflected in state.
+     */
     const onDragEnd = (result: DropResult) => {
         const { destination, source, type } = result;
         if (!destination) {
@@ -50,59 +86,62 @@ const BoardView = (props: BoardViewProps) => {
         if (destination.droppableId === source.droppableId && destination.index === source.index) {
             return;
         }
-
         if (type === 'column') {
-            let newColumns = [...columns];
-            const movedColumn = newColumns.splice(source.index, 1)[0];
-            newColumns.splice(destination.index, 0, movedColumn);
-            newColumns = newColumns.map((item, index) => ({ ...item, index }));
+            const columnsOrder = getItemsOrderArray(boardData.data!.board.lists_order!);
+            const movedColumn = columnsOrder.splice(source.index, 1)[0];
+            columnsOrder.splice(destination.index, 0, movedColumn);
+            const newColumns = arrangeDataByOrder(listsData.data!.lists, columnsOrder.join(','));
             setColumns(newColumns);
             return;
         }
-
-        const sourceColumn = columns.find((item) => item._id === source.droppableId);
-        const destinationColumn = columns.find((item) => item._id === destination.droppableId);
+        const sourceColumn = columns!.find((item) => item._id === source.droppableId);
+        const destinationColumn = columns!.find((item) => item._id === destination.droppableId);
         if (!sourceColumn || !destinationColumn) {
             return;
         }
 
         // item moves within the same list
         if (sourceColumn === destinationColumn) {
-            const cardsInColumn = [...sourceColumn.cards];
-            const movedCard = cardsInColumn.splice(source.index, 1)[0];
-            cardsInColumn.splice(destination.index, 0, movedCard);
+            const cardsOrderInColumn = getItemsOrderArray(sourceColumn.cards_order!);
+            const movedCard = cardsOrderInColumn.splice(source.index, 1)[0];
+            cardsOrderInColumn.splice(destination.index, 0, movedCard);
             const newColumn: ColumnT = {
                 ...sourceColumn,
-                cards: cardsInColumn.map((card, index) => ({ ...card, index })),
+                cards_order: cardsOrderInColumn.join(','),
             };
-
-            setColumns(
-                columns.map((item) => {
-                    if (item._id === newColumn._id) {
-                        return newColumn;
-                    }
-                    return item;
-                })
-            );
+            const result = columns!.map((item) => {
+                if (item._id === newColumn._id) {
+                    return newColumn;
+                }
+                return item;
+            });
+            setColumns(result);
             return;
         }
 
         // item moves from one list to another
-        const cardsInSourceColumn = [...sourceColumn.cards];
+        const cardsOrderInSourceColumn = getItemsOrderArray(sourceColumn.cards_order!);
+        const cardsOrderInDestinationColumn = getItemsOrderArray(destinationColumn.cards_order!);
+        const movedCardOrder = cardsOrderInSourceColumn.splice(source.index, 1)[0];
+        cardsOrderInDestinationColumn.splice(destination.index, 0, movedCardOrder);
+
+        const cardsInSourceColumn = [...(sourceColumn.cards || [])];
         const movedCard = cardsInSourceColumn.splice(source.index, 1)[0];
         const newSourceColumn: ColumnT = {
             ...sourceColumn,
-            cards: cardsInSourceColumn.map((card, index) => ({ ...card, index })),
+            cards: cardsInSourceColumn,
+            cards_order: cardsOrderInSourceColumn.join(','),
         };
 
-        const cardsInDestinationColumn = [...destinationColumn.cards];
-        cardsInDestinationColumn.splice(destination.index, 0, { ...movedCard, index: destination.index });
+        const cardsInDestinationColumn = [...(destinationColumn.cards || [])];
+        cardsInDestinationColumn.splice(destination.index, 0, movedCard);
         const newDestinationColumn: ColumnT = {
             ...destinationColumn,
-            cards: cardsInDestinationColumn.map((card, index) => ({ ...card, index })),
+            cards: cardsInDestinationColumn,
+            cards_order: cardsOrderInDestinationColumn.join(','),
         };
         setColumns(
-            columns.map((item) => {
+            columns!.map((item) => {
                 if (item._id === newSourceColumn._id) {
                     return newSourceColumn;
                 }
@@ -114,21 +153,55 @@ const BoardView = (props: BoardViewProps) => {
         );
     };
 
+    const onColumnAdded = (column_id?: string) => {
+        if (column_id) {
+            const currentListsOrder = boardData.data!.board.lists_order || '';
+            const newListsOrder = currentListsOrder.length ? currentListsOrder + `,${column_id}` : column_id;
+            gqlUpdateListsOrder({ variables: { board_id: match.params.board_id, lists_order: newListsOrder } }).then(() => {
+                listsData.refetch();
+                boardData.refetch();
+            });
+        }
+    };
+
+    const onCardAdded = (list_id: string, newCard?: Card) => {
+        if (newCard) {
+            const columData = columns?.find((item) => item._id === list_id);
+            const currentCardsOrder = columData?.cards_order || '';
+            const newCardsOrder = currentCardsOrder.length ? currentCardsOrder + `,${newCard._id}` : newCard._id;
+            const newCards = (columData?.cards || []).concat(newCard);
+            gqlUpdateCardsInList({
+                variables: {
+                    list_id,
+                    cards: newCards,
+                    cards_order: newCardsOrder,
+                },
+            }).then(() => {
+                listsData.refetch();
+            });
+        }
+    };
+
     return (
-        <BoardViewContainer>
-            <BoardContent>
-                <DragDropContext onDragEnd={onDragEnd}>
-                    <Droppable droppableId="board-columns" direction="horizontal" type="column">
-                        {(provided) => (
-                            <ColumnsWrapper {...provided.droppableProps} ref={provided.innerRef}>
-                                {columns?.map((column) => <Column key={column._id} data={column} />) || null}
-                                {provided.placeholder}
-                            </ColumnsWrapper>
-                        )}
-                    </Droppable>
-                </DragDropContext>
-            </BoardContent>
-        </BoardViewContainer>
+        <BoardViewContext.Provider value={{ onCardAdded }}>
+            <BoardViewContainer>
+                <BoardContent>
+                    {!!columns && (
+                        <DragDropContext onDragEnd={onDragEnd}>
+                            <Droppable droppableId="board-columns" direction="horizontal" type="column">
+                                {(provided) => (
+                                    <ColumnsWrapper {...provided.droppableProps} ref={provided.innerRef}>
+                                        {columns.map((column, index) => <Column key={column._id} data={column} index={index} />) || null}
+                                        {provided.placeholder}
+                                    </ColumnsWrapper>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    )}
+                    <AddColumn onColumnAdded={onColumnAdded} boardId={match.params.board_id} />
+                </BoardContent>
+            </BoardViewContainer>
+        </BoardViewContext.Provider>
     );
 };
 
@@ -156,8 +229,8 @@ const BoardContent = styled.div`
 `;
 
 const ColumnsWrapper = styled.div`
-    height: 100%;
-    display: flex;
+    display: inline-flex;
+    vertical-align: top;
 `;
 
 export default BoardView;

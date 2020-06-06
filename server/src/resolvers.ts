@@ -1,5 +1,5 @@
 import { API } from './api';
-import { Resolvers, User, Board, Team } from './types';
+import { Resolvers, User, Board, Team, List, Card } from './types';
 import { GraphQLScalarType } from 'graphql';
 
 export const resolvers: Resolvers = {
@@ -14,22 +14,30 @@ export const resolvers: Resolvers = {
         users: (parent, args) => API.get(`/users${args.keyword ? `?filter=${args.keyword}` : ''}`).then((res) => res.data as User[]),
         user: (parent, args) => API.get(`/users/${args.id}`).then((res) => res.data as User),
         boards: (parent, args) => API.get(`/board?metafields=true`).then((res) => res.data as Board[]),
+        board: (parent, args) => API.get(`/board/${args.id}?metafields=true`).then((res) => res.data as Board),
         teams: (parent, args) => API.get(`/team?metafields=true`).then((res) => res.data as Team[]),
+        lists: (parent, args) => API.get(`/list?metafields=true?q={"board_id":"${args.board_id}"}`).then((res) => res.data as List[]),
     },
     Mutation: {
         createBoardByMembers: (parent, args) => API.post(`/board`, { ...args }).then((res) => res.data as Board),
         createBoardByTeam: (parent, args) => API.post(`/board`, { ...args }).then((res) => res.data as Board),
         createTeam: (parent, args) => API.post(`/team`, { ...args }).then((res) => res.data as Team),
+        createList: (parent, args) => API.post(`/list`, { ...args }).then((res) => res.data as List),
+        updateListOrder: (parent, args) =>
+            API.patch(`/board/${args.board_id}`, { lists_order: args.lists_order }).then((res) => res.data as Board),
+        updateCardsInList: (parent, args) =>
+            API.patch(`/list/${args.list_id}`, { cards: args.cards, cards_order: args.cards_order }).then((res) => res.data as List),
+        createCard: (parent, args) => API.post(`/card`, { ...args }).then((res) => res.data as Card),
     },
     Team: {
-        __resolveType: obj => {
+        __resolveType: (obj) => {
             if (!obj.members || !obj.members.length) {
                 return null;
             }
             if (typeof obj.members[0] === 'string') {
-                return "TeamWithMemberID";
+                return 'TeamWithMemberID';
             }
-            return "TeamWithMemberObj"
-        }
-    }
+            return 'TeamWithMemberObj';
+        },
+    },
 };

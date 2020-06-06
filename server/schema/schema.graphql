@@ -2,13 +2,23 @@ type Query {
     users(keyword: String): [User]!
     user(id: ID!): User
     boards: [Board]!
+    board(id: ID!): Board
     teams: [Team!]!
+    lists(board_id: ID!): [List]!
 }
 
 type Mutation {
     createBoardByMembers(title: String!, members: [ID!]!): Board!
     createBoardByTeam(title: String!, team: ID!): Board!
     createTeam(name: String!, description: String, members: [ID!]!): Team!
+
+    # Create list and update lists order in board 
+    createList(board_id: ID!, title: String!): List!
+    updateListOrder(board_id: ID!, lists_order: String!): Board!
+
+    # update cards and cards order in list
+    updateCardsInList(list_id: ID!, cards: [CardInput]!, cards_order: String!): List!
+    createCard(title: String!): Card!
 }
 
 type User {
@@ -22,9 +32,10 @@ type User {
 type Board {
     _id: ID!
     title: String!
-    team: [Team]!
-    members: [User]!
+    team: [Team]
+    members: [User]
     background: String
+    lists_order: String
     _created: DateTime!
     _changed: DateTime!
 }
@@ -35,6 +46,7 @@ type TeamWithMemberObj {
     description: String
     members: [User!]!
     personal: Boolean
+    _created: DateTime!
 }
 
 type TeamWithMemberID {
@@ -43,18 +55,31 @@ type TeamWithMemberID {
     description: String
     members: [ID!]!
     personal: Boolean
+    _created: DateTime!
 }
 
 type List {
     _id: ID!
     title: String!
     board_id: ID!
-    cards: [Card]!
+    cards: [Card]
+    cards_order: String
 }
 
 type Card {
     _id: ID!
+    title: String!
     description: String
+    _created: DateTime!
+    _changed: DateTime!
+}
+
+input CardInput {
+    _id: ID!
+    title: String!
+    description: String
+    _created: DateTime
+    _changed: DateTime
 }
 
 union Team = TeamWithMemberObj | TeamWithMemberID

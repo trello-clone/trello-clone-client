@@ -36,48 +36,48 @@ export const GET_TEAMS = gql`
                     name
                 }
                 personal
+                _created
             }
         }
     }
 `;
 
-
-/* ---------Mutation query-----------*/
-
-// The mutation query is used to create a new board by members
-export const CREATE_BOARD_BY_MEMBERS = gql`
-    mutation createBoardByMembers($title: String!, $members: [ID!]!) {
-        createBoardByMembers(title: $title, members: $members) {
+export const GET_BOARD = gql`
+    query board($id: ID!) {
+        board(id: $id) {
             _id
             title
-        }
-    }
-`;
-
-// The mutation query is used to create a new board by team
-export const CREATE_BOARD_BY_TEAM = gql`
-    mutation createBoardByTeam($title: String!, $team: [ID!]!) {
-        createBoardByTeam(title: $title, team: $team) {
-            title
-        }
-    }
-`;
-
-// The mutation query is used to create a team 
-export const CREATE_TEAM = gql`
-    mutation createTeam($name: String!, $members: [ID!]!) {
-        createTeam(name: $name, members: $members) {
-            __typename
-            ... on TeamWithMemberObj {
-                _id
-                name
-                members {
+            team {
+                ... on TeamWithMemberID {
                     _id
                     name
-                    avatar
-                    _created
                 }
-                personal
+            }
+            members {
+                _id
+                name
+            }
+            background
+            lists_order
+            _created
+            _changed
+        }
+    }
+`;
+
+export const GET_LISTS_BY_BOARD_ID = gql`
+    query lists($board_id: ID!) {
+        lists(board_id: $board_id) {
+            _id
+            title
+            board_id
+            cards_order
+            cards {
+                _id
+                title
+                description
+                _created
+                _changed
             }
         }
     }

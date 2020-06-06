@@ -5,7 +5,6 @@ import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
 import { selectTheme } from '../theme';
-import { User } from '../types.js';
 
 
 // The query is used to request a user from database with specific keywords

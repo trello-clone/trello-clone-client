@@ -22,12 +22,12 @@ const Header = () => {
             </SearchBox>
             <List>
                 <ListItem>
-                    <BoardButton onClick={()=>{context.openModalByType(ModalTypes.CreateBoard)}}>
+                    <BoardButton onClick={()=>{context.openModalByType!(ModalTypes.CreateBoard)}}>
                         <Icon src={boardIcon} alt="board"></Icon>
                     </BoardButton>
                 </ListItem>
                 <ListItem>
-                    <TeamButton onClick={()=>{context.openModalByType(ModalTypes.CreateTeam)}}>
+                    <TeamButton onClick={()=>{context.openModalByType!(ModalTypes.CreateTeam)}}>
                         <Icon src={userIcon} alt="user"></Icon>
                     </TeamButton>
                 </ListItem>

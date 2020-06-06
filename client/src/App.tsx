@@ -14,8 +14,8 @@ import CreateNewBoardModal from './components/CreateNewBoardModal';
 import CreateNewTeamModal from './components/CreateNewTeamModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
-import { Board, Team} from './types.js';
-import { GET_BOARDS, GET_TEAMS } from './common/Queries'
+import { Board, Team} from './types';
+import { GET_BOARDS, GET_TEAMS } from 'graphql/queries';
 
 function App() {
     const context = useContext(DialogContext);

@@ -9,7 +9,7 @@ const AddBoardCard = () => {
     return (
         <AddBtn
             onClick={() => {
-                context.openModalByType(ModalTypes.CreateBoard);
+                context.openModalByType!(ModalTypes.CreateBoard);
             }}
         >
             +

@@ -1,21 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
+import moment from 'moment';
+
 import { Card } from '../../types';
+import { rgba } from 'polished';
 
 interface CardProps {
     data: Card;
+    index: number;
 }
 
 const CardInList = (props: CardProps) => {
-    const { _id, title, index } = props.data;
+    const { data, index } = props;
+    const { _id, title } = data;
     return (
         <Draggable draggableId={_id} index={index}>
             {(provided) => (
                 <Container {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                    {title}
-                    <br />
-                    {index}
+                    <CardHeader>
+                        <CardTitle>{title}</CardTitle>
+                        <LastUpdated>{moment(data._changed).fromNow()}</LastUpdated>
+                    </CardHeader>
                 </Container>
             )}
         </Draggable>
@@ -23,10 +29,28 @@ const CardInList = (props: CardProps) => {
 };
 
 const Container = styled.div`
-    border: 1px solid lightgrey;
-    border-radius: 4px;
+    background-color: ${(props) => props.theme.colors.white};
+    border: none;
+    border-radius: 8px;
+    margin: 8px 0 16px;
     padding: 16px;
-    margin-bottom: 8px;
+    outline: none;
+`;
+
+const CardHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const CardTitle = styled.div`
+    color: ${(props) => props.theme.colors.black};
+    font-size: 14px;
+`;
+
+const LastUpdated = styled.div`
+    color: ${(props) => rgba(props.theme.colors.black, 0.3)};
+    font-size: 12px;
 `;
 
 export default CardInList;

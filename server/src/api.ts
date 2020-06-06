@@ -17,5 +17,21 @@ export const API = {
             'x-apikey': API_KEY
         },
         data: payload,
-    })
+    }),
+    put: (endpoint: string, payload: any) => axios({
+        method: 'PUT',
+        url: `${API_BASE_URL}${endpoint}`,
+        headers: {
+            'x-apikey': API_KEY
+        },
+        data: payload,
+    }),
+    patch: (endpoint: string, payload: any) => axios({
+        method: 'PATCH',
+        url: `${API_BASE_URL}${endpoint}`,
+        headers: {
+            'x-apikey': API_KEY
+        },
+        data: payload,
+    }),
 };

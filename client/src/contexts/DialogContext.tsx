@@ -7,8 +7,8 @@ enum ModalTypes {
 const DialogContext = React.createContext<DialogContextValue>({ openModals: [], openModalByType: null, closeModalByType: null });
 interface DialogContextValue {
     openModals: ModalTypes[];
-    openModalByType: any;
-    closeModalByType: any;
+    openModalByType: ((modalType: ModalTypes) => void) | null;
+    closeModalByType: ((modalType: ModalTypes) => void) | null;
 }
 
 const DialogProvider = (props: any) => {
