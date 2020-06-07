@@ -66,7 +66,7 @@ const ColumnName = styled.label`
 `;
 
 const CardsList = styled.div`
-    /* background-image: linear-gradient(${rgba('#ffffff', 0.7)}, ${rgba('#ffffff', 0)}); */
+    min-height: 1px;
 `;
 
 export default Column;
