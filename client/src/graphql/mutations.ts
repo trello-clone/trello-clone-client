@@ -19,7 +19,7 @@ export const CREATE_BOARD_BY_TEAM = gql`
     }
 `;
 
-// The mutation query is used to create a team 
+// The mutation query is used to create a team
 export const CREATE_TEAM = gql`
     mutation createTeam($name: String!, $members: [ID!]!) {
         createTeam(name: $name, members: $members) {
@@ -71,6 +71,22 @@ export const UPDATE_CARDS_IN_LIST = gql`
     mutation updateCardsInList($list_id: ID!, $cards: [CardInput]!, $cards_order: String!) {
         updateCardsInList(list_id: $list_id, cards: $cards, cards_order: $cards_order) {
             _id
+        }
+    }
+`;
+
+export const DELETE_BOARD = gql`
+    mutation deleteBoard($id: ID!) {
+        deleteBoard(id: $id) {
+            result
+        }
+    }
+`;
+
+export const DELETE_TEAM = gql`
+    mutation deleteTeam($id: ID!) {
+        deleteTeam(id: $id) {
+            result
         }
     }
 `;

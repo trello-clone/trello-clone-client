@@ -1,25 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
+import { useMutation } from '@apollo/react-hooks';
 
 import pen from '../icons/pen-01-white.svg';
 import trash from '../icons/trash-can-white.svg';
 import background from '../icons/background.jpg';
 import avatar from '../icons/avatar.jpg';
 import { Team } from '../types.js';
+import { DELETE_TEAM } from 'graphql/mutations';
 
 interface TeamCardProps {
     data: Team;
 }
 const TeamCard = (props: TeamCardProps) => {
     const { data } = props;
-    console.log(data);
-
+    const [deleteTeam] = useMutation(DELETE_TEAM);
+    const handleDelete = () => {
+        deleteTeam({variables: { id: data._id}});
+    }
     return (
         <CardContainer>
             <CardHeader>
                 <TeamName>{data.name}</TeamName>
-                <DeleteButton />
+                <DeleteButton onClick={handleDelete} />
                 <EditButton />
             </CardHeader>
             <CardBody>

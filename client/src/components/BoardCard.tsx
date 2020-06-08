@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
+import { useMutation } from '@apollo/react-hooks';
 
 import { useHistory } from 'react-router-dom';
 import pen from '../icons/pen-01-white.svg';
@@ -8,6 +9,7 @@ import trash from '../icons/trash-can-white.svg';
 import teamPic from '../icons/ray.jpg';
 import background from '../icons/teamBackground.jpg';
 import { Board } from '../types.js';
+import { DELETE_BOARD } from 'graphql/mutations';
 
 interface BoardCardProps {
     data: Board;
@@ -16,16 +18,20 @@ interface BoardCardProps {
 const BoardCard = (props: BoardCardProps) => {
     const { data } = props;
     const history = useHistory();
-
+    const [deleteBoard] = useMutation(DELETE_BOARD);
+    
     const openBoard = () => {
         history.push('/board/' + data._id);
     };
+    const handleDelete = () => {
+        deleteBoard({variables: { id: data._id}});
+    }
     
     return (
         <CardContainer onClick={openBoard}>
             <CardHeader>
                 <ProjectName>{data.title}</ProjectName>
-                <DeleteButton />
+                <DeleteButton onClick={handleDelete}/>
                 <EditButton />
             </CardHeader>
             <CardFooter>
@@ -99,9 +105,9 @@ const EditButton = styled.button`
     &:hover {
         cursor: pointer;
     }
-    &:focus {
+    /* &:focus {
         outline: 0;
-    }
+    } */
 `;
 const DeleteButton = styled.button`
     width: 15px;
@@ -113,9 +119,9 @@ const DeleteButton = styled.button`
     &:hover {
         cursor: pointer;
     }
-    &:focus {
+    /* &:focus {
         outline: 0;
-    }
+    } */
 `;
 const TeamPic = styled.img`
     width: 20px;

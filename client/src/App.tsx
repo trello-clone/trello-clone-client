@@ -21,18 +21,23 @@ function App() {
     const context = useContext(DialogContext);
     const { data: boardData, loading: boardLoading, refetch: boardRefetch} = useQuery(GET_BOARDS);
     const { data: teamData, loading: teamLoading, refetch: teamRefetch} = useQuery(GET_TEAMS);
-    const [needToRefetch, setNeedToRefetch] = useState(false)
-    const handleRefetchBoardData = () => {
-        setNeedToRefetch(true)
+    const [needToRefetchBoard, setNeedToRefetchBoard] = useState(false)
+    const [needToRefetchTeam, setNeedToRefetchTeam] = useState(false)
+    const handleRefetchBoard = () => {
+        setNeedToRefetchBoard(true)
+    }
+    const handleRefetchTeam = () => {
+        setNeedToRefetchTeam(true)
     }
     useEffect(()=> {
-        if(needToRefetch === true){
+        if(needToRefetchBoard === true){
             boardRefetch();
-            teamRefetch()
-
+        }else if(needToRefetchTeam === true){
+            teamRefetch();
         }
         return ()=>{
-            setNeedToRefetch(false)
+            setNeedToRefetchBoard(false)
+            setNeedToRefetchTeam(false)
         }
     })
     return (
@@ -55,8 +60,8 @@ function App() {
                             {!teamLoading && (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} />)}
                             <AddTeamCard />
                         </TeamContainer>
-                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoardData}/>}
-                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={handleRefetchBoardData}/>}
+                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoard}/>}
+                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={handleRefetchTeam}/>}
                     </Route>
                 </Switch>
             </MainContentWrapper>
