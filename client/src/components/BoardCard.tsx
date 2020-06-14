@@ -23,7 +23,9 @@ const BoardCard = (props: BoardCardProps) => {
     const openBoard = () => {
         history.push('/board/' + data._id);
     };
-    const handleDelete = () => {
+    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.preventDefault();
+        event.stopPropagation()
         deleteBoard({variables: { id: data._id}});
     }
     

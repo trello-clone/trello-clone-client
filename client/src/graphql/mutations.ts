@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-// The mutation query is used to create a new board by members
+//  Mutation to create a new board by members
 export const CREATE_BOARD_BY_MEMBERS = gql`
     mutation createBoardByMembers($title: String!, $members: [ID!]!) {
         createBoardByMembers(title: $title, members: $members) {
@@ -10,16 +10,16 @@ export const CREATE_BOARD_BY_MEMBERS = gql`
     }
 `;
 
-// The mutation query is used to create a new board by team
+// Mutation to create a new board by team
 export const CREATE_BOARD_BY_TEAM = gql`
-    mutation createBoardByTeam($title: String!, $team: [ID!]!) {
+    mutation createBoardByTeam($title: String!, $team: ID!) {
         createBoardByTeam(title: $title, team: $team) {
             title
         }
     }
 `;
 
-// The mutation query is used to create a team
+// Mutation to create a team
 export const CREATE_TEAM = gql`
     mutation createTeam($name: String!, $members: [ID!]!) {
         createTeam(name: $name, members: $members) {
@@ -75,6 +75,7 @@ export const UPDATE_CARDS_IN_LIST = gql`
     }
 `;
 
+// Mutation to delete a board
 export const DELETE_BOARD = gql`
     mutation deleteBoard($id: ID!) {
         deleteBoard(id: $id) {
@@ -83,10 +84,29 @@ export const DELETE_BOARD = gql`
     }
 `;
 
+// Mutation to delete a team
 export const DELETE_TEAM = gql`
     mutation deleteTeam($id: ID!) {
         deleteTeam(id: $id) {
             result
+        }
+    }
+`;
+
+// Mutation to update a team
+export const UPDATE_TEAM = gql`
+    mutation updateTeam($id: ID!, $name: String!, $members: [ID!]!) {
+        updateTeam(id: $id, name: $name, members: $members) {
+            ... on TeamWithMemberObj {
+                _id
+                name
+                description
+                members {
+                    _id
+                }
+                personal
+                _created
+            }
         }
     }
 `;

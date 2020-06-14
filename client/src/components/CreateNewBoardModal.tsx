@@ -24,7 +24,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         selectedItemID: [],
     });
     const [titleInput, setTitleInput] = useState('');
-    const [teamIDSelected, setTeamIDSelected] = useState<string[] | null>(null);
+    const [teamIDSelected, setTeamIDSelected] = useState<string | null>(null);
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
     const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
     const { data: teamData, loading: teamLoading } = useQuery(GET_TEAMS);
@@ -38,7 +38,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         setBoardModalOption(option);
     };
 
-    // get a board's members from users' selections
+    // Get a board's members from users' selections
     const boardMembers = selectState.selectedItemName;
 
     // Close the modal by clicking outside
@@ -51,7 +51,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         }
     };
 
-    // handle changes from custom select
+    // Handle changes from custom select
     const onSelectionChange = (item: any) => {
         setSelectState({
             ...selectState,
@@ -114,7 +114,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                         <TeamContainer>
                             {!teamLoading &&
                                 (teamData.teams as Team[]).map((team) => (
-                                    <TeamItem onClick={() => setTeamIDSelected([team._id])}>
+                                    <TeamItem onClick={() => setTeamIDSelected(team._id)}>
                                         <TeamImage src={background} alt="background" />
                                         <TeamLabel>{team.name}</TeamLabel>
                                     </TeamItem>

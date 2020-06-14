@@ -26,7 +26,6 @@ const CustomSelect = (props: any, state: any) => {
         variables: {keyword : keywordSearching} 
     });
     const handleValueChange = (item: any) => {
-        console.log("selected option",item)
         props.onSelectionChange(item);
     };
 

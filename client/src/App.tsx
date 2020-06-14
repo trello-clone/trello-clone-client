@@ -12,6 +12,7 @@ import AddBoardCard from './components/AddBoardCard';
 import AddTeamCard from './components/AddTeamCard';
 import CreateNewBoardModal from './components/CreateNewBoardModal';
 import CreateNewTeamModal from './components/CreateNewTeamModal';
+import UpdateTeamModal from './components/UpdateTeamModal'
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
 import { Board, Team} from './types';
@@ -62,6 +63,7 @@ function App() {
                         </TeamContainer>
                         {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoard}/>}
                         {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={handleRefetchTeam}/>}
+                        {context.openModals.includes(ModalTypes.UpdateTeam) && <UpdateTeamModal teamData={context.modalData as Team}/>}
                     </Route>
                 </Switch>
             </MainContentWrapper>

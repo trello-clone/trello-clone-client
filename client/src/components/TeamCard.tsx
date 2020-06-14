@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useMutation } from '@apollo/react-hooks';
@@ -9,22 +9,31 @@ import background from '../icons/background.jpg';
 import avatar from '../icons/avatar.jpg';
 import { Team } from '../types.js';
 import { DELETE_TEAM } from 'graphql/mutations';
+import { DialogContext, ModalTypes } from '../contexts/DialogContext';
+import UpdateTeamModal from '../components/UpdateTeamModal';
 
 interface TeamCardProps {
     data: Team;
 }
 const TeamCard = (props: TeamCardProps) => {
     const { data } = props;
+    const context = useContext(DialogContext);
     const [deleteTeam] = useMutation(DELETE_TEAM);
     const handleDelete = () => {
-        deleteTeam({variables: { id: data._id}});
-    }
+        deleteTeam({ variables: { id: data._id } });
+    };
+
     return (
+        <>
         <CardContainer>
             <CardHeader>
                 <TeamName>{data.name}</TeamName>
                 <DeleteButton onClick={handleDelete} />
-                <EditButton />
+                <EditButton
+                    onClick={() => {
+                        context.openModalByType!(ModalTypes.UpdateTeam, data);
+                    }}
+                />
             </CardHeader>
             <CardBody>
                 <CardItem>Member: {data.members.length}</CardItem>
@@ -38,6 +47,8 @@ const TeamCard = (props: TeamCardProps) => {
                 <TimeCreated>{moment(data._created).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>
+        
+        </>
     );
 };
 
