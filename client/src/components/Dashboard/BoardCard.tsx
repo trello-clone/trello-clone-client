@@ -1,15 +1,16 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useMutation } from '@apollo/react-hooks';
-
 import { useHistory } from 'react-router-dom';
-import pen from '../icons/pen-01-white.svg';
-import trash from '../icons/trash-can-white.svg';
-import teamPic from '../icons/ray.jpg';
-import background from '../icons/teamBackground.jpg';
-import { Board } from '../types.js';
+
+import pen from '../../icons/pen-01-white.svg';
+import trash from '../../icons/trash-can-white.svg';
+import teamPic from '../../icons/ray.jpg';
+import background from '../../icons/teamBackground.jpg';
+import { Board } from '../../types.js';
 import { DELETE_BOARD } from 'graphql/mutations';
+import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 
 interface BoardCardProps {
     data: Board;
@@ -18,6 +19,7 @@ interface BoardCardProps {
 const BoardCard = (props: BoardCardProps) => {
     const { data } = props;
     const history = useHistory();
+    const context = useContext(DialogContext);
     const [deleteBoard] = useMutation(DELETE_BOARD);
     
     const openBoard = () => {
@@ -28,13 +30,19 @@ const BoardCard = (props: BoardCardProps) => {
         event.stopPropagation()
         deleteBoard({variables: { id: data._id}});
     }
+
+    const handleEdit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.preventDefault();
+        event.stopPropagation()
+        context.openModalByType!(ModalTypes.UpdateBoard, data)
+    }
     
     return (
         <CardContainer onClick={openBoard}>
             <CardHeader>
                 <ProjectName>{data.title}</ProjectName>
                 <DeleteButton onClick={handleDelete}/>
-                <EditButton />
+                <EditButton onClick={handleEdit}/>
             </CardHeader>
             <CardFooter>
                 <TeamPic src={teamPic} />

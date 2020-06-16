@@ -6,6 +6,12 @@ export const GET_BOARDS = gql`
         boards {
             _id
             title
+            members {
+                _id
+                name
+                email
+                _created
+            }
             team {
                 ... on TeamWithMemberID {
                     _id

@@ -3,14 +3,13 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { useMutation } from '@apollo/react-hooks';
 
-import pen from '../icons/pen-01-white.svg';
-import trash from '../icons/trash-can-white.svg';
-import background from '../icons/background.jpg';
-import avatar from '../icons/avatar.jpg';
-import { Team } from '../types.js';
+import pen from '../../icons/pen-01-white.svg';
+import trash from '../../icons/trash-can-white.svg';
+import background from '../../icons/background.jpg';
+import avatar from '../../icons/avatar.jpg'
+import { Team } from '../../types.js';
 import { DELETE_TEAM } from 'graphql/mutations';
-import { DialogContext, ModalTypes } from '../contexts/DialogContext';
-import UpdateTeamModal from '../components/UpdateTeamModal';
+import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 
 interface TeamCardProps {
     data: Team;
@@ -113,9 +112,9 @@ const DeleteButton = styled.button`
     &:hover {
         cursor: pointer;
     }
-    &:focus {
+    /* &:focus {
         outline: 0;
-    }
+    } */
 `;
 
 const EditButton = styled.button`
@@ -127,9 +126,9 @@ const EditButton = styled.button`
     &:hover {
         cursor: pointer;
     }
-    &:focus {
+    /* &:focus {
         outline: 0;
-    }
+    } */
 `;
 const CardBody = styled.div`
     z-index: 1;

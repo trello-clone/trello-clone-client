@@ -4,6 +4,7 @@ import { Team, Board} from '../types'
 enum ModalTypes {
     CreateBoard = 'CreateBoard',
     CreateTeam = 'CreateTeam',
+    UpdateBoard = 'UpdateBoard',
     UpdateTeam = 'UpdateTeam',
 }
 

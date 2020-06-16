@@ -3,50 +3,36 @@ import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation } from '@apollo/react-hooks';
 
-import avatar from '../icons/avatar.jpg';
-import background from '../icons/teamBackground.jpg';
-import { DialogContext, ModalTypes } from '../contexts/DialogContext';
+import avatar from '../../icons/avatar.jpg';
+import background from '../../icons/teamBackground.jpg';
+import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { UPDATE_TEAM} from 'graphql/mutations';
-import { Team, User } from '../types.js';
+import { CREATE_TEAM } from 'graphql/mutations';
 
-interface TeamCardProps {
-    teamData: Team;
+interface TeamModalProps {
+    dataRefetch: any;
 }
-
-
-interface SelectState {
-    selectedItemName: String[],
-    selectedItemID: String[],
-}
-
-const UpdateTeamModal = (props: TeamCardProps) => {
-    const { teamData } = props;
+const CreateNewTeamdModal = (props: TeamModalProps) => {
+    const { dataRefetch } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-    
-    const [selectState, setSelectState] = useState< SelectState| null >({
+
+    const [selectState, setSelectState] = useState({
         selectedItemName: [],
         selectedItemID: [],
     });
     const [teamName, setTeamName] = useState('');
-    
-    
-    const teamMemberNameSelected = selectState!.selectedItemName as String[];
-    const teamMemberIDSelected = selectState!.selectedItemID as String[];
-    const teamMembers: User[] = teamData.members as User[];
-    const teamMemberNames : String[] = []; 
-    const teamMemberID : String[] = []; 
-    teamMembers.map((item: User) => teamMemberNames.push(item.name))
-    teamMembers.map((item: User) => teamMemberID.push(item._id))
-    
-    // Graphql mutation to update a team
-    const [ updateTeam ] = useMutation< {teamUpdate: Team}, {id: String, name: String, members: String[]}>(UPDATE_TEAM);
+
+    const [addTeam] = useMutation(CREATE_TEAM);
+
+    const teamMembers = selectState.selectedItemName;
+
     const onClickOutside = (e: any) => {
         const element = e.target;
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
-            context.closeModalByType!(ModalTypes.UpdateTeam);
+            e.stopPropagation();
+            context.closeModalByType!(ModalTypes.CreateBoard);
         }
     };
 
@@ -54,39 +40,37 @@ const UpdateTeamModal = (props: TeamCardProps) => {
     const onSelectionChange = (item: any) => {
         setSelectState({
             ...selectState,
-            selectedItemName: Array.from(new Set(selectState!.selectedItemName.concat(item.name))),
-            selectedItemID: Array.from(new Set(selectState!.selectedItemID.concat(item._id))),
+            selectedItemName: Array.from(new Set(selectState.selectedItemName.concat(item.name))),
+            selectedItemID: Array.from(new Set(selectState.selectedItemID.concat(item._id))),
         });
     };
 
-    const handleTeamNameChange = (input: React.ChangeEvent<HTMLInputElement>) => {
+    const handleTeamNameChange = (input: any) => {
         setTeamName(input.target.value);
     };
 
-    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        event.preventDefault();
-        event.stopPropagation();
-        updateTeam({ variables: {id: teamData._id , name: teamName, members: [...teamMemberIDSelected,...teamMemberID]}});
-        context.closeModalByType!(ModalTypes.UpdateTeam);
+    const handleSubmit = (e: any, refetch: any) => {
+        e.preventDefault();
+        addTeam({ variables: { name: teamName, members: selectState.selectedItemID } });
+        context.closeModalByType!(ModalTypes.CreateBoard);
+        refetch();
     };
+
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
 
         return () => window.removeEventListener('click', onClickOutside);
-    },);
+    });
 
     return (
         <Container>
             <Modal ref={modalRef}>
-                <Header>Update team</Header>
+                <Header>Create team</Header>
                 <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" />
-                <CustomSelect selectedItems={selectState!.selectedItemName} onSelectionChange={onSelectionChange} />
+                <CustomSelect selectedItems={selectState.selectedItemName} onSelectionChange={onSelectionChange} />
                 <MemberContainer>
                     <MemberList>
-                        {teamMemberNameSelected.map((item: String, index: any) => (
-                            <Member key={index}>{item}</Member>
-                        ))}
-                        {teamMemberNames.map((item: String, index: any) => (
+                        {teamMembers.map((item: any, index: any) => (
                             <Member key={index}>{item}</Member>
                         ))}
                     </MemberList>
@@ -105,14 +89,14 @@ const UpdateTeamModal = (props: TeamCardProps) => {
                     >
                         Cancel
                     </CancelButton>
-                    <UpdateBtn onClick={handleSubmit}>Update</UpdateBtn>
+                    <CreateNewTeamBtn onClick={(e) => handleSubmit(e, dataRefetch)}>Create new team</CreateNewTeamBtn>
                 </ButtonContainer>
             </Modal>
         </Container>
     );
 };
 
-export default UpdateTeamModal;
+export default CreateNewTeamdModal;
 
 const Container = styled.div`
     position: fixed;
@@ -209,7 +193,7 @@ const ButtonContainer = styled.div`
     margin-top: 40px;
 `;
 
-const UpdateBtn = styled.button`
+const CreateNewTeamBtn = styled.button`
     font-family: 'ProximaNovaBold', sans-serif;
     font-size: 16px;
     color: white;

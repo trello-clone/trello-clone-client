@@ -3,36 +3,50 @@ import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation } from '@apollo/react-hooks';
 
-import avatar from '../icons/avatar.jpg';
-import background from '../icons/teamBackground.jpg';
-import { DialogContext, ModalTypes } from '../contexts/DialogContext';
+import avatar from '../../icons/avatar.jpg';
+import background from '../../icons/teamBackground.jpg';
+import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { CREATE_TEAM } from 'graphql/mutations';
+import { UPDATE_TEAM} from 'graphql/mutations';
+import { Team, User } from '../../types.js';
 
-interface TeamModalProps {
-    dataRefetch: any;
+interface TeamCardProps {
+    teamData: Team;
 }
-const CreateNewTeamdModal = (props: TeamModalProps) => {
-    const { dataRefetch } = props;
+
+
+interface SelectState {
+    selectedItemName: String[],
+    selectedItemID: String[],
+}
+
+const UpdateTeamModal = (props: TeamCardProps) => {
+    const { teamData } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-
-    const [selectState, setSelectState] = useState({
+    
+    const [selectState, setSelectState] = useState< SelectState >({
         selectedItemName: [],
         selectedItemID: [],
     });
-    const [teamName, setTeamName] = useState('');
-
-    const [addTeam] = useMutation(CREATE_TEAM);
-
-    const teamMembers = selectState.selectedItemName;
-
+    const [teamName, setTeamName] = useState(teamData.name || "");
+    
+    const teamMemberNameSelected = selectState!.selectedItemName as String[];
+    const teamMemberIDSelected = selectState!.selectedItemID as String[];
+    // get the team's members from teamData props
+    const teamMembers: User[] = teamData.members as User[];
+    const teamMemberNames : String[] = []; 
+    const teamMemberID : String[] = []; 
+    teamMembers.map((item: User) => teamMemberNames.push(item.name))
+    teamMembers.map((item: User) => teamMemberID.push(item._id))
+    
+    // Graphql mutation to update a team
+    const [ updateTeam ] = useMutation< {teamUpdate: Team}, {id: String, name: String, members: String[]}>(UPDATE_TEAM);
     const onClickOutside = (e: any) => {
         const element = e.target;
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
-            e.stopPropagation();
-            context.closeModalByType!(ModalTypes.CreateBoard);
+            context.closeModalByType!(ModalTypes.UpdateTeam);
         }
     };
 
@@ -40,37 +54,39 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     const onSelectionChange = (item: any) => {
         setSelectState({
             ...selectState,
-            selectedItemName: Array.from(new Set(selectState.selectedItemName.concat(item.name))),
-            selectedItemID: Array.from(new Set(selectState.selectedItemID.concat(item._id))),
+            selectedItemName: Array.from(new Set(selectState!.selectedItemName.concat(item.name))),
+            selectedItemID: Array.from(new Set(selectState!.selectedItemID.concat(item._id))),
         });
     };
 
-    const handleTeamNameChange = (input: any) => {
+    const handleTeamNameChange = (input: React.ChangeEvent<HTMLInputElement>) => {
         setTeamName(input.target.value);
     };
 
-    const handleSubmit = (e: any, refetch: any) => {
-        e.preventDefault();
-        addTeam({ variables: { name: teamName, members: selectState.selectedItemID } });
-        context.closeModalByType!(ModalTypes.CreateBoard);
-        refetch();
+    const handleUpdateTeam = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        updateTeam({ variables: {id: teamData._id , name: teamName, members: [...teamMemberIDSelected,...teamMemberID]}});
+        context.closeModalByType!(ModalTypes.UpdateTeam);
     };
-
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
 
         return () => window.removeEventListener('click', onClickOutside);
-    });
+    },);
 
     return (
         <Container>
             <Modal ref={modalRef}>
-                <Header>Create team</Header>
-                <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" />
-                <CustomSelect selectedItems={selectState.selectedItemName} onSelectionChange={onSelectionChange} />
+                <Header>Update team</Header>
+                <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" value={teamName}/>
+                <CustomSelect selectedItems={selectState!.selectedItemName} onSelectionChange={onSelectionChange} />
                 <MemberContainer>
                     <MemberList>
-                        {teamMembers.map((item: any, index: any) => (
+                        {teamMemberNameSelected.map((item: String, index: any) => (
+                            <Member key={index}>{item}</Member>
+                        ))}
+                        {teamMemberNames.map((item: String, index: any) => (
                             <Member key={index}>{item}</Member>
                         ))}
                     </MemberList>
@@ -89,14 +105,14 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
                     >
                         Cancel
                     </CancelButton>
-                    <CreateNewTeamBtn onClick={(e) => handleSubmit(e, dataRefetch)}>Create new team</CreateNewTeamBtn>
+                    <UpdateBtn onClick={handleUpdateTeam}>Update</UpdateBtn>
                 </ButtonContainer>
             </Modal>
         </Container>
     );
 };
 
-export default CreateNewTeamdModal;
+export default UpdateTeamModal;
 
 const Container = styled.div`
     position: fixed;
@@ -193,7 +209,7 @@ const ButtonContainer = styled.div`
     margin-top: 40px;
 `;
 
-const CreateNewTeamBtn = styled.button`
+const UpdateBtn = styled.button`
     font-family: 'ProximaNovaBold', sans-serif;
     font-size: 16px;
     color: white;

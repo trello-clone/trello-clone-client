@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation, useQuery } from '@apollo/react-hooks';
 
-import avatar from '../icons/avatar.jpg';
-import background from '../icons/teamBackground.jpg';
-import { DialogContext, ModalTypes } from '../contexts/DialogContext';
+import avatar from '../../icons/avatar.jpg';
+import background from '../../icons/teamBackground.jpg';
+import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { Team } from '../types.js';
+import { Team } from '../../types.js';
 import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM } from 'graphql/mutations';
 import { GET_TEAMS } from 'graphql/queries';
 
@@ -24,7 +24,8 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         selectedItemID: [],
     });
     const [titleInput, setTitleInput] = useState('');
-    const [teamIDSelected, setTeamIDSelected] = useState<string | null>(null);
+    const [teamIDSelected, setTeamIDSelected] = useState('');
+    const [isSelected, setIsSelected] = useState(false);
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
     const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
     const { data: teamData, loading: teamLoading } = useQuery(GET_TEAMS);
@@ -64,6 +65,16 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const handleTitleChange = (input: any) => {
         setTitleInput(input.target.value);
     };
+
+    const handleTeamItemSelected = (team: Team)=> {
+        setTeamIDSelected(team._id)
+    }
+    const handleTeamStatus = (team: Team) =>{
+        if(team._id === teamIDSelected){
+            return true
+        }
+    }
+
 
     //create a new board by members
     const handleSubmitWithMembers = (e: MouseEvent, refetch: any) => {
@@ -114,7 +125,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                         <TeamContainer>
                             {!teamLoading &&
                                 (teamData.teams as Team[]).map((team) => (
-                                    <TeamItem onClick={() => setTeamIDSelected(team._id)}>
+                                    <TeamItem onClick={() => handleTeamItemSelected(team)} isSelected={handleTeamStatus(team) ? true : false} >
                                         <TeamImage src={background} alt="background" />
                                         <TeamLabel>{team.name}</TeamLabel>
                                     </TeamItem>
@@ -251,11 +262,16 @@ const TeamContainer = styled.div`
     display: flex;
     margin-bottom: 8px;
 `;
-const TeamItem = styled.div`
+const TeamItem = styled.div<{isSelected: boolean}>`
     display: flex;
     flex-flow: column wrap;
     align-items: center;
     margin-right: 12px;
+    border: ${(props) => props.isSelected ? `2px solid ${rgba(props.theme.colors.black, 0.25)}` : "none"};
+    border-radius: 4px;
+    &:hover{
+        cursor: pointer;
+    }
 `;
 const TeamImage = styled.img`
     width: 70px;

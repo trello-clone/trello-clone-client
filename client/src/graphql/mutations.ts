@@ -110,3 +110,23 @@ export const UPDATE_TEAM = gql`
         }
     }
 `;
+
+// Mutation to update a board
+export const UPDATE_BOARD = gql`
+    mutation updateBoard($id: ID!, $title: String!, $team: [ID!]) {
+        updateBoard(id: $id, title: $title, team: $team) {
+            _id
+            title
+            team {
+                ... on TeamWithMemberID {
+                    _id
+                    name
+                    description
+                    members
+                    personal
+                    _created
+                }
+            }
+        }
+    }
+`;

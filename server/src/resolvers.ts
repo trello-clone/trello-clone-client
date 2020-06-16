@@ -1,5 +1,5 @@
 import { API } from './api';
-import { Resolvers, User, Board, Team, List, Card } from './types';
+import { Resolvers, User, Board, Team, List, Card, DeletedItem} from './types';
 import { GraphQLScalarType } from 'graphql';
 
 export const resolvers: Resolvers = {
@@ -28,6 +28,10 @@ export const resolvers: Resolvers = {
         updateCardsInList: (parent, args) =>
             API.patch(`/list/${args.list_id}`, { cards: args.cards, cards_order: args.cards_order }).then((res) => res.data as List),
         createCard: (parent, args) => API.post(`/card`, { ...args }).then((res) => res.data as Card),
+        deleteBoard: (parent, args) => API.delete(`/board/${args.id}`).then((res)=> res.data as DeletedItem),
+        deleteTeam: (parent, args) => API.delete(`/team/${args.id}`).then((res)=> res.data as DeletedItem),
+        updateTeam: (parent, args) => API.put(`/team/${args.id}`,{...args}).then((res) => res.data as Team ),
+        updateBoard: (parent, args) => API.put(`/board/${args.id}`,{...args}).then((res) => res.data as Board ),
     },
     Team: {
         __resolveType: (obj) => {

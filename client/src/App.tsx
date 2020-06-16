@@ -4,15 +4,16 @@ import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { rgba } from 'polished';
 
-import TeamCard from './components/TeamCard';
-import BoardCard from './components/BoardCard';
+import TeamCard from './components/Dashboard/TeamCard';
+import BoardCard from './components/Dashboard/BoardCard';
 import Header from './components/Header';
 import SideBar from './components/SideBar';
-import AddBoardCard from './components/AddBoardCard';
-import AddTeamCard from './components/AddTeamCard';
-import CreateNewBoardModal from './components/CreateNewBoardModal';
-import CreateNewTeamModal from './components/CreateNewTeamModal';
-import UpdateTeamModal from './components/UpdateTeamModal'
+import AddBoardCard from './components/Dashboard/AddBoardCard';
+import AddTeamCard from './components/Dashboard/AddTeamCard';
+import CreateNewBoardModal from './components/Dashboard/CreateNewBoardModal';
+import CreateNewTeamModal from './components/Dashboard/CreateNewTeamModal';
+import UpdateTeamModal from './components/Dashboard/UpdateTeamModal';
+import UpdateBoardModal from './components/Dashboard/UpdateBoardModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
 import { Board, Team} from './types';
@@ -64,6 +65,7 @@ function App() {
                         {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoard}/>}
                         {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={handleRefetchTeam}/>}
                         {context.openModals.includes(ModalTypes.UpdateTeam) && <UpdateTeamModal teamData={context.modalData as Team}/>}
+                        {context.openModals.includes(ModalTypes.UpdateBoard) && <UpdateBoardModal boardData={context.modalData as Board}/>}
                     </Route>
                 </Switch>
             </MainContentWrapper>

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 
-import { DialogContext, ModalTypes } from '../contexts/DialogContext';
+import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 
 const AddBoardCard = () => {
     const context = useContext(DialogContext);

@@ -4,7 +4,7 @@ import { rgba } from 'polished';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
-import { selectTheme } from '../theme';
+import { selectTheme } from '../../theme';
 
 
 // The query is used to request a user from database with specific keywords

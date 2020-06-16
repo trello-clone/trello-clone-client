@@ -11,6 +11,10 @@ type Mutation {
     createBoardByMembers(title: String!, members: [ID!]!): Board!
     createBoardByTeam(title: String!, team: ID!): Board!
     createTeam(name: String!, description: String, members: [ID!]!): Team!
+    deleteBoard(id: ID!): DeletedItem!
+    deleteTeam(id: ID!): DeletedItem!
+    updateTeam(id: ID!,name: String!, description: String, members: [ID!]!): Team!
+    updateBoard(id: ID!, title: String!, team: [ID!], members: [ID!]): Board!
 
     # Create list and update lists order in board 
     createList(board_id: ID!, title: String!): List!
@@ -72,6 +76,10 @@ type Card {
     description: String
     _created: DateTime!
     _changed: DateTime!
+}
+
+type DeletedItem {
+    result: [ID!]
 }
 
 input CardInput {

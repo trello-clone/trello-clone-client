@@ -42,6 +42,11 @@ export type CardInput = {
 };
 
 
+export type DeletedItem = {
+   __typename?: 'DeletedItem';
+  result?: Maybe<Array<Scalars['ID']>>;
+};
+
 export type List = {
    __typename?: 'List';
   _id: Scalars['ID'];
@@ -56,6 +61,10 @@ export type Mutation = {
   createBoardByMembers: Board;
   createBoardByTeam: Board;
   createTeam: Team;
+  deleteBoard: DeletedItem;
+  deleteTeam: DeletedItem;
+  updateTeam: Team;
+  updateBoard: Board;
   createList: List;
   updateListOrder: Board;
   updateCardsInList: List;
@@ -79,6 +88,32 @@ export type MutationCreateTeamArgs = {
   name: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   members: Array<Scalars['ID']>;
+};
+
+
+export type MutationDeleteBoardArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteTeamArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationUpdateTeamArgs = {
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  members: Array<Scalars['ID']>;
+};
+
+
+export type MutationUpdateBoardArgs = {
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  team?: Maybe<Array<Scalars['ID']>>;
+  members?: Maybe<Array<Scalars['ID']>>;
 };
 
 
@@ -252,6 +287,7 @@ export type ResolversTypes = {
   List: ResolverTypeWrapper<List>,
   Card: ResolverTypeWrapper<Card>,
   Mutation: ResolverTypeWrapper<{}>,
+  DeletedItem: ResolverTypeWrapper<DeletedItem>,
   CardInput: CardInput,
 };
 
@@ -270,6 +306,7 @@ export type ResolversParentTypes = {
   List: List,
   Card: Card,
   Mutation: {},
+  DeletedItem: DeletedItem,
   CardInput: CardInput,
 };
 
@@ -298,6 +335,11 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
   name: 'DateTime'
 }
 
+export type DeletedItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeletedItem'] = ResolversParentTypes['DeletedItem']> = {
+  result?: Resolver<Maybe<Array<ResolversTypes['ID']>>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+};
+
 export type ListResolvers<ContextType = any, ParentType extends ResolversParentTypes['List'] = ResolversParentTypes['List']> = {
   _id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
@@ -311,6 +353,10 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createBoardByMembers?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardByMembersArgs, 'title' | 'members'>>,
   createBoardByTeam?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardByTeamArgs, 'title' | 'team'>>,
   createTeam?: Resolver<ResolversTypes['Team'], ParentType, ContextType, RequireFields<MutationCreateTeamArgs, 'name' | 'members'>>,
+  deleteBoard?: Resolver<ResolversTypes['DeletedItem'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'id'>>,
+  deleteTeam?: Resolver<ResolversTypes['DeletedItem'], ParentType, ContextType, RequireFields<MutationDeleteTeamArgs, 'id'>>,
+  updateTeam?: Resolver<ResolversTypes['Team'], ParentType, ContextType, RequireFields<MutationUpdateTeamArgs, 'id' | 'name' | 'members'>>,
+  updateBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardArgs, 'id' | 'title'>>,
   createList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationCreateListArgs, 'board_id' | 'title'>>,
   updateListOrder?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateListOrderArgs, 'board_id' | 'lists_order'>>,
   updateCardsInList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationUpdateCardsInListArgs, 'list_id' | 'cards' | 'cards_order'>>,
@@ -363,6 +409,7 @@ export type Resolvers<ContextType = any> = {
   Board?: BoardResolvers<ContextType>,
   Card?: CardResolvers<ContextType>,
   DateTime?: GraphQLScalarType,
+  DeletedItem?: DeletedItemResolvers<ContextType>,
   List?: ListResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,

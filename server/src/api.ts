@@ -34,4 +34,11 @@ export const API = {
         },
         data: payload,
     }),
+    delete: (endpoint: string) => axios({
+        method: "DELETE",
+        url: `${API_BASE_URL}${endpoint}`,
+        headers: {
+            'x-apikey': API_KEY
+        },
+    })
 };

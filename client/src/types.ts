@@ -19,6 +19,7 @@ export type Board = {
     _id: string;
     title: string;
     team: Team[];
+    members: User[];
     background?: string;
     lists_order?: string;
     _created: string;
