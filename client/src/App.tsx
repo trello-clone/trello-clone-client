@@ -54,12 +54,12 @@ function App() {
                     <Route path="/">
                         <Title>Boards</Title>
                         <BoardContainer>
-                            {!boardLoading && (boardData.boards as Board[]).map((board) => <BoardCard key={board._id} data={board} />)}
+                            {!boardLoading && (boardData.boards as Board[]).map((board) => <BoardCard key={board._id} data={board} dataRefetch={handleRefetchBoard} />)}
                             <AddBoardCard/>
                         </BoardContainer>
                         <Title>Teams</Title>
                         <TeamContainer>
-                            {!teamLoading && (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} />)}
+                            {!teamLoading && (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} dataRefetch={handleRefetchTeam}/>)}
                             <AddTeamCard />
                         </TeamContainer>
                         {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoard}/>}

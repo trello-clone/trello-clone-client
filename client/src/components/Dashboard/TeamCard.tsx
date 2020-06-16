@@ -13,13 +13,17 @@ import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 
 interface TeamCardProps {
     data: Team;
+    dataRefetch: any
 }
 const TeamCard = (props: TeamCardProps) => {
-    const { data } = props;
+    const { data, dataRefetch } = props;
     const context = useContext(DialogContext);
     const [deleteTeam] = useMutation(DELETE_TEAM);
-    const handleDelete = () => {
+    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>,refetch: any) => {
+        event.preventDefault();
+        event.stopPropagation();
         deleteTeam({ variables: { id: data._id } });
+        refetch();
     };
 
     return (
@@ -27,7 +31,7 @@ const TeamCard = (props: TeamCardProps) => {
         <CardContainer>
             <CardHeader>
                 <TeamName>{data.name}</TeamName>
-                <DeleteButton onClick={handleDelete} />
+                <DeleteButton onClick={(e) => handleDelete(e, dataRefetch)}/>
                 <EditButton
                     onClick={() => {
                         context.openModalByType!(ModalTypes.UpdateTeam, data);

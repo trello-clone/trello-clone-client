@@ -14,10 +14,11 @@ import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 
 interface BoardCardProps {
     data: Board;
+    dataRefetch: any;
 }
 
 const BoardCard = (props: BoardCardProps) => {
-    const { data } = props;
+    const { data, dataRefetch } = props;
     const history = useHistory();
     const context = useContext(DialogContext);
     const [deleteBoard] = useMutation(DELETE_BOARD);
@@ -25,10 +26,11 @@ const BoardCard = (props: BoardCardProps) => {
     const openBoard = () => {
         history.push('/board/' + data._id);
     };
-    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>,refetch: any) => {
         event.preventDefault();
         event.stopPropagation()
         deleteBoard({variables: { id: data._id}});
+        refetch();
     }
 
     const handleEdit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -41,7 +43,7 @@ const BoardCard = (props: BoardCardProps) => {
         <CardContainer onClick={openBoard}>
             <CardHeader>
                 <ProjectName>{data.title}</ProjectName>
-                <DeleteButton onClick={handleDelete}/>
+                <DeleteButton onClick={(e) => handleDelete(e, dataRefetch)}/>
                 <EditButton onClick={handleEdit}/>
             </CardHeader>
             <CardFooter>

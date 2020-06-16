@@ -25,7 +25,6 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     });
     const [titleInput, setTitleInput] = useState('');
     const [teamIDSelected, setTeamIDSelected] = useState('');
-    const [isSelected, setIsSelected] = useState(false);
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
     const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
     const { data: teamData, loading: teamLoading } = useQuery(GET_TEAMS);
@@ -74,7 +73,6 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
             return true
         }
     }
-
 
     //create a new board by members
     const handleSubmitWithMembers = (e: MouseEvent, refetch: any) => {
