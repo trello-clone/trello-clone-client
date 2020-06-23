@@ -35,7 +35,7 @@ const UpdateTeamModal = (props: TeamCardProps) => {
         const element = e.target;
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
-            context.closeModalByType!(ModalTypes.UpdateTeam);
+            context.closeModal!({modalType: ModalTypes.UpdateTeam});
         }
     };
 
@@ -59,7 +59,7 @@ const UpdateTeamModal = (props: TeamCardProps) => {
         if (!loading) {
             dataRefetch();
         }
-        context.closeModalByType!(ModalTypes.UpdateTeam);
+        context.closeModal!({modalType: ModalTypes.UpdateTeam});
     };
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
@@ -89,7 +89,7 @@ const UpdateTeamModal = (props: TeamCardProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModalByType!(ModalTypes.CreateTeam);
+                            context.closeModal!({modalType: ModalTypes.UpdateTeam});
                         }}
                     >
                         Cancel

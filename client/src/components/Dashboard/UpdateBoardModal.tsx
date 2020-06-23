@@ -41,7 +41,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModalByType!(ModalTypes.CreateBoard);
+            context.closeModal!({modalType: ModalTypes.UpdateBoard});
         }
     };
 
@@ -66,7 +66,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
         if (!loading) {
             dataRefetch();
         }
-        context.closeModalByType!(ModalTypes.UpdateBoard);
+        context.closeModal!({modalType: ModalTypes.UpdateBoard});
     };
 
     useEffect(() => {
@@ -122,7 +122,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModalByType!(ModalTypes.CreateBoard);
+                            context.closeModal!({modalType: ModalTypes.UpdateBoard});
                         }}
                     >
                         Cancel

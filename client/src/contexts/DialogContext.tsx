@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Team, Board} from '../types'
 
 enum ModalTypes {
     CreateBoard = 'CreateBoard',
@@ -7,33 +6,31 @@ enum ModalTypes {
     UpdateBoard = 'UpdateBoard',
     UpdateTeam = 'UpdateTeam',
 }
-
-const DialogContext = React.createContext<DialogContextValue>({ openModals: [], openModalByType: null, closeModalByType: null, modalData: undefined });
+interface OpenModal {
+    modalType: ModalTypes;
+    dataType?: any;
+}
+const DialogContext = React.createContext<DialogContextValue>({ openModals: [], openModal: null, closeModal: null});
 interface DialogContextValue {
-    openModals: ModalTypes[];
-    modalData?: Team| Board;
-    openModalByType: ((modalType: ModalTypes, dataType?: Team | Board) => void) | null;
-    closeModalByType: ((modalType: ModalTypes) => void) | null;
+    openModals: OpenModal[];
+    openModal: ((modal: OpenModal) => void) | null;
+    closeModal: ((modal: OpenModal) => void) | null;
 }
 
 const DialogProvider = (props: any) => {
-    const [openModals, setOpenModals] = useState<ModalTypes[]>([]);
-    const [modalData, setModalData] = useState<Team|Board>();
-
-    const openModalByType = (modalType: ModalTypes, data?: Team | Board) => {
-        if (!openModals.includes(modalType)) {
-            setOpenModals(openModals.concat(modalType));
-            setModalData(data)
+    const [openModals, setOpenModals] = useState<OpenModal[]>([]);
+    const openModal = (modal: OpenModal) => {
+        if(openModals.find(openModal => openModal.modalType === modal.modalType) === undefined){
+            setOpenModals(openModals.concat(modal))
         }
     };
-    const closeModalByType = (modalType: ModalTypes) => {
-        const index = openModals.indexOf(modalType);
+    const closeModal= (modal: OpenModal) => {
+        const index = openModals.indexOf(modal);
         const newOpenModal = [...openModals];
         newOpenModal.splice(index, 1);
         setOpenModals(newOpenModal);
-        setModalData(undefined)
     };
-    return <DialogContext.Provider value={{ openModals, closeModalByType, openModalByType, modalData }}>{props.children}</DialogContext.Provider>;
+    return <DialogContext.Provider value={{ openModals, closeModal, openModal}}>{props.children}</DialogContext.Provider>;
 };
 
 export { DialogContext, ModalTypes, DialogProvider };

@@ -43,7 +43,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModalByType!(ModalTypes.CreateBoard);
+            context.closeModal!({modalType: ModalTypes.CreateBoard});
         }
     };
 
@@ -74,7 +74,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const handleSubmitWithMembers = (e: MouseEvent) => {
         e.preventDefault();
         addBoardByMembers({ variables: { title: titleInput, members: selectedItemID } });
-        context.closeModalByType!(ModalTypes.CreateBoard);
+        context.closeModal!({modalType: ModalTypes.CreateBoard});
         dataRefetch();
     };
 
@@ -82,7 +82,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const handleSubmitWithTeam = (e: MouseEvent) => {
         e.preventDefault();
         addBoardByTeam({ variables: { title: titleInput, team: teamIDSelected } });
-        context.closeModalByType!(ModalTypes.CreateBoard);
+        context.closeModal!({modalType: ModalTypes.CreateBoard});
         dataRefetch();
     };
 
@@ -155,7 +155,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModalByType!(ModalTypes.CreateBoard);
+                            context.closeModal!({modalType: ModalTypes.CreateBoard});
                         }}
                     >
                         Cancel

@@ -51,13 +51,17 @@ function App() {
                                 (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} dataRefetch={teamRefetch} />)}
                             <AddTeamCard />
                         </TeamContainer>
-                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={boardRefetch} />}
-                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={teamRefetch} />}
-                        {context.openModals.includes(ModalTypes.UpdateTeam) && (
-                            <UpdateTeamModal dataRefetch={teamRefetch} teamData={context.modalData as Team} />
+                        {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateBoard) !== undefined && (
+                            <CreateNewBoardModal dataRefetch={boardRefetch} />
                         )}
-                        {context.openModals.includes(ModalTypes.UpdateBoard) && (
-                            <UpdateBoardModal dataRefetch={boardRefetch} boardData={context.modalData as Board} />
+                        {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateTeam) !== undefined && (
+                            <CreateNewTeamModal dataRefetch={teamRefetch} />
+                        )}
+                        {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) !== undefined && (
+                            <UpdateBoardModal dataRefetch={boardRefetch} boardData={context.openModals[0].dataType} />
+                        )}
+                        {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) !== undefined && (
+                            <UpdateTeamModal dataRefetch={teamRefetch} teamData={context.openModals[0].dataType} />
                         )}
                     </Route>
                 </Switch>

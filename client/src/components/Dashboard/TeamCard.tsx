@@ -36,7 +36,7 @@ const TeamCard = (props: TeamCardProps) => {
                 <DeleteButton onClick={handleDelete}/>
                 <EditButton
                     onClick={() => {
-                        context.openModalByType!(ModalTypes.UpdateTeam, data);
+                        context.openModal!({modalType: ModalTypes.UpdateTeam, dataType: data});
                     }}
                 />
             </CardHeader>

@@ -38,7 +38,7 @@ const BoardCard = (props: BoardCardProps) => {
     const handleEdit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
-        context.openModalByType!(ModalTypes.UpdateBoard, data);
+        context.openModal!({modalType: ModalTypes.UpdateBoard, dataType: data});
     };
 
     return (

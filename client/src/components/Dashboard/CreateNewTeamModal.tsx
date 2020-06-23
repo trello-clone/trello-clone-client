@@ -29,7 +29,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModalByType!(ModalTypes.CreateBoard);
+            context.closeModal!({modalType: ModalTypes.CreateTeam});
         }
     };
 
@@ -41,7 +41,6 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
             setSelectedItemID(selectedItemID.concat(item._id));
         }
     };
-    console.log(selectedItem);
     const handleTeamNameChange = (input: React.ChangeEvent<HTMLInputElement>) => {
         setTeamName(input.target.value);
     };
@@ -49,7 +48,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         addTeam({ variables: { name: teamName, members: selectedItemID } });
-        context.closeModalByType!(ModalTypes.CreateBoard);
+        context.closeModal!({modalType: ModalTypes.CreateTeam});
         dataRefetch();
     };
 
@@ -81,7 +80,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModalByType!(ModalTypes.CreateTeam);
+                            context.closeModal!({modalType: ModalTypes.CreateTeam});
                         }}
                     >
                         Cancel

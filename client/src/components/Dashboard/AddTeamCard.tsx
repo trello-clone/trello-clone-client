@@ -9,7 +9,7 @@ const AddTeamCard = () => {
     return (
         <AddBtn
             onClick={() => {
-                context.openModalByType!(ModalTypes.CreateTeam);
+                context.openModal!({modalType: ModalTypes.CreateTeam});
             }}
         >
             +
