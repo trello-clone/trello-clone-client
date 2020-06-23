@@ -7,7 +7,7 @@ import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { Team } from '../../types.js';
+import { Team, User } from '../../types.js';
 import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM } from 'graphql/mutations';
 import { GET_TEAMS } from 'graphql/queries';
 
@@ -19,10 +19,9 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
     const [boardModalOption, setBoardModalOption] = useState('Member');
-    const [selectState, setSelectState] = useState({
-        selectedItemName: [],
-        selectedItemID: [],
-    });
+    const [selectedItem, setSelectedItem] = useState<User[]>([]);
+    const [selectedItemName, setSelectedItemName] = useState<String[]>([]);
+    const [selectedItemID, setSelectedItemID] = useState<String[]>([]);
     const [titleInput, setTitleInput] = useState('');
     const [teamIDSelected, setTeamIDSelected] = useState('');
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
@@ -38,9 +37,6 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         setBoardModalOption(option);
     };
 
-    // Get a board's members from users' selections
-    const boardMembers = selectState.selectedItemName;
-
     // Close the modal by clicking outside
     const onClickOutside = (e: any) => {
         const element = e.target;
@@ -51,13 +47,13 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         }
     };
 
-    // Handle changes from custom select
-    const onSelectionChange = (item: any) => {
-        setSelectState({
-            ...selectState,
-            selectedItemName: Array.from(new Set(selectState.selectedItemName.concat(item.name))),
-            selectedItemID: Array.from(new Set(selectState.selectedItemID.concat(item._id))),
-        });
+    // handle changes from custom select
+    const getSelectResult = (item: User) => {
+        if (selectedItem.find((itemInArr) => itemInArr === item) === undefined) {
+            setSelectedItem(selectedItem.concat(item));
+            setSelectedItemName(selectedItemName.concat(item.name));
+            setSelectedItemID(selectedItemID.concat(item._id));
+        }
     };
 
     // Handle changes of a board's title
@@ -65,29 +61,29 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         setTitleInput(input.target.value);
     };
 
-    const handleTeamItemSelected = (team: Team)=> {
-        setTeamIDSelected(team._id)
-    }
-    const handleTeamStatus = (team: Team) =>{
-        if(team._id === teamIDSelected){
-            return true
+    const handleTeamItemSelected = (team: Team) => {
+        setTeamIDSelected(team._id);
+    };
+    const handleTeamStatus = (team: Team) => {
+        if (team._id === teamIDSelected) {
+            return true;
         }
-    }
+    };
 
     //create a new board by members
-    const handleSubmitWithMembers = (e: MouseEvent, refetch: any) => {
+    const handleSubmitWithMembers = (e: MouseEvent) => {
         e.preventDefault();
-        addBoardByMembers({ variables: { title: titleInput, members: selectState.selectedItemID } });
+        addBoardByMembers({ variables: { title: titleInput, members: selectedItemID } });
         context.closeModalByType!(ModalTypes.CreateBoard);
-        refetch();
+        dataRefetch();
     };
 
     //create a new board by team
-    const handleSubmitWithTeam = (e: MouseEvent, refetch: any) => {
+    const handleSubmitWithTeam = (e: MouseEvent) => {
         e.preventDefault();
         addBoardByTeam({ variables: { title: titleInput, team: teamIDSelected } });
         context.closeModalByType!(ModalTypes.CreateBoard);
-        refetch();
+        dataRefetch();
     };
 
     useEffect(() => {
@@ -101,7 +97,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 <Header>Create board</Header>
                 <TypeWrapper>
                     <TypeNav
-                        active={boardModalOption === BoardModalOptions.Team ? true : false}
+                        active={boardModalOption === BoardModalOptions.Team}
                         onClick={() => {
                             selectOption(BoardModalOptions.Team);
                         }}
@@ -109,7 +105,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                         With team
                     </TypeNav>
                     <TypeNav
-                        active={boardModalOption === BoardModalOptions.Member ? true : false}
+                        active={boardModalOption === BoardModalOptions.Member}
                         onClick={() => {
                             selectOption(BoardModalOptions.Member);
                         }}
@@ -123,7 +119,10 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                         <TeamContainer>
                             {!teamLoading &&
                                 (teamData.teams as Team[]).map((team) => (
-                                    <TeamItem onClick={() => handleTeamItemSelected(team)} isSelected={handleTeamStatus(team) ? true : false} >
+                                    <TeamItem
+                                        onClick={() => handleTeamItemSelected(team)}
+                                        isSelected={handleTeamStatus(team) ? true : false}
+                                    >
                                         <TeamImage src={background} alt="background" />
                                         <TeamLabel>{team.name}</TeamLabel>
                                     </TeamItem>
@@ -133,10 +132,10 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 )}
                 {boardModalOption === BoardModalOptions.Member && (
                     <>
-                        <CustomSelect selectedItems={selectState.selectedItemName} onSelectionChange={onSelectionChange} />
+                        <CustomSelect selectItems={getSelectResult} />
                         <MemberContainer>
                             <MemberList>
-                                {boardMembers.map((item: any, index: any) => (
+                                {selectedItemName.map((item: any, index: any) => (
                                     <Member key={index}>{item}</Member>
                                 ))}
                             </MemberList>
@@ -162,9 +161,9 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                         Cancel
                     </CancelButton>
                     {boardModalOption === BoardModalOptions.Member ? (
-                        <CreateNewBoardBtn onClick={(e) => handleSubmitWithMembers(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
+                        <CreateNewBoardBtn onClick={handleSubmitWithMembers}>Create new board</CreateNewBoardBtn>
                     ) : (
-                        <CreateNewBoardBtn onClick={(e) => handleSubmitWithTeam(e, dataRefetch)}>Create new board</CreateNewBoardBtn>
+                        <CreateNewBoardBtn onClick={handleSubmitWithTeam}>Create new board</CreateNewBoardBtn>
                     )}
                 </ButtonContainer>
             </Modal>
@@ -260,14 +259,14 @@ const TeamContainer = styled.div`
     display: flex;
     margin-bottom: 8px;
 `;
-const TeamItem = styled.div<{isSelected: boolean}>`
+const TeamItem = styled.div<{ isSelected: boolean }>`
     display: flex;
     flex-flow: column wrap;
     align-items: center;
     margin-right: 12px;
-    border: ${(props) => props.isSelected ? `2px solid ${rgba(props.theme.colors.black, 0.25)}` : "none"};
+    border: ${(props) => (props.isSelected ? `2px solid ${rgba(props.theme.colors.black, 0.25)}` : 'none')};
     border-radius: 4px;
-    &:hover{
+    &:hover {
         cursor: pointer;
     }
 `;

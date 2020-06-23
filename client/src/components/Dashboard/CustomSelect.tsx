@@ -1,40 +1,27 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 import { rgba } from 'polished';
-import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 
 import { selectTheme } from '../../theme';
-
-
-// The query is used to request a user from database with specific keywords
-const GET_USERS = gql`
-query users($keyword : String!){
-    users(keyword: $keyword){
-      _id
-      name
-      email
-      avatar
-    }
-  }
-`;
+import { User } from '../../types';
+import { GET_USERS } from '../../graphql/queries';
 
 const CustomSelect = (props: any, state: any) => {
-    const [keywordSearching, setKeyWordSearching] = useState("");
-    const [memberOptions, setMemberOptions] = useState([])
-    const { data, loading} = useQuery(GET_USERS, {
-        variables: {keyword : keywordSearching} 
+    const [keywordSearching, setKeyWordSearching] = useState('');
+    const [memberOptions, setMemberOptions] = useState([]);
+    const { data, loading } = useQuery(GET_USERS, {
+        variables: { keyword: keywordSearching },
     });
-    const handleValueChange = (item: any) => {
-        props.onSelectionChange(item);
-    };
 
-    const handleInputChange = (input: any) => {
-        setKeyWordSearching(input)
-        if(!loading){
-            setMemberOptions(data.users)
+    const handleInputChange = (input: string) => {
+        if (input !== '') {
+            setKeyWordSearching(input);
         }
-    }
+        if (!loading && data) {
+            setMemberOptions(data.users);
+        }
+    };
     const customStyles = {
         option: (provided: any, state: any) => ({
             ...provided,
@@ -85,7 +72,6 @@ const CustomSelect = (props: any, state: any) => {
             margin: 0,
             fontFamily: 'ProximaNovaMedium',
             fontSize: '16px',
-            
         }),
     };
     return (
@@ -93,11 +79,11 @@ const CustomSelect = (props: any, state: any) => {
             <Select
                 styles={customStyles}
                 options={memberOptions}
-                getOptionLabel={(option)=>`${option.name}`}
+                getOptionLabel={(option: User) => `${option.name}`}
                 // getOptionValue={(option)=>`${option.name}`}
                 placeholder="Enter member's name"
                 isSearchable
-                onChange={handleValueChange}
+                onChange={(item) => props.selectItems(item)}
                 value={null}
                 onInputChange={handleInputChange}
             />

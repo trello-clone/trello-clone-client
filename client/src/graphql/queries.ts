@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-// The query is used to fetch boards' data from database
+// Query to fetch boards' data from database
 export const GET_BOARDS = gql`
     query {
         boards {
@@ -10,6 +10,7 @@ export const GET_BOARDS = gql`
                 _id
                 name
                 email
+                avatar
                 _created
             }
             team {
@@ -28,7 +29,7 @@ export const GET_BOARDS = gql`
     }
 `;
 
-// The query is used to get the teams' info from the database
+// Query tp get the teams' info from the database
 export const GET_TEAMS = gql`
     {
         teams {
@@ -38,11 +39,14 @@ export const GET_TEAMS = gql`
                 description
                 members {
                     _id
-                    email
                     name
+                    email
+                    avatar
+                    _created
                 }
                 personal
                 _created
+                _changed
             }
         }
     }
@@ -62,6 +66,9 @@ export const GET_BOARD = gql`
             members {
                 _id
                 name
+                email
+                avatar
+                _created
             }
             background
             lists_order
@@ -85,6 +92,19 @@ export const GET_LISTS_BY_BOARD_ID = gql`
                 _created
                 _changed
             }
+        }
+    }
+`;
+
+// Query to request a user from database with specific keywords
+export const GET_USERS = gql`
+    query users($keyword: String!) {
+        users(keyword: $keyword) {
+            _id
+            name
+            email
+            avatar
+            _created
         }
     }
 `;

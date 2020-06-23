@@ -8,6 +8,7 @@ import background from '../../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { CREATE_TEAM } from 'graphql/mutations';
+import { User } from '../../types';
 
 interface TeamModalProps {
     dataRefetch: any;
@@ -16,16 +17,12 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     const { dataRefetch } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-
-    const [selectState, setSelectState] = useState({
-        selectedItemName: [],
-        selectedItemID: [],
-    });
+    const [selectedItem, setSelectedItem] = useState<User[]>([]);
+    const [selectedItemName, setSelectedItemName] = useState<String[]>([]);
+    const [selectedItemID, setSelectedItemID] = useState<String[]>([]);
     const [teamName, setTeamName] = useState('');
 
     const [addTeam] = useMutation(CREATE_TEAM);
-
-    const teamMembers = selectState.selectedItemName;
 
     const onClickOutside = (e: any) => {
         const element = e.target;
@@ -37,23 +34,23 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     };
 
     // handle changes from custom select
-    const onSelectionChange = (item: any) => {
-        setSelectState({
-            ...selectState,
-            selectedItemName: Array.from(new Set(selectState.selectedItemName.concat(item.name))),
-            selectedItemID: Array.from(new Set(selectState.selectedItemID.concat(item._id))),
-        });
+    const getSelectResult = (item: User) => {
+        if (selectedItem.find((itemInArr) => itemInArr === item) === undefined) {
+            setSelectedItem(selectedItem.concat(item));
+            setSelectedItemName(selectedItemName.concat(item.name));
+            setSelectedItemID(selectedItemID.concat(item._id));
+        }
     };
-
-    const handleTeamNameChange = (input: any) => {
+    console.log(selectedItem);
+    const handleTeamNameChange = (input: React.ChangeEvent<HTMLInputElement>) => {
         setTeamName(input.target.value);
     };
 
-    const handleSubmit = (e: any, refetch: any) => {
-        e.preventDefault();
-        addTeam({ variables: { name: teamName, members: selectState.selectedItemID } });
+    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        event.preventDefault();
+        addTeam({ variables: { name: teamName, members: selectedItemID } });
         context.closeModalByType!(ModalTypes.CreateBoard);
-        refetch();
+        dataRefetch();
     };
 
     useEffect(() => {
@@ -67,10 +64,10 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
             <Modal ref={modalRef}>
                 <Header>Create team</Header>
                 <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" />
-                <CustomSelect selectedItems={selectState.selectedItemName} onSelectionChange={onSelectionChange} />
+                <CustomSelect selectItems={getSelectResult} />
                 <MemberContainer>
                     <MemberList>
-                        {teamMembers.map((item: any, index: any) => (
+                        {selectedItemName.map((item: String, index: any) => (
                             <Member key={index}>{item}</Member>
                         ))}
                     </MemberList>
@@ -89,7 +86,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
                     >
                         Cancel
                     </CancelButton>
-                    <CreateNewTeamBtn onClick={(e) => handleSubmit(e, dataRefetch)}>Create new team</CreateNewTeamBtn>
+                    <CreateNewTeamBtn onClick={handleSubmit}>Create new team</CreateNewTeamBtn>
                 </ButtonContainer>
             </Modal>
         </Container>

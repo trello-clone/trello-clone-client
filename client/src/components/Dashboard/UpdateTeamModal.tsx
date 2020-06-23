@@ -7,41 +7,30 @@ import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { UPDATE_TEAM} from 'graphql/mutations';
+import { UPDATE_TEAM } from 'graphql/mutations';
 import { Team, User } from '../../types.js';
 
 interface TeamCardProps {
     teamData: Team;
-}
-
-
-interface SelectState {
-    selectedItemName: String[],
-    selectedItemID: String[],
+    dataRefetch: any;
 }
 
 const UpdateTeamModal = (props: TeamCardProps) => {
-    const { teamData } = props;
+    const { teamData, dataRefetch } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-    
-    const [selectState, setSelectState] = useState< SelectState >({
-        selectedItemName: [],
-        selectedItemID: [],
-    });
-    const [teamName, setTeamName] = useState(teamData.name || "");
-    
-    const teamMemberNameSelected = selectState!.selectedItemName as String[];
-    const teamMemberIDSelected = selectState!.selectedItemID as String[];
-    // get the team's members from teamData props
-    const teamMembers: User[] = teamData.members as User[];
-    const teamMemberNames : String[] = []; 
-    const teamMemberID : String[] = []; 
-    teamMembers.map((item: User) => teamMemberNames.push(item.name))
-    teamMembers.map((item: User) => teamMemberID.push(item._id))
-    
+    const [teamName, setTeamName] = useState(teamData.name || '');
+    const [selectedItem, setSelectedItem] = useState<User[]>((teamData.members as User[]) || undefined);
+    const teamMemberName: string[] = [];
+    const teamMemberID: string[] = [];
+    if (selectedItem) {
+        selectedItem.map((item) => teamMemberName.push(item.name));
+        selectedItem.map((item) => teamMemberID.push(item._id));
+    }
+    const [selectedItemName, setSelectedItemName] = useState<string[]>(teamMemberName || '');
+    const [selectedItemID, setSelectedItemID] = useState<string[]>(teamMemberID || '');
     // Graphql mutation to update a team
-    const [ updateTeam ] = useMutation< {teamUpdate: Team}, {id: String, name: String, members: String[]}>(UPDATE_TEAM);
+    const [updateTeam, { loading }] = useMutation<{ teamUpdate: Team }, { id: String; name: String; members: String[] }>(UPDATE_TEAM);
     const onClickOutside = (e: any) => {
         const element = e.target;
         if (modalRef.current && !modalRef.current.contains(element)) {
@@ -51,12 +40,12 @@ const UpdateTeamModal = (props: TeamCardProps) => {
     };
 
     // handle changes from custom select
-    const onSelectionChange = (item: any) => {
-        setSelectState({
-            ...selectState,
-            selectedItemName: Array.from(new Set(selectState!.selectedItemName.concat(item.name))),
-            selectedItemID: Array.from(new Set(selectState!.selectedItemID.concat(item._id))),
-        });
+    const getSelectResult = (item: any) => {
+        if (selectedItem && selectedItem.find((itemInArr) => itemInArr._id === item._id) === undefined) {
+            setSelectedItem(selectedItem.concat(item));
+            setSelectedItemName(selectedItemName.concat(item.name));
+            setSelectedItemID(selectedItemID.concat(item._id));
+        }
     };
 
     const handleTeamNameChange = (input: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,27 +55,27 @@ const UpdateTeamModal = (props: TeamCardProps) => {
     const handleUpdateTeam = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
-        updateTeam({ variables: {id: teamData._id , name: teamName, members: [...teamMemberIDSelected,...teamMemberID]}});
+        updateTeam({ variables: { id: teamData._id, name: teamName, members: teamMemberID } });
+        if (!loading) {
+            dataRefetch();
+        }
         context.closeModalByType!(ModalTypes.UpdateTeam);
     };
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
 
         return () => window.removeEventListener('click', onClickOutside);
-    },);
+    });
 
     return (
         <Container>
             <Modal ref={modalRef}>
                 <Header>Update team</Header>
-                <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" value={teamName}/>
-                <CustomSelect selectedItems={selectState!.selectedItemName} onSelectionChange={onSelectionChange} />
+                <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" value={teamName} />
+                <CustomSelect selectItems={getSelectResult} />
                 <MemberContainer>
                     <MemberList>
-                        {teamMemberNameSelected.map((item: String, index: any) => (
-                            <Member key={index}>{item}</Member>
-                        ))}
-                        {teamMemberNames.map((item: String, index: any) => (
+                        {selectedItemName.map((item: String, index: any) => (
                             <Member key={index}>{item}</Member>
                         ))}
                     </MemberList>

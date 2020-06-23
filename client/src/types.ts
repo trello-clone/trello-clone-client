@@ -5,6 +5,7 @@ export type Team = {
     members: User[] | string[];
     personal: boolean;
     _created: string;
+    _changed: string;
 };
 
 export type User = {

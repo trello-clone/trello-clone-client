@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useMutation } from '@apollo/react-hooks';
@@ -21,34 +21,36 @@ const BoardCard = (props: BoardCardProps) => {
     const { data, dataRefetch } = props;
     const history = useHistory();
     const context = useContext(DialogContext);
-    const [deleteBoard] = useMutation(DELETE_BOARD);
-    
+    const [deleteBoard, { loading: deleteLoading }] = useMutation(DELETE_BOARD);
+
     const openBoard = () => {
         history.push('/board/' + data._id);
     };
-    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>,refetch: any) => {
+    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
-        event.stopPropagation()
-        deleteBoard({variables: { id: data._id}});
-        refetch();
-    }
+        event.stopPropagation();
+        deleteBoard({ variables: { id: data._id } });
+        if (!deleteLoading) {
+            dataRefetch();
+        }
+    };
 
     const handleEdit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
-        event.stopPropagation()
-        context.openModalByType!(ModalTypes.UpdateBoard, data)
-    }
-    
+        event.stopPropagation();
+        context.openModalByType!(ModalTypes.UpdateBoard, data);
+    };
+
     return (
         <CardContainer onClick={openBoard}>
             <CardHeader>
                 <ProjectName>{data.title}</ProjectName>
-                <DeleteButton onClick={(e) => handleDelete(e, dataRefetch)}/>
-                <EditButton onClick={handleEdit}/>
+                <DeleteButton onClick={handleDelete}/>
+                <EditButton onClick={handleEdit} />
             </CardHeader>
             <CardFooter>
                 <TeamPic src={teamPic} />
-                {data.team && data.team.length === 1 &&<TeamName>{data.team[0].name}</TeamName>}
+                {data.team && data.team.length === 1 && <TeamName>{data.team[0].name}</TeamName>}
                 <TimeCreated>{moment(data._changed).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>

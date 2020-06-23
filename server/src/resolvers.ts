@@ -11,8 +11,8 @@ export const resolvers: Resolvers = {
         parseLiteral: (ast) => new Date(ast.kind),
     }),
     Query: {
-        users: (parent, args) => API.get(`/users${args.keyword ? `?filter=${args.keyword}` : ''}`).then((res) => res.data as User[]),
-        user: (parent, args) => API.get(`/users/${args.id}`).then((res) => res.data as User),
+        users: (parent, args) => API.get(`/users${args.keyword ? `?filter=${args.keyword}&metafields=true` : ''}`).then((res) => res.data as User[]),
+        user: (parent, args) => API.get(`/users/${args.id}?metafields=true`).then((res) => res.data as User),
         boards: (parent, args) => API.get(`/board?metafields=true`).then((res) => res.data as Board[]),
         board: (parent, args) => API.get(`/board/${args.id}?metafields=true`).then((res) => res.data as Board),
         teams: (parent, args) => API.get(`/team?metafields=true`).then((res) => res.data as Team[]),

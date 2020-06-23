@@ -7,46 +7,31 @@ import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { Team } from '../../types.js';
 import { UPDATE_BOARD } from 'graphql/mutations';
-import { Board, User } from '../../types.js';
+import { Board, User, Team } from '../../types.js';
 
 interface BoardCardProps {
     boardData: Board;
-}
-
-interface SelectState {
-    selectedItemName: String[];
-    selectedItemID: String[];
+    dataRefetch: any
 }
 
 const UpdateBoardModal = (props: BoardCardProps) => {
-    const { boardData } = props;
-    console.log(boardData)
+    const { boardData, dataRefetch } = props;
     const teamOfBoard = boardData.team;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-    const [selectState, setSelectState] = useState<SelectState>({
-        selectedItemName: [],
-        selectedItemID: [],
-    });
     const [titleInput, setTitleInput] = useState(boardData.title || '');
-
-    // Get a board's members from users' selections
-    const boardMemberNameSelected = selectState.selectedItemName;
-    const boardMemberIDSelected = selectState.selectedItemID;
-
-    // get the board's members from teamData props
-    const boardMembers: User[] = boardData.members as User[];
-    const boardMemberNames: String[] = [];
-    const boardMemberID: String[] = [];
-    if (boardMembers) {
-        boardMembers.map((item: User) => boardMemberNames.push(item.name));
-        boardMembers.map((item: User) => boardMemberID.push(item._id));
+    const [selectedItem, setSelectedItem] = useState<User[]>(boardData.members || undefined);
+    const boardMemberName: string[] = [];
+    const boardMemberID : string[] = [];
+    if (selectedItem) {
+        selectedItem.map((item) => boardMemberName.push(item.name));
+        selectedItem.map((item) => boardMemberID.push(item._id));
     }
-    console.log(boardMemberNames)
+    const [selectedItemName, setSelectedItemName] = useState<string[]>(boardMemberName || '');
+    const [selectedItemID, setSelectedItemID] = useState<string[]>(boardMemberID || '');
     // Graphql mutation to update a board
-    const [updateBoard] = useMutation<{ teamUpdate: Team }, { id: String; title: String; team?: String[]; members?: String[] }>(
+    const [updateBoard, {loading}] = useMutation< {boardUpdated: Board},{ id: string; title: string; team?: string[]; members?: string[] }>(
         UPDATE_BOARD
     );
 
@@ -60,13 +45,13 @@ const UpdateBoardModal = (props: BoardCardProps) => {
         }
     };
 
-    // Handle changes from custom select
-    const onSelectionChange = (item: any) => {
-        setSelectState({
-            ...selectState,
-            selectedItemName: Array.from(new Set(selectState.selectedItemName.concat(item.name))),
-            selectedItemID: Array.from(new Set(selectState.selectedItemID.concat(item._id))),
-        });
+    // handle changes from custom select
+    const getSelectResult = (item: User) => {
+        if (selectedItem && selectedItem.find((itemInArr) => itemInArr._id === item._id) === undefined) {
+            setSelectedItem(selectedItem.concat(item));
+            setSelectedItemName(selectedItemName.concat(item.name));
+            setSelectedItemID(selectedItemID.concat(item._id));
+        }
     };
 
     // Handle changes of a board's title
@@ -77,7 +62,10 @@ const UpdateBoardModal = (props: BoardCardProps) => {
     const handleUpdateBoard = (event: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
-        updateBoard({ variables: { id: boardData._id, title: titleInput, members: [...boardMemberIDSelected,...boardMemberID]} });
+        updateBoard({ variables: { id: boardData._id, title: titleInput, members: selectedItemID}});
+        if (!loading) {
+            dataRefetch();
+        }
         context.closeModalByType!(ModalTypes.UpdateBoard);
     };
 
@@ -116,20 +104,16 @@ const UpdateBoardModal = (props: BoardCardProps) => {
 
                 {/* <MemberAvatar src={avatar} />
                 <MemberAvatar src={avatar} /> */}
-                <CustomSelect selectedItems={selectState.selectedItemName} onSelectionChange={onSelectionChange} />
+                <CustomSelect selectItems={getSelectResult} />
                 <MemberContainer>
                     <MemberList>
-                        {boardMemberNameSelected.map((item: any, index: any) => (
-                            <Member key={index}>{item}</Member>
-                        ))}
-                        {boardMemberNames.map((item: String, index: any) => (
+                        {selectedItemName.map((item: String, index: any) => (
                             <Member key={index}>{item}</Member>
                         ))}
                     </MemberList>
                     <MemberAvatar src={avatar} />
                 </MemberContainer>
                 <Input onChange={handleTitleChange} type="text" placeholder="Title" value={titleInput} />
-
                 <SectionTitle>Select background</SectionTitle>
                 <BackgroundContainer>
                     <BackgroundItem src={background} alt="background" />

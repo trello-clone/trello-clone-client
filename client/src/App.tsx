@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
@@ -16,32 +16,17 @@ import UpdateTeamModal from './components/Dashboard/UpdateTeamModal';
 import UpdateBoardModal from './components/Dashboard/UpdateBoardModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
-import { Board, Team} from './types';
+import { Board, Team } from './types';
 import { GET_BOARDS, GET_TEAMS } from 'graphql/queries';
 
 function App() {
     const context = useContext(DialogContext);
-    const { data: boardData, loading: boardLoading, refetch: boardRefetch} = useQuery(GET_BOARDS);
-    const { data: teamData, loading: teamLoading, refetch: teamRefetch} = useQuery(GET_TEAMS);
-    const [needToRefetchBoard, setNeedToRefetchBoard] = useState(false)
-    const [needToRefetchTeam, setNeedToRefetchTeam] = useState(false)
-    const handleRefetchBoard = () => {
-        setNeedToRefetchBoard(true)
-    }
-    const handleRefetchTeam = () => {
-        setNeedToRefetchTeam(true)
-    }
-    useEffect(()=> {
-        if(needToRefetchBoard === true){
-            boardRefetch();
-        }else if(needToRefetchTeam === true){
-            teamRefetch();
-        }
-        return ()=>{
-            setNeedToRefetchBoard(false)
-            setNeedToRefetchTeam(false)
-        }
-    })
+    const { data: boardData, loading: boardLoading, refetch: boardRefetch } = useQuery(GET_BOARDS);
+    const { data: teamData, loading: teamLoading, refetch: teamRefetch } = useQuery(GET_TEAMS);
+    useEffect(() => {
+        boardRefetch();
+        teamRefetch();
+    }, [boardRefetch, teamRefetch]);
     return (
         <Router>
             <Header />
@@ -54,18 +39,26 @@ function App() {
                     <Route path="/">
                         <Title>Boards</Title>
                         <BoardContainer>
-                            {!boardLoading && (boardData.boards as Board[]).map((board) => <BoardCard key={board._id} data={board} dataRefetch={handleRefetchBoard} />)}
-                            <AddBoardCard/>
+                            {!boardLoading &&
+                                (boardData.boards as Board[]).map((board) => (
+                                    <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />
+                                ))}
+                            <AddBoardCard />
                         </BoardContainer>
                         <Title>Teams</Title>
                         <TeamContainer>
-                            {!teamLoading && (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} dataRefetch={handleRefetchTeam}/>)}
+                            {!teamLoading &&
+                                (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} dataRefetch={teamRefetch} />)}
                             <AddTeamCard />
                         </TeamContainer>
-                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={handleRefetchBoard}/>}
-                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={handleRefetchTeam}/>}
-                        {context.openModals.includes(ModalTypes.UpdateTeam) && <UpdateTeamModal teamData={context.modalData as Team}/>}
-                        {context.openModals.includes(ModalTypes.UpdateBoard) && <UpdateBoardModal boardData={context.modalData as Board}/>}
+                        {context.openModals.includes(ModalTypes.CreateBoard) && <CreateNewBoardModal dataRefetch={boardRefetch} />}
+                        {context.openModals.includes(ModalTypes.CreateTeam) && <CreateNewTeamModal dataRefetch={teamRefetch} />}
+                        {context.openModals.includes(ModalTypes.UpdateTeam) && (
+                            <UpdateTeamModal dataRefetch={teamRefetch} teamData={context.modalData as Team} />
+                        )}
+                        {context.openModals.includes(ModalTypes.UpdateBoard) && (
+                            <UpdateBoardModal dataRefetch={boardRefetch} boardData={context.modalData as Board} />
+                        )}
                     </Route>
                 </Switch>
             </MainContentWrapper>

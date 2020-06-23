@@ -51,6 +51,7 @@ type TeamWithMemberObj {
     members: [User!]!
     personal: Boolean
     _created: DateTime!
+    _changed: DateTime!
 }
 
 type TeamWithMemberID {

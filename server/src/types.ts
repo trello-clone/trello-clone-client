@@ -190,6 +190,7 @@ export type TeamWithMemberObj = {
   members: Array<User>;
   personal?: Maybe<Scalars['Boolean']>;
   _created: Scalars['DateTime'];
+  _changed: Scalars['DateTime'];
 };
 
 export type User = {
@@ -393,6 +394,7 @@ export type TeamWithMemberObjResolvers<ContextType = any, ParentType extends Res
   members?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>,
   personal?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>,
   _created?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
+  _changed?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 };
 

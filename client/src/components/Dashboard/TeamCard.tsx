@@ -18,12 +18,14 @@ interface TeamCardProps {
 const TeamCard = (props: TeamCardProps) => {
     const { data, dataRefetch } = props;
     const context = useContext(DialogContext);
-    const [deleteTeam] = useMutation(DELETE_TEAM);
-    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>,refetch: any) => {
+    const [deleteTeam,{loading: deleteLoading}] = useMutation(DELETE_TEAM);
+    const handleDelete = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
         deleteTeam({ variables: { id: data._id } });
-        refetch();
+        if (!deleteLoading) {
+            dataRefetch();
+        }
     };
 
     return (
@@ -31,7 +33,7 @@ const TeamCard = (props: TeamCardProps) => {
         <CardContainer>
             <CardHeader>
                 <TeamName>{data.name}</TeamName>
-                <DeleteButton onClick={(e) => handleDelete(e, dataRefetch)}/>
+                <DeleteButton onClick={handleDelete}/>
                 <EditButton
                     onClick={() => {
                         context.openModalByType!(ModalTypes.UpdateTeam, data);
@@ -47,7 +49,7 @@ const TeamCard = (props: TeamCardProps) => {
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
                 <TeamMember src={avatar} />
-                <TimeCreated>{moment(data._created).fromNow()}</TimeCreated>
+                <TimeCreated>{moment(data._changed).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>
         

@@ -113,8 +113,8 @@ export const UPDATE_TEAM = gql`
 
 // Mutation to update a board
 export const UPDATE_BOARD = gql`
-    mutation updateBoard($id: ID!, $title: String!, $team: [ID!]) {
-        updateBoard(id: $id, title: $title, team: $team) {
+    mutation updateBoard($id: ID!, $title: String!, $team: [ID!], $members: [ID!]) {
+        updateBoard(id: $id, title: $title, team: $team, members: $members) {
             _id
             title
             team {
