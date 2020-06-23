@@ -16,13 +16,14 @@ import UpdateTeamModal from './components/Dashboard/UpdateTeamModal';
 import UpdateBoardModal from './components/Dashboard/UpdateBoardModal';
 import { ModalTypes, DialogContext } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
-import { Board, Team } from './types';
+import { Board, Team, OpenModal } from './types';
 import { GET_BOARDS, GET_TEAMS } from 'graphql/queries';
 
 function App() {
     const context = useContext(DialogContext);
     const { data: boardData, loading: boardLoading, refetch: boardRefetch } = useQuery(GET_BOARDS);
     const { data: teamData, loading: teamLoading, refetch: teamRefetch } = useQuery(GET_TEAMS);
+    console.log(context.openModals)
     useEffect(() => {
         boardRefetch();
         teamRefetch();
@@ -58,10 +59,13 @@ function App() {
                             <CreateNewTeamModal dataRefetch={teamRefetch} />
                         )}
                         {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) !== undefined && (
-                            <UpdateBoardModal dataRefetch={boardRefetch} boardData={context.openModals[0].dataType} />
+                            <UpdateBoardModal dataRefetch={boardRefetch} boardData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) as OpenModal} />
                         )}
                         {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) !== undefined && (
-                            <UpdateTeamModal dataRefetch={teamRefetch} teamData={context.openModals[0].dataType} />
+                            <UpdateTeamModal
+                                dataRefetch={teamRefetch}
+                                teamData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) as OpenModal}
+                            />
                         )}
                     </Route>
                 </Switch>

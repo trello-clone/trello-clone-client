@@ -8,10 +8,10 @@ import background from '../../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { UPDATE_TEAM } from 'graphql/mutations';
-import { Team, User } from '../../types.js';
+import { Team, User , OpenModal} from '../../types.js';
 
 interface TeamCardProps {
-    teamData: Team;
+    teamData: OpenModal;
     dataRefetch: any;
 }
 
@@ -19,8 +19,8 @@ const UpdateTeamModal = (props: TeamCardProps) => {
     const { teamData, dataRefetch } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-    const [teamName, setTeamName] = useState(teamData.name || '');
-    const [selectedItem, setSelectedItem] = useState<User[]>((teamData.members as User[]) || undefined);
+    const [teamName, setTeamName] = useState(teamData.dataType.name || '');
+    const [selectedItem, setSelectedItem] = useState<User[]>((teamData.dataType.members as User[]) || undefined);
     const teamMemberName: string[] = [];
     const teamMemberID: string[] = [];
     if (selectedItem) {
@@ -55,7 +55,7 @@ const UpdateTeamModal = (props: TeamCardProps) => {
     const handleUpdateTeam = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
-        updateTeam({ variables: { id: teamData._id, name: teamName, members: teamMemberID } });
+        updateTeam({ variables: { id: teamData.dataType._id, name: teamName, members: teamMemberID } });
         if (!loading) {
             dataRefetch();
         }

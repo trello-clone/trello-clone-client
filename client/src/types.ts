@@ -42,3 +42,14 @@ export type Card = {
     _created: string;
     _changed: string;
 };
+
+enum ModalTypes {
+    CreateBoard = 'CreateBoard',
+    CreateTeam = 'CreateTeam',
+    UpdateBoard = 'UpdateBoard',
+    UpdateTeam = 'UpdateTeam',
+}
+export interface OpenModal {
+    modalType: ModalTypes;
+    dataType?: any;
+}

@@ -8,20 +8,20 @@ import background from '../../icons/teamBackground.jpg';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { UPDATE_BOARD } from 'graphql/mutations';
-import { Board, User, Team } from '../../types.js';
+import { Board, User, Team, OpenModal } from '../../types.js';
 
 interface BoardCardProps {
-    boardData: Board;
+    boardData: OpenModal;
     dataRefetch: any
 }
 
 const UpdateBoardModal = (props: BoardCardProps) => {
     const { boardData, dataRefetch } = props;
-    const teamOfBoard = boardData.team;
+    const teamOfBoard = boardData.dataType.team;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-    const [titleInput, setTitleInput] = useState(boardData.title || '');
-    const [selectedItem, setSelectedItem] = useState<User[]>(boardData.members || undefined);
+    const [titleInput, setTitleInput] = useState(boardData.dataType.title || '');
+    const [selectedItem, setSelectedItem] = useState<User[]>(boardData.dataType.members || undefined);
     const boardMemberName: string[] = [];
     const boardMemberID : string[] = [];
     if (selectedItem) {
@@ -62,7 +62,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
     const handleUpdateBoard = (event: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
-        updateBoard({ variables: { id: boardData._id, title: titleInput, members: selectedItemID}});
+        updateBoard({ variables: { id: boardData.dataType._id, title: titleInput, members: selectedItemID}});
         if (!loading) {
             dataRefetch();
         }
