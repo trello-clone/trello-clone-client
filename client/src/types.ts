@@ -19,7 +19,7 @@ export type User = {
 export type Board = {
     _id: string;
     title: string;
-    team: Team[];
+    team: Team[] | null;
     members: User[];
     background?: string;
     lists_order?: string;

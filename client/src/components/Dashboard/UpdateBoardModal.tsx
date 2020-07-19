@@ -12,7 +12,7 @@ import { Board, User, Team, OpenModal } from '../../types.js';
 
 interface BoardCardProps {
     boardData: OpenModal;
-    dataRefetch: any
+    dataRefetch: any;
 }
 
 const UpdateBoardModal = (props: BoardCardProps) => {
@@ -23,7 +23,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
     const [titleInput, setTitleInput] = useState(boardData.dataType.title || '');
     const [selectedItem, setSelectedItem] = useState<User[]>(boardData.dataType.members || undefined);
     const boardMemberName: string[] = [];
-    const boardMemberID : string[] = [];
+    const boardMemberID: string[] = [];
     if (selectedItem) {
         selectedItem.map((item) => boardMemberName.push(item.name));
         selectedItem.map((item) => boardMemberID.push(item._id));
@@ -31,9 +31,10 @@ const UpdateBoardModal = (props: BoardCardProps) => {
     const [selectedItemName, setSelectedItemName] = useState<string[]>(boardMemberName || '');
     const [selectedItemID, setSelectedItemID] = useState<string[]>(boardMemberID || '');
     // Graphql mutation to update a board
-    const [updateBoard, {loading}] = useMutation< {boardUpdated: Board},{ id: string; title: string; team?: string[]; members?: string[] }>(
-        UPDATE_BOARD
-    );
+    const [updateBoard, { loading }] = useMutation<
+        { boardUpdated: Board },
+        { id: string; title: string; team?: string[]; members?: string[] }
+    >(UPDATE_BOARD);
 
     // Close the modal by clicking outside
     const onClickOutside = (e: any) => {
@@ -41,7 +42,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModal!({modalType: ModalTypes.UpdateBoard});
+            context.closeModal!({ modalType: ModalTypes.UpdateBoard });
         }
     };
 
@@ -62,11 +63,11 @@ const UpdateBoardModal = (props: BoardCardProps) => {
     const handleUpdateBoard = (event: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
-        updateBoard({ variables: { id: boardData.dataType._id, title: titleInput, members: selectedItemID}});
+        updateBoard({ variables: { id: boardData.dataType._id, title: titleInput, members: selectedItemID } });
         if (!loading) {
             dataRefetch();
         }
-        context.closeModal!({modalType: ModalTypes.UpdateBoard});
+        context.closeModal!({ modalType: ModalTypes.UpdateBoard });
     };
 
     useEffect(() => {
@@ -122,7 +123,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModal!({modalType: ModalTypes.UpdateBoard});
+                            context.closeModal!({ modalType: ModalTypes.UpdateBoard });
                         }}
                     >
                         Cancel

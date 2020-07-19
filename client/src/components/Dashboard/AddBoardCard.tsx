@@ -20,7 +20,7 @@ const AddBoardCard = () => {
 export default AddBoardCard;
 
 const AddBtn = styled.button`
-    min-width: 280px;
+    width: 280px;
     height: 150px;
     margin: 16px 16px 16px 0;
     border: solid 2px ${(props) => rgba(props.theme.colors.dark_blue,1)};

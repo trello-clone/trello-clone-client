@@ -32,11 +32,6 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         Member = 'Member',
     }
 
-    // Switch between the board options
-    const selectOption = (option: BoardModalOptions) => {
-        setBoardModalOption(option);
-    };
-
     // Close the modal by clicking outside
     const onClickOutside = (e: any) => {
         const element = e.target;
@@ -99,7 +94,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                     <TypeNav
                         active={boardModalOption === BoardModalOptions.Team}
                         onClick={() => {
-                            selectOption(BoardModalOptions.Team);
+                            setBoardModalOption(BoardModalOptions.Team);
                         }}
                     >
                         With team
@@ -107,7 +102,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                     <TypeNav
                         active={boardModalOption === BoardModalOptions.Member}
                         onClick={() => {
-                            selectOption(BoardModalOptions.Member);
+                            setBoardModalOption(BoardModalOptions.Member);
                         }}
                     >
                         With members

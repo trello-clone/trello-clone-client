@@ -23,7 +23,19 @@ function App() {
     const context = useContext(DialogContext);
     const { data: boardData, loading: boardLoading, refetch: boardRefetch } = useQuery(GET_BOARDS);
     const { data: teamData, loading: teamLoading, refetch: teamRefetch } = useQuery(GET_TEAMS);
-    console.log(context.openModals)
+    // check if the selected board is personal board
+    const isPersonalBoard = (board: Board) => {
+        if (board.team) {
+            return board.team.length === 0;
+        }
+        return board.team === null;
+    };
+    // check if the selected board is NOT personal board
+    const checkIfBoardHasTeam = (board: Board) => {
+        if (board.team) {
+            return board.team.length !== 0;
+        }
+    };
     useEffect(() => {
         boardRefetch();
         teamRefetch();
@@ -37,21 +49,48 @@ function App() {
                     <Route path="/board/:board_id">
                         <BoardView />
                     </Route>
-                    <Route path="/">
-                        <Title>Boards</Title>
-                        <BoardContainer>
-                            {!boardLoading &&
-                                (boardData.boards as Board[]).map((board) => (
-                                    <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />
-                                ))}
-                            <AddBoardCard />
-                        </BoardContainer>
+                    <Route path="/teams">
                         <Title>Teams</Title>
                         <TeamContainer>
                             {!teamLoading &&
                                 (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} dataRefetch={teamRefetch} />)}
                             <AddTeamCard />
                         </TeamContainer>
+                    </Route>
+                    <Route path="/">
+                        <Title>Personal boards</Title>
+                        <BoardContainer>
+                            {!boardLoading &&
+                                (boardData.boards as Board[])
+                                    .filter(isPersonalBoard)
+                                    .map((board) => <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />)}
+                            <AddBoardCard />
+                        </BoardContainer>
+                        {!teamLoading &&
+                            !boardLoading &&
+                            (teamData.teams as Team[]).map((team) => (
+                                <>
+                                    <Title key={team._id}>{team.name}</Title>
+                                    <BoardContainer>
+                                        {!boardLoading &&
+                                            (boardData.boards as Board[])
+                                                .filter(checkIfBoardHasTeam)
+                                                .filter((board) => board.team![0].name === team.name)
+                                                .map((board) => <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />)}
+                                        <AddBoardCard />
+                                    </BoardContainer>
+                                </>
+                            ))}
+                        {/* <BoardHasTeamContainer>
+                            {!boardLoading &&
+                                (boardData.boards as Board[])
+                                    .filter(boardsHaveTeam)
+                                    .map((board) => <>
+                                    <Title key={board._id}>{board.team![0].name} </Title>
+                                    <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} /> </>)}
+                            <AddBoardCard />
+                        </BoardHasTeamContainer> */}
+
                         {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateBoard) !== undefined && (
                             <CreateNewBoardModal dataRefetch={boardRefetch} />
                         )}
@@ -59,7 +98,10 @@ function App() {
                             <CreateNewTeamModal dataRefetch={teamRefetch} />
                         )}
                         {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) !== undefined && (
-                            <UpdateBoardModal dataRefetch={boardRefetch} boardData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) as OpenModal} />
+                            <UpdateBoardModal
+                                dataRefetch={boardRefetch}
+                                boardData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) as OpenModal}
+                            />
                         )}
                         {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) !== undefined && (
                             <UpdateTeamModal
@@ -98,7 +140,6 @@ const BoardContainer = styled.div`
     flex-flow: row wrap;
     padding-bottom: 16px;
 `;
-
 const TeamContainer = styled.div`
     display: flex;
     flex-flow: row wrap;

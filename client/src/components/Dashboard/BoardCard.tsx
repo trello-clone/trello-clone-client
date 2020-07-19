@@ -38,19 +38,38 @@ const BoardCard = (props: BoardCardProps) => {
     const handleEdit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         event.stopPropagation();
-        context.openModal!({modalType: ModalTypes.UpdateBoard, dataType: data});
+        context.openModal!({ modalType: ModalTypes.UpdateBoard, dataType: data });
+    };
+
+    // check if the selected board is personal board
+    const isPersonalBoard = () => {
+        if (data.team) {
+            return data.team.length === 0;
+        }
+        return data.team === null;
     };
 
     return (
         <CardContainer onClick={openBoard}>
             <CardHeader>
                 <ProjectName>{data.title}</ProjectName>
-                <DeleteButton onClick={handleDelete}/>
+                <DeleteButton onClick={handleDelete} />
                 <EditButton onClick={handleEdit} />
             </CardHeader>
             <CardFooter>
-                <TeamPic src={teamPic} />
-                {data.team && data.team.length === 1 && <TeamName>{data.team[0].name}</TeamName>}
+                {isPersonalBoard() && (
+                    <>
+                        <BoardMember src={teamPic} />
+                        <BoardMember src={teamPic} />
+                        <BoardMember src={teamPic} />
+                    </>
+                )}
+                {data.team && data.team.length === 1 && (
+                    <>
+                        <TeamPic src={teamPic} />
+                        {/* <TeamName>{data.team[0].name}</TeamName> */}
+                    </>
+                )}
                 <TimeCreated>{moment(data._changed).fromNow()}</TimeCreated>
             </CardFooter>
         </CardContainer>
@@ -137,6 +156,15 @@ const DeleteButton = styled.button`
         outline: 0;
     } */
 `;
+
+const BoardMember = styled.img`
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: solid 0.5px #ffffff;
+    border-radius: 50%;
+`;
+
 const TeamPic = styled.img`
     width: 20px;
     height: 20px;
@@ -145,11 +173,11 @@ const TeamPic = styled.img`
     border-radius: 50%;
 `;
 
-const TeamName = styled.div`
-    font-family: 'ProximaNovaSemiBold', sans-serif;
-    font-size: 14px;
-    color: #ffffff;
-`;
+// const TeamName = styled.div`
+//     font-family: 'ProximaNovaSemiBold', sans-serif;
+//     font-size: 14px;
+//     color: #ffffff;
+// `;
 const TimeCreated = styled.div`
     font-family: 'ProximaNovaMedium', sans-serif;
     font-size: 13px;
