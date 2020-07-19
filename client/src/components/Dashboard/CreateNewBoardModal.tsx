@@ -2,6 +2,7 @@ import React, { useContext, useRef, useEffect, useState, MouseEvent } from 'reac
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useHistory} from 'react-router-dom';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
@@ -14,6 +15,10 @@ import { GET_TEAMS } from 'graphql/queries';
 interface BoardModalProps {
     dataRefetch: any;
 }
+enum BoardModalOptions {
+    Team = 'Team',
+    Member = 'Member',
+}
 const CreateNewBoardModal = (props: BoardModalProps) => {
     const { dataRefetch } = props;
     const context = useContext(DialogContext);
@@ -24,13 +29,10 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const [selectedItemID, setSelectedItemID] = useState<String[]>([]);
     const [titleInput, setTitleInput] = useState('');
     const [teamIDSelected, setTeamIDSelected] = useState('');
+    const history = useHistory();
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
     const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
     const { data: teamData, loading: teamLoading } = useQuery(GET_TEAMS);
-    enum BoardModalOptions {
-        Team = 'Team',
-        Member = 'Member',
-    }
 
     // Close the modal by clicking outside
     const onClickOutside = (e: any) => {
@@ -38,7 +40,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModal!({modalType: ModalTypes.CreateBoard});
+            context.closeModal!({ modalType: ModalTypes.CreateBoard });
         }
     };
 
@@ -69,23 +71,24 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const handleSubmitWithMembers = (e: MouseEvent) => {
         e.preventDefault();
         addBoardByMembers({ variables: { title: titleInput, members: selectedItemID } });
-        context.closeModal!({modalType: ModalTypes.CreateBoard});
+        context.closeModal!({ modalType: ModalTypes.CreateBoard });
         dataRefetch();
+        history.push('/');
     };
 
     //create a new board by team
     const handleSubmitWithTeam = (e: MouseEvent) => {
         e.preventDefault();
         addBoardByTeam({ variables: { title: titleInput, team: teamIDSelected } });
-        context.closeModal!({modalType: ModalTypes.CreateBoard});
+        context.closeModal!({ modalType: ModalTypes.CreateBoard });
         dataRefetch();
+        history.push('/');
     };
 
     useEffect(() => {
         document.body.addEventListener('click', onClickOutside);
         return () => window.removeEventListener('click', onClickOutside);
     });
-
     return (
         <Container>
             <Modal ref={modalRef}>
@@ -150,7 +153,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModal!({modalType: ModalTypes.CreateBoard});
+                            context.closeModal!({ modalType: ModalTypes.CreateBoard });
                         }}
                     >
                         Cancel

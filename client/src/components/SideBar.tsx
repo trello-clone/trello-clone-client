@@ -1,41 +1,26 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import homeIcon from '../icons/home-2.svg';
 import blackHomeIcon from '../icons/black-home.svg';
 import teamIcon from '../icons/team-white.svg';
 import blackTeamIcon from '../icons/black-team.svg';
 
-enum RouteOptions {
-    Home = 'Home',
-    Teams = 'Team',
-}
-
 const SideBar = () => {
-    const [routeOption, setRouteOption] = useState('Home');
+    const location = useLocation();
     return (
         <Wrapper>
             <Link to="/">
                 <SideNavItem>
-                    <Icon
-                        active={routeOption === RouteOptions.Home}
-                        onClick={() => {
-                            setRouteOption(RouteOptions.Home);
-                        }}
-                        src={routeOption === RouteOptions.Home ? homeIcon : blackHomeIcon}
-                        alt="Home Icon"
-                    />
+                    <Icon active={location.pathname === '/'} src={location.pathname === '/' ? homeIcon : blackHomeIcon} alt="Home Icon" />
                 </SideNavItem>
             </Link>
             <Link to="/teams">
                 <SideNavItem>
                     <Icon
-                        active={routeOption === RouteOptions.Teams}
-                        onClick={() => {
-                            setRouteOption(RouteOptions.Teams);
-                        }}
-                        src={routeOption === RouteOptions.Teams ? teamIcon : blackTeamIcon}
+                        active={location.pathname === '/teams'}
+                        src={location.pathname === '/teams' ? teamIcon : blackTeamIcon}
                         alt="Team Icon"
                     />
                 </SideNavItem>

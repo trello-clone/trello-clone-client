@@ -2,6 +2,7 @@ import React, { useContext, useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-dom';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
@@ -21,7 +22,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     const [selectedItemName, setSelectedItemName] = useState<String[]>([]);
     const [selectedItemID, setSelectedItemID] = useState<String[]>([]);
     const [teamName, setTeamName] = useState('');
-
+    const history = useHistory();
     const [addTeam] = useMutation(CREATE_TEAM);
 
     const onClickOutside = (e: any) => {
@@ -50,6 +51,8 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
         addTeam({ variables: { name: teamName, members: selectedItemID } });
         context.closeModal!({modalType: ModalTypes.CreateTeam});
         dataRefetch();
+        // redirect to /teams after submit
+        history.push('/teams');
     };
 
     useEffect(() => {

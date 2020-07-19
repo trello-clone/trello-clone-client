@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom';
 import { rgba } from 'polished';
 
 import TeamCard from './components/Dashboard/TeamCard';
@@ -81,36 +81,26 @@ function App() {
                                     </BoardContainer>
                                 </>
                             ))}
-                        {/* <BoardHasTeamContainer>
-                            {!boardLoading &&
-                                (boardData.boards as Board[])
-                                    .filter(boardsHaveTeam)
-                                    .map((board) => <>
-                                    <Title key={board._id}>{board.team![0].name} </Title>
-                                    <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} /> </>)}
-                            <AddBoardCard />
-                        </BoardHasTeamContainer> */}
-
-                        {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateBoard) !== undefined && (
-                            <CreateNewBoardModal dataRefetch={boardRefetch} />
-                        )}
-                        {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateTeam) !== undefined && (
-                            <CreateNewTeamModal dataRefetch={teamRefetch} />
-                        )}
-                        {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) !== undefined && (
-                            <UpdateBoardModal
-                                dataRefetch={boardRefetch}
-                                boardData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) as OpenModal}
-                            />
-                        )}
-                        {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) !== undefined && (
-                            <UpdateTeamModal
-                                dataRefetch={teamRefetch}
-                                teamData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) as OpenModal}
-                            />
-                        )}
                     </Route>
                 </Switch>
+                {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateBoard) !== undefined && (
+                    <CreateNewBoardModal dataRefetch={boardRefetch} />
+                )}
+                {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateTeam) !== undefined && (
+                    <CreateNewTeamModal dataRefetch={teamRefetch} />
+                )}
+                {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) !== undefined && (
+                    <UpdateBoardModal
+                        dataRefetch={boardRefetch}
+                        boardData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateBoard) as OpenModal}
+                    />
+                )}
+                {context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) !== undefined && (
+                    <UpdateTeamModal
+                        dataRefetch={teamRefetch}
+                        teamData={context.openModals.find((modal) => modal.modalType === ModalTypes.UpdateTeam) as OpenModal}
+                    />
+                )}
             </MainContentWrapper>
         </Router>
     );
@@ -121,6 +111,7 @@ export default App;
 const MainContentWrapper = styled.div`
     background-color: ${(props) => rgba(props.theme.colors.blue, 0.03)};
     position: fixed;
+    overflow: scroll;
     top: 80px;
     left: 70px;
     right: 0;
