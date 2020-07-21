@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 import styled from 'styled-components';
-import { BrowserRouter as Router, Switch, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { rgba } from 'polished';
 
 import TeamCard from './components/Dashboard/TeamCard';
@@ -24,18 +24,10 @@ function App() {
     const { data: boardData, loading: boardLoading, refetch: boardRefetch } = useQuery(GET_BOARDS);
     const { data: teamData, loading: teamLoading, refetch: teamRefetch } = useQuery(GET_TEAMS);
     // check if the selected board is personal board
-    const isPersonalBoard = (board: Board) => {
-        if (board.team) {
-            return board.team.length === 0;
-        }
-        return board.team === null;
-    };
+    const isPersonalBoard = (board: Board) => !board.team || !board.team.length;
+
     // check if the selected board is NOT personal board
-    const checkIfBoardHasTeam = (board: Board) => {
-        if (board.team) {
-            return board.team.length !== 0;
-        }
-    };
+    const checkIfBoardHasTeam = (board: Board) => !!board.team && !!board.team.length;
     useEffect(() => {
         boardRefetch();
         teamRefetch();

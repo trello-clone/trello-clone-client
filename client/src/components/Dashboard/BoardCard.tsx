@@ -42,13 +42,8 @@ const BoardCard = (props: BoardCardProps) => {
     };
 
     // check if the selected board is personal board
-    const isPersonalBoard = () => {
-        if (data.team) {
-            return data.team.length === 0;
-        }
-        return data.team === null;
-    };
-
+    const isPersonalBoard = () => !data.team || !data.team.length;
+    
     return (
         <CardContainer onClick={openBoard}>
             <CardHeader>
