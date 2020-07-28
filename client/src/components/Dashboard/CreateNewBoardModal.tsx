@@ -2,33 +2,31 @@ import React, { useContext, useRef, useEffect, useState, MouseEvent } from 'reac
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
-import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
+import { DialogContext, ModalTypes, CreateBoardOptions } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
-import { Team, User } from '../../types.js';
+import { Team, User, OpenModal } from '../../types.js';
 import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM } from 'graphql/mutations';
 import { GET_TEAMS } from 'graphql/queries';
 
 interface BoardModalProps {
     dataRefetch: any;
+    boardData: OpenModal;
 }
-enum BoardModalOptions {
-    Team = 'Team',
-    Member = 'Member',
-}
+
 const CreateNewBoardModal = (props: BoardModalProps) => {
-    const { dataRefetch } = props;
+    const { dataRefetch, boardData } = props;
     const context = useContext(DialogContext);
     const modalRef = useRef<HTMLDivElement>(null);
-    const [boardModalOption, setBoardModalOption] = useState('Member');
+    const [boardModalOption, setBoardModalOption] = useState(boardData.createBoardOption);
     const [selectedItem, setSelectedItem] = useState<User[]>([]);
     const [selectedItemName, setSelectedItemName] = useState<String[]>([]);
     const [selectedItemID, setSelectedItemID] = useState<String[]>([]);
     const [titleInput, setTitleInput] = useState('');
-    const [teamIDSelected, setTeamIDSelected] = useState('');
+    const [teamIDSelected, setTeamIDSelected] = useState(boardData.dataType ? (boardData.dataType._id || '') : '' );
     const history = useHistory();
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
     const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
@@ -50,20 +48,6 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
             setSelectedItem(selectedItem.concat(item));
             setSelectedItemName(selectedItemName.concat(item.name));
             setSelectedItemID(selectedItemID.concat(item._id));
-        }
-    };
-
-    // Handle changes of a board's title
-    const handleTitleChange = (input: any) => {
-        setTitleInput(input.target.value);
-    };
-
-    const handleTeamItemSelected = (team: Team) => {
-        setTeamIDSelected(team._id);
-    };
-    const handleTeamStatus = (team: Team) => {
-        if (team._id === teamIDSelected) {
-            return true;
         }
     };
 
@@ -95,32 +79,29 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 <Header>Create board</Header>
                 <TypeWrapper>
                     <TypeNav
-                        active={boardModalOption === BoardModalOptions.Team}
+                        active={boardModalOption === CreateBoardOptions.ByTeam}
                         onClick={() => {
-                            setBoardModalOption(BoardModalOptions.Team);
+                            setBoardModalOption(CreateBoardOptions.ByTeam);
                         }}
                     >
                         With team
                     </TypeNav>
                     <TypeNav
-                        active={boardModalOption === BoardModalOptions.Member}
+                        active={boardModalOption === CreateBoardOptions.ByMembers}
                         onClick={() => {
-                            setBoardModalOption(BoardModalOptions.Member);
+                            setBoardModalOption(CreateBoardOptions.ByMembers);
                         }}
                     >
                         With members
                     </TypeNav>
                 </TypeWrapper>
-                {boardModalOption === BoardModalOptions.Team && (
+                {boardModalOption === CreateBoardOptions.ByTeam && (
                     <>
                         <SectionTitle>Select team</SectionTitle>
                         <TeamContainer>
                             {!teamLoading &&
                                 (teamData.teams as Team[]).map((team) => (
-                                    <TeamItem
-                                        onClick={() => handleTeamItemSelected(team)}
-                                        isSelected={handleTeamStatus(team) ? true : false}
-                                    >
+                                    <TeamItem onClick={() => setTeamIDSelected(team._id)} isSelected={team._id === teamIDSelected}>
                                         <TeamImage src={background} alt="background" />
                                         <TeamLabel>{team.name}</TeamLabel>
                                     </TeamItem>
@@ -128,7 +109,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                         </TeamContainer>
                     </>
                 )}
-                {boardModalOption === BoardModalOptions.Member && (
+                {boardModalOption === CreateBoardOptions.ByMembers && (
                     <>
                         <CustomSelect selectItems={getSelectResult} />
                         <MemberContainer>
@@ -143,8 +124,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 )}
                 {/* <MemberAvatar src={avatar} />
                 <MemberAvatar src={avatar} /> */}
-                <Input onChange={handleTitleChange} type="text" placeholder="Title" />
-
+                <Input onChange={(input) => setTitleInput(input.target.value)} type="text" placeholder="Title" />
                 <SectionTitle>Select background</SectionTitle>
                 <BackgroundContainer>
                     <BackgroundItem src={background} alt="background" />
@@ -158,7 +138,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                     >
                         Cancel
                     </CancelButton>
-                    {boardModalOption === BoardModalOptions.Member ? (
+                    {boardModalOption === CreateBoardOptions.ByMembers ? (
                         <CreateNewBoardBtn onClick={handleSubmitWithMembers}>Create new board</CreateNewBoardBtn>
                     ) : (
                         <CreateNewBoardBtn onClick={handleSubmitWithTeam}>Create new board</CreateNewBoardBtn>

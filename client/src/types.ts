@@ -49,7 +49,13 @@ enum ModalTypes {
     UpdateBoard = 'UpdateBoard',
     UpdateTeam = 'UpdateTeam',
 }
+
+enum CreateBoardOptions {
+    ByTeam = 'ByTeam',
+    ByMembers = 'ByMembers',
+}
 export interface OpenModal {
     modalType: ModalTypes;
     dataType?: any;
+    createBoardOption?: CreateBoardOptions;
 }

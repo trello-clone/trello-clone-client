@@ -2,14 +2,20 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 
-import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
+import { DialogContext, ModalTypes, CreateBoardOptions } from '../../contexts/DialogContext';
+import { Team } from '../../types';
 
-const AddBoardCard = () => {
+interface AddBoardCardProps {
+    createBoardOption?: CreateBoardOptions,
+    boardData?: Team,
+}
+const AddBoardCard = (props: AddBoardCardProps) => {
+    const { createBoardOption, boardData } = props;
     const context = useContext(DialogContext);
     return (
         <AddBtn
             onClick={() => {
-                context.openModal!({modalType: ModalTypes.CreateBoard});
+                context.openModal!({modalType: ModalTypes.CreateBoard, dataType: boardData, createBoardOption: createBoardOption});
             }}
         >
             +

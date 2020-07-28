@@ -14,7 +14,7 @@ import CreateNewBoardModal from './components/Dashboard/CreateNewBoardModal';
 import CreateNewTeamModal from './components/Dashboard/CreateNewTeamModal';
 import UpdateTeamModal from './components/Dashboard/UpdateTeamModal';
 import UpdateBoardModal from './components/Dashboard/UpdateBoardModal';
-import { ModalTypes, DialogContext } from './contexts/DialogContext';
+import { ModalTypes, DialogContext, CreateBoardOptions } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
 import { Board, Team, OpenModal } from './types';
 import { GET_BOARDS, GET_TEAMS } from 'graphql/queries';
@@ -25,7 +25,6 @@ function App() {
     const { data: teamData, loading: teamLoading, refetch: teamRefetch } = useQuery(GET_TEAMS);
     // check if the selected board is personal board
     const isPersonalBoard = (board: Board) => !board.team || !board.team.length;
-
     // check if the selected board is NOT personal board
     const checkIfBoardHasTeam = (board: Board) => !!board.team && !!board.team.length;
     useEffect(() => {
@@ -56,7 +55,7 @@ function App() {
                                 (boardData.boards as Board[])
                                     .filter(isPersonalBoard)
                                     .map((board) => <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />)}
-                            <AddBoardCard />
+                            <AddBoardCard createBoardOption={CreateBoardOptions.ByMembers} />
                         </BoardContainer>
                         {!teamLoading &&
                             !boardLoading &&
@@ -69,14 +68,17 @@ function App() {
                                                 .filter(checkIfBoardHasTeam)
                                                 .filter((board) => board.team![0].name === team.name)
                                                 .map((board) => <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />)}
-                                        <AddBoardCard />
+                                        <AddBoardCard createBoardOption={CreateBoardOptions.ByTeam} boardData={team}/>
                                     </BoardContainer>
                                 </>
                             ))}
                     </Route>
                 </Switch>
                 {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateBoard) !== undefined && (
-                    <CreateNewBoardModal dataRefetch={boardRefetch} />
+                    <CreateNewBoardModal
+                        dataRefetch={boardRefetch}
+                        boardData={context.openModals.find((modal) => modal.modalType === ModalTypes.CreateBoard) as OpenModal}
+                    />
                 )}
                 {context.openModals.find((modal) => modal.modalType === ModalTypes.CreateTeam) !== undefined && (
                     <CreateNewTeamModal dataRefetch={teamRefetch} />
