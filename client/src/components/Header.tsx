@@ -4,8 +4,7 @@ import boardIcon from '../icons/add-board.svg';
 import userIcon from '../icons/users-mmm-white.svg';
 import userAva from '../icons/ray.jpg';
 import searchIcon from '../icons/search.svg';
-import { rgba } from 'polished';
-import { DialogContext, ModalTypes } from "../contexts/DialogContext";
+import { DialogContext, ModalTypes, CreateBoardOptions } from "../contexts/DialogContext";
 
 
 const Header = () => {
@@ -22,14 +21,14 @@ const Header = () => {
             </SearchBox>
             <List>
                 <ListItem>
-                    <BoardButton onClick={()=>{context.openModal!({modalType: ModalTypes.CreateBoard})}}>
+                    <ListBtn addBoard onClick={()=>{context.openModal!({modalType: ModalTypes.CreateBoard, createBoardOption: CreateBoardOptions.ByMembers})}}>
                         <Icon src={boardIcon} alt="board"></Icon>
-                    </BoardButton>
+                    </ListBtn>
                 </ListItem>
                 <ListItem>
-                    <TeamButton onClick={()=>{context.openModal!({modalType: ModalTypes.CreateTeam})}}>
+                    <ListBtn onClick={()=>{context.openModal!({modalType: ModalTypes.CreateTeam})}}>
                         <Icon src={userIcon} alt="user"></Icon>
-                    </TeamButton>
+                    </ListBtn>
                 </ListItem>
                 <ListItem>
                     <UserAva />
@@ -65,24 +64,15 @@ const List = styled.ul`
 const ListItem = styled.li`
     margin-left: 12.5px;
 `;
-const BoardButton = styled.button`
+
+const ListBtn = styled.button<{addBoard?: any}>`
     padding: 0;
     height: 42px;
     width: 42px;
     border-radius: 2.5px;
     border: none;
     box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
-    background-color: #d4db26;
-    cursor: pointer;
-`;
-const TeamButton = styled.button`
-    padding: 0;
-    height: 42px;
-    width: 42px;
-    border-radius: 2.5px;
-    border: none;
-    box-shadow: 0 1.5px 4px 0 rgba(0, 0, 0, 0.08);
-    background-color: ${(props) => rgba(props.theme.colors.dark_blue,1)};
+    background-color: ${props => props.addBoard ?  props.theme.colors.lemon : props.theme.colors.dark_blue};
     cursor: pointer;
 `;
 

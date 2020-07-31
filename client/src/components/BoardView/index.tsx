@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
@@ -11,10 +11,13 @@ import { GET_LISTS_BY_BOARD_ID, GET_BOARD } from '../../graphql/queries';
 import { UPDATE_CARDS_IN_LIST, UPDATE_LISTS_ORDER } from '../../graphql/mutations';
 import { useDebounce, arrangeDataByOrder, getItemsOrderArray } from '../../utils';
 import BoardViewContext from 'contexts/BoardViewContext';
+import { DialogContext, ModalTypes} from 'contexts/DialogContext'
+import CardDetailModal from './CardDetailModal'
 
 interface BoardViewProps {}
 
 const BoardView = (props: BoardViewProps) => {
+    const context = useContext(DialogContext)
     // get board ID from url params
     const match = useRouteMatch<{ board_id: string }>();
 
@@ -194,6 +197,10 @@ const BoardView = (props: BoardViewProps) => {
         <BoardViewContext.Provider value={{ onCardAdded }}>
             <BoardViewContainer>
                 <BoardContent>
+                {/* <CardDetailModal/> */}
+                {context.openModals.find((modal) => modal.modalType === ModalTypes.CardDetail) !== undefined && (
+                    <CardDetailModal />
+                )}
                     {!!columns && (
                         <DragDropContext onDragEnd={onDragEnd}>
                             <Droppable droppableId="board-columns" direction="horizontal" type="column">

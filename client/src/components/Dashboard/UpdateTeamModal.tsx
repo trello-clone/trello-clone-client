@@ -5,6 +5,7 @@ import { useMutation } from '@apollo/react-hooks';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
+import { Backdrop } from '../common/ModalComponents';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { UPDATE_TEAM } from 'graphql/mutations';
@@ -68,7 +69,7 @@ const UpdateTeamModal = (props: TeamCardProps) => {
     });
 
     return (
-        <Container>
+        <Backdrop>
             <Modal ref={modalRef}>
                 <Header>Update team</Header>
                 <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" value={teamName} />
@@ -97,21 +98,12 @@ const UpdateTeamModal = (props: TeamCardProps) => {
                     <UpdateBtn onClick={handleUpdateTeam}>Update</UpdateBtn>
                 </ButtonContainer>
             </Modal>
-        </Container>
+        </Backdrop>
     );
 };
 
 export default UpdateTeamModal;
 
-const Container = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.5);
-`;
 const Modal = styled.div`
     background-color: white;
     width: 350px;

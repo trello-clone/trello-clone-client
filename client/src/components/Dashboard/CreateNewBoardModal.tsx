@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
+import { Backdrop } from '../common/ModalComponents';
 import { DialogContext, ModalTypes, CreateBoardOptions } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { Team, User, OpenModal } from '../../types.js';
@@ -26,7 +27,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const [selectedItemName, setSelectedItemName] = useState<String[]>([]);
     const [selectedItemID, setSelectedItemID] = useState<String[]>([]);
     const [titleInput, setTitleInput] = useState('');
-    const [teamIDSelected, setTeamIDSelected] = useState(boardData.dataType ? (boardData.dataType._id || '') : '' );
+    const [teamIDSelected, setTeamIDSelected] = useState(boardData.dataType ? boardData.dataType._id || '' : '');
     const history = useHistory();
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
     const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
@@ -74,7 +75,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         return () => window.removeEventListener('click', onClickOutside);
     });
     return (
-        <Container>
+        <Backdrop>
             <Modal ref={modalRef}>
                 <Header>Create board</Header>
                 <TypeWrapper>
@@ -145,21 +146,12 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                     )}
                 </ButtonContainer>
             </Modal>
-        </Container>
+        </Backdrop>
     );
 };
 
 export default CreateNewBoardModal;
 
-const Container = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.5);
-`;
 const Modal = styled.div`
     background-color: white;
     width: 350px;
@@ -174,6 +166,7 @@ const Modal = styled.div`
 `;
 const Header = styled.div`
     font-size: 20px;
+    font-family: 'ProximaNovaBold', sans-serif;
 `;
 const TypeWrapper = styled.div`
     margin-top: 15px;
@@ -182,10 +175,11 @@ const TypeWrapper = styled.div`
 `;
 
 const TypeNav = styled.a<{ active: boolean }>`
+    font-family: 'ProximaNovaBold', sans-serif;
     width: 50%;
     line-height: 54px;
     text-align: center;
-    text-decoration: none;
+
     color: ${(props) => (props.active ? rgba(props.theme.colors.lemon, 1) : rgba(props.theme.colors.black, 0.25))};
     &:first-child {
         border-right: 1px solid ${(props) => rgba(props.theme.colors.black, 0.25)};
@@ -278,6 +272,7 @@ const BackgroundItem = styled.img`
 `;
 
 const CancelButton = styled.a`
+    font-family: 'ProximaNovaBold', sans-serif;
     text-decoration: none;
     color: ${(props) => rgba(props.theme.colors.dark_blue, 0.55)};
     &:hover {

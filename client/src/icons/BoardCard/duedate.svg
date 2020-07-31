@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16.974" viewBox="0 0 17 16.974">
+  <g id="stopwatch" transform="translate(0 -0.019)">
+    <path id="Path_22" data-name="Path 22" d="M12.6,5.659a1.054,1.054,0,0,1-.751-.312L8.3,1.806A1.063,1.063,0,0,1,9.806.3l3.542,3.542A1.063,1.063,0,0,1,12.6,5.659Z" transform="translate(3.342 0)" fill="#11182e"/>
+    <path id="Path_23" data-name="Path 23" d="M7.084,2a7.084,7.084,0,1,0,7.084,7.084A7.084,7.084,0,0,0,7.084,2Zm3.542,7.792H7.084a.708.708,0,0,1-.708-.708V5.542a.708.708,0,1,1,1.417,0V8.375h2.833a.708.708,0,1,1,0,1.417Z" transform="translate(0 0.826)" fill="#11182e"/>
+  </g>
+</svg>

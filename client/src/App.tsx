@@ -68,7 +68,7 @@ function App() {
                                                 .filter(checkIfBoardHasTeam)
                                                 .filter((board) => board.team![0].name === team.name)
                                                 .map((board) => <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />)}
-                                        <AddBoardCard createBoardOption={CreateBoardOptions.ByTeam} boardData={team}/>
+                                        <AddBoardCard createBoardOption={CreateBoardOptions.ByTeam} boardData={team} />
                                     </BoardContainer>
                                 </>
                             ))}
@@ -104,8 +104,8 @@ export default App;
 
 const MainContentWrapper = styled.div`
     background-color: ${(props) => rgba(props.theme.colors.blue, 0.03)};
-    position: fixed;
-    overflow: scroll;
+    position: absolute;
+    overflow-y: auto;
     top: 80px;
     left: 70px;
     right: 0;
@@ -118,6 +118,8 @@ const Title = styled.div`
     position: relative;
     z-index: 1;
     margin-bottom: 10px;
+    font-size: 20px;
+    font-family: 'ProximaNovaBold', sans-serif;
 `;
 
 const BoardContainer = styled.div`

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 20 24">
+  <g id="Group_40" data-name="Group 40" transform="translate(-1150 -325)">
+    <g id="single-01" transform="translate(1149 332.636)">
+      <path id="Path_17" data-name="Path 17" d="M10.091,8.864a4.1,4.1,0,0,0,4.091-4.091V4.091A4.091,4.091,0,0,0,6,4.091v.682A4.1,4.1,0,0,0,10.091,8.864Z" transform="translate(-1.591)" fill="#11182e"/>
+      <path id="Path_18" data-name="Path 18" d="M13.492,15.67a19.035,19.035,0,0,0-9.985,0A3.426,3.426,0,0,0,1,18.959v2.178H16V18.959A3.426,3.426,0,0,0,13.492,15.67Z" transform="translate(0 -4.774)" fill="#11182e"/>
+    </g>
+    <text id="_" data-name="+" transform="translate(1162 338)" fill="#11182e" font-size="14" font-family="ProximaNova-Bold, Proxima Nova" font-weight="700"><tspan x="0" y="0">+</tspan></text>
+  </g>
+</svg>

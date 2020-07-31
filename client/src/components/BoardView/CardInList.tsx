@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 import moment from 'moment';
 
 import { Card } from '../../types';
 import { rgba } from 'polished';
+import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 
 interface CardProps {
     data: Card;
@@ -14,10 +15,16 @@ interface CardProps {
 const CardInList = (props: CardProps) => {
     const { data, index } = props;
     const { _id, title } = data;
+    const context = useContext(DialogContext);
     return (
         <Draggable draggableId={_id} index={index}>
             {(provided) => (
-                <Container {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                <Container
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    onClick={() => context.openModal!({ modalType: ModalTypes.CardDetail })}
+                >
                     <CardHeader>
                         <CardTitle>{title}</CardTitle>
                         <LastUpdated>{moment(data._changed).fromNow()}</LastUpdated>

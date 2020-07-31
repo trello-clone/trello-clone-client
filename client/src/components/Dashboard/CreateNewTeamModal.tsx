@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
+import { Backdrop } from '../common/ModalComponents';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { CREATE_TEAM } from 'graphql/mutations';
@@ -30,7 +31,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
         if (modalRef.current && !modalRef.current.contains(element)) {
             e.preventDefault();
             e.stopPropagation();
-            context.closeModal!({modalType: ModalTypes.CreateTeam});
+            context.closeModal!({ modalType: ModalTypes.CreateTeam });
         }
     };
 
@@ -49,7 +50,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         event.preventDefault();
         addTeam({ variables: { name: teamName, members: selectedItemID } });
-        context.closeModal!({modalType: ModalTypes.CreateTeam});
+        context.closeModal!({ modalType: ModalTypes.CreateTeam });
         dataRefetch();
         // redirect to /teams after submit
         history.push('/teams');
@@ -62,7 +63,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     });
 
     return (
-        <Container>
+        <Backdrop>
             <Modal ref={modalRef}>
                 <Header>Create team</Header>
                 <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" />
@@ -83,7 +84,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
                 <ButtonContainer>
                     <CancelButton
                         onClick={() => {
-                            context.closeModal!({modalType: ModalTypes.CreateTeam});
+                            context.closeModal!({ modalType: ModalTypes.CreateTeam });
                         }}
                     >
                         Cancel
@@ -91,21 +92,12 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
                     <CreateNewTeamBtn onClick={handleSubmit}>Create new team</CreateNewTeamBtn>
                 </ButtonContainer>
             </Modal>
-        </Container>
+        </Backdrop>
     );
 };
 
 export default CreateNewTeamdModal;
 
-const Container = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.5);
-`;
 const Modal = styled.div`
     background-color: white;
     width: 350px;
@@ -119,6 +111,7 @@ const Modal = styled.div`
     font-size: 16px;
 `;
 const Header = styled.div`
+    font-family: 'ProximaNovaBold', sans-serif;
     font-size: 20px;
     margin-bottom: 36px;
 `;
@@ -178,6 +171,7 @@ const BackgroundItem = styled.img`
 `;
 
 const CancelButton = styled.a`
+    font-family: 'ProximaNovaBold', sans-serif;
     text-decoration: none;
     color: ${(props) => rgba(props.theme.colors.dark_blue, 0.55)};
     &:hover {

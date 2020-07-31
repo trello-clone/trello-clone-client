@@ -1,0 +1,5 @@
+<svg id="todo" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <path id="Path_20" data-name="Path 20" d="M6.3,11.7l-2-2A.99.99,0,0,1,5.7,8.3L7,9.6l3.3-3.3a.99.99,0,0,1,1.4,1.4l-4,4A.893.893,0,0,1,6.3,11.7Z" fill="#11182e"/>
+  <path id="Path_21" data-name="Path 21" d="M15,1H12V3h2V14H2V3H4V1H1A.945.945,0,0,0,0,2V15a.945.945,0,0,0,1,1H15a.945.945,0,0,0,1-1V2A.945.945,0,0,0,15,1Z" fill="#11182e"/>
+  <rect id="Rectangle_32" data-name="Rectangle 32" width="6" height="4" transform="translate(5)" fill="#11182e"/>
+</svg>

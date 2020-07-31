@@ -5,6 +5,7 @@ import { useMutation } from '@apollo/react-hooks';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
+import { Backdrop } from '../common/ModalComponents';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { UPDATE_BOARD } from 'graphql/mutations';
@@ -76,7 +77,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
     });
 
     return (
-        <Container>
+        <Backdrop>
             <Modal ref={modalRef}>
                 <Header>Update board</Header>
                 {teamOfBoard && teamOfBoard.length !== 0 ? (
@@ -131,21 +132,12 @@ const UpdateBoardModal = (props: BoardCardProps) => {
                     <UpdateBoardBtn onClick={handleUpdateBoard}>Update</UpdateBoardBtn>
                 </ButtonContainer>
             </Modal>
-        </Container>
+        </Backdrop>
     );
 };
 
 export default UpdateBoardModal;
 
-const Container = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background-color: rgba(0, 0, 0, 0.5);
-`;
 const Modal = styled.div`
     background-color: white;
     width: 350px;
