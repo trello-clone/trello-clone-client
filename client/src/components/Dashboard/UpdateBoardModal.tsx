@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect, useState, MouseEvent } from 'react';
+import React, { useContext, useRef, useState, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation } from '@apollo/react-hooks';
@@ -10,6 +10,7 @@ import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { UPDATE_BOARD } from 'graphql/mutations';
 import { Board, User, Team, OpenModal } from '../../types.js';
+import { useOnClickOutside } from '../../utils/index';
 
 interface BoardCardProps {
     boardData: OpenModal;
@@ -37,16 +38,6 @@ const UpdateBoardModal = (props: BoardCardProps) => {
         { id: string; title: string; team?: string[]; members?: string[] }
     >(UPDATE_BOARD);
 
-    // Close the modal by clicking outside
-    const onClickOutside = (e: any) => {
-        const element = e.target;
-        if (modalRef.current && !modalRef.current.contains(element)) {
-            e.preventDefault();
-            e.stopPropagation();
-            context.closeModal!({ modalType: ModalTypes.UpdateBoard });
-        }
-    };
-
     // handle changes from custom select
     const getSelectResult = (item: User) => {
         if (selectedItem && selectedItem.find((itemInArr) => itemInArr._id === item._id) === undefined) {
@@ -71,10 +62,11 @@ const UpdateBoardModal = (props: BoardCardProps) => {
         context.closeModal!({ modalType: ModalTypes.UpdateBoard });
     };
 
-    useEffect(() => {
-        document.body.addEventListener('click', onClickOutside);
-        return () => window.removeEventListener('click', onClickOutside);
-    });
+    const cancelUpdateBoard = () => {
+        context.closeModal!({ modalType: ModalTypes.UpdateBoard });
+    };
+
+    useOnClickOutside(modalRef, cancelUpdateBoard);
 
     return (
         <Backdrop>
@@ -122,13 +114,7 @@ const UpdateBoardModal = (props: BoardCardProps) => {
                     <BackgroundItem src={background} alt="background" />
                 </BackgroundContainer>
                 <ButtonContainer>
-                    <CancelButton
-                        onClick={() => {
-                            context.closeModal!({ modalType: ModalTypes.UpdateBoard });
-                        }}
-                    >
-                        Cancel
-                    </CancelButton>
+                    <CancelButton onClick={cancelUpdateBoard}>Cancel</CancelButton>
                     <UpdateBoardBtn onClick={handleUpdateBoard}>Update</UpdateBoardBtn>
                 </ButtonContainer>
             </Modal>
@@ -151,6 +137,7 @@ const Modal = styled.div`
     font-size: 16px;
 `;
 const Header = styled.div`
+    font-family: 'ProximaNovaBold', sans-serif;
     font-size: 20px;
     margin-bottom: 20px;
 `;
@@ -230,7 +217,7 @@ const TeamLabel = styled.div`
 
 const SectionTitle = styled.div`
     margin-bottom: 10px;
-    font-family: 'ProximaNovaMedium', sans-serif;
+    font-family: 'ProximaNovaSemiBold', sans-serif;
     color: ${(props) => rgba(props.theme.colors.black, 1)};
 `;
 
@@ -246,6 +233,7 @@ const BackgroundItem = styled.img`
 `;
 
 const CancelButton = styled.a`
+    font-family: 'ProximaNovaBold', sans-serif;
     text-decoration: none;
     color: ${(props) => rgba(props.theme.colors.dark_blue, 0.55)};
     &:hover {

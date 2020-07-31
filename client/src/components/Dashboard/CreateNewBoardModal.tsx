@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect, useState, MouseEvent } from 'react';
+import React, { useContext, useRef, useState, MouseEvent } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation, useQuery } from '@apollo/react-hooks';
@@ -12,6 +12,7 @@ import CustomSelect from './CustomSelect';
 import { Team, User, OpenModal } from '../../types.js';
 import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM } from 'graphql/mutations';
 import { GET_TEAMS } from 'graphql/queries';
+import { useOnClickOutside } from '../../utils/index';
 
 interface BoardModalProps {
     dataRefetch: any;
@@ -32,16 +33,6 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     const [addBoardByMembers] = useMutation(CREATE_BOARD_BY_MEMBERS);
     const [addBoardByTeam] = useMutation(CREATE_BOARD_BY_TEAM);
     const { data: teamData, loading: teamLoading } = useQuery(GET_TEAMS);
-
-    // Close the modal by clicking outside
-    const onClickOutside = (e: any) => {
-        const element = e.target;
-        if (modalRef.current && !modalRef.current.contains(element)) {
-            e.preventDefault();
-            e.stopPropagation();
-            context.closeModal!({ modalType: ModalTypes.CreateBoard });
-        }
-    };
 
     // handle changes from custom select
     const getSelectResult = (item: User) => {
@@ -70,10 +61,12 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         history.push('/');
     };
 
-    useEffect(() => {
-        document.body.addEventListener('click', onClickOutside);
-        return () => window.removeEventListener('click', onClickOutside);
-    });
+    const cancelAddingNewBoard = () => {
+        context.closeModal!({ modalType: ModalTypes.CreateBoard });
+    };
+
+    useOnClickOutside(modalRef,cancelAddingNewBoard)
+
     return (
         <Backdrop>
             <Modal ref={modalRef}>
@@ -132,13 +125,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                     <BackgroundItem src={background} alt="background" />
                 </BackgroundContainer>
                 <ButtonContainer>
-                    <CancelButton
-                        onClick={() => {
-                            context.closeModal!({ modalType: ModalTypes.CreateBoard });
-                        }}
-                    >
-                        Cancel
-                    </CancelButton>
+                    <CancelButton onClick={cancelAddingNewBoard}>Cancel</CancelButton>
                     {boardModalOption === CreateBoardOptions.ByMembers ? (
                         <CreateNewBoardBtn onClick={handleSubmitWithMembers}>Create new board</CreateNewBoardBtn>
                     ) : (
@@ -190,7 +177,6 @@ const TypeNav = styled.a<{ active: boolean }>`
 `;
 
 const Input = styled.input`
-    font-family: 'ProximaNovaMedium', sans-serif;
     height: 23px;
     width: 348px;
     outline: 0;
@@ -249,14 +235,12 @@ const TeamImage = styled.img`
 `;
 const TeamLabel = styled.div`
     margin-top: 4px;
-    font-family: 'ProximaNovaMedium', sans-serif;
     color: ${(props) => rgba(props.theme.colors.black, 1)};
     font-size: 12px;
 `;
 
 const SectionTitle = styled.div`
     margin-bottom: 10px;
-    font-family: 'ProximaNovaMedium', sans-serif;
     color: ${(props) => rgba(props.theme.colors.black, 1)};
 `;
 

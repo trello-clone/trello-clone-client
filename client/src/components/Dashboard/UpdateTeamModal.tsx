@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation } from '@apollo/react-hooks';
@@ -9,7 +9,8 @@ import { Backdrop } from '../common/ModalComponents';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { UPDATE_TEAM } from 'graphql/mutations';
-import { Team, User , OpenModal} from '../../types.js';
+import { Team, User, OpenModal } from '../../types.js';
+import { useOnClickOutside } from '../../utils/index';
 
 interface TeamCardProps {
     teamData: OpenModal;
@@ -30,15 +31,9 @@ const UpdateTeamModal = (props: TeamCardProps) => {
     }
     const [selectedItemName, setSelectedItemName] = useState<string[]>(teamMemberName || '');
     const [selectedItemID, setSelectedItemID] = useState<string[]>(teamMemberID || '');
+    
     // Graphql mutation to update a team
     const [updateTeam, { loading }] = useMutation<{ teamUpdate: Team }, { id: String; name: String; members: String[] }>(UPDATE_TEAM);
-    const onClickOutside = (e: any) => {
-        const element = e.target;
-        if (modalRef.current && !modalRef.current.contains(element)) {
-            e.preventDefault();
-            context.closeModal!({modalType: ModalTypes.UpdateTeam});
-        }
-    };
 
     // handle changes from custom select
     const getSelectResult = (item: any) => {
@@ -60,14 +55,14 @@ const UpdateTeamModal = (props: TeamCardProps) => {
         if (!loading) {
             dataRefetch();
         }
-        context.closeModal!({modalType: ModalTypes.UpdateTeam});
+        context.closeModal!({ modalType: ModalTypes.UpdateTeam });
     };
-    useEffect(() => {
-        document.body.addEventListener('click', onClickOutside);
+    
+    const cancelUpdateTeam = () => {
+        context.closeModal!({ modalType: ModalTypes.UpdateTeam });
+    };
 
-        return () => window.removeEventListener('click', onClickOutside);
-    });
-
+    useOnClickOutside(modalRef, cancelUpdateTeam)
     return (
         <Backdrop>
             <Modal ref={modalRef}>
@@ -89,9 +84,7 @@ const UpdateTeamModal = (props: TeamCardProps) => {
                 </BackgroundContainer>
                 <ButtonContainer>
                     <CancelButton
-                        onClick={() => {
-                            context.closeModal!({modalType: ModalTypes.UpdateTeam});
-                        }}
+                        onClick={cancelUpdateTeam}
                     >
                         Cancel
                     </CancelButton>
@@ -117,12 +110,12 @@ const Modal = styled.div`
     font-size: 16px;
 `;
 const Header = styled.div`
+    font-family: 'ProximaNovaBold', sans-serif;
     font-size: 20px;
     margin-bottom: 36px;
 `;
 
 const Input = styled.input`
-    font-family: 'ProximaNovaMedium', sans-serif;
     height: 23px;
     width: 348px;
     outline: 0;
@@ -160,7 +153,7 @@ const Member = styled.div`
 
 const BackgroundLabel = styled.div`
     margin-bottom: 10px;
-    font-family: 'ProximaNovaMedium', sans-serif;
+    font-family: 'ProximaNovaSemiBold', sans-serif;
     color: ${(props) => rgba(props.theme.colors.black, 0.9)};
 `;
 
@@ -176,6 +169,7 @@ const BackgroundItem = styled.img`
 `;
 
 const CancelButton = styled.a`
+    font-family: 'ProximaNovaBold', sans-serif;
     text-decoration: none;
     color: ${(props) => rgba(props.theme.colors.dark_blue, 0.55)};
     &:hover {

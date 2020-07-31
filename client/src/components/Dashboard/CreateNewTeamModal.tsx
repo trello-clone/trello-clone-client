@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 import { useMutation } from '@apollo/react-hooks';
@@ -11,6 +11,7 @@ import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { CREATE_TEAM } from 'graphql/mutations';
 import { User } from '../../types';
+import { useOnClickOutside } from '../../utils/index';
 
 interface TeamModalProps {
     dataRefetch: any;
@@ -25,15 +26,6 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
     const [teamName, setTeamName] = useState('');
     const history = useHistory();
     const [addTeam] = useMutation(CREATE_TEAM);
-
-    const onClickOutside = (e: any) => {
-        const element = e.target;
-        if (modalRef.current && !modalRef.current.contains(element)) {
-            e.preventDefault();
-            e.stopPropagation();
-            context.closeModal!({ modalType: ModalTypes.CreateTeam });
-        }
-    };
 
     // handle changes from custom select
     const getSelectResult = (item: User) => {
@@ -56,12 +48,12 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
         history.push('/teams');
     };
 
-    useEffect(() => {
-        document.body.addEventListener('click', onClickOutside);
+    const cancelAddingNewTeam = () => {
+        context.closeModal!({ modalType: ModalTypes.CreateTeam });
+    };
 
-        return () => window.removeEventListener('click', onClickOutside);
-    });
-
+    useOnClickOutside(modalRef, cancelAddingNewTeam)
+    
     return (
         <Backdrop>
             <Modal ref={modalRef}>
@@ -82,13 +74,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
                     <BackgroundItem src={background} alt="background" />
                 </BackgroundContainer>
                 <ButtonContainer>
-                    <CancelButton
-                        onClick={() => {
-                            context.closeModal!({ modalType: ModalTypes.CreateTeam });
-                        }}
-                    >
-                        Cancel
-                    </CancelButton>
+                    <CancelButton onClick={cancelAddingNewTeam}>Cancel</CancelButton>
                     <CreateNewTeamBtn onClick={handleSubmit}>Create new team</CreateNewTeamBtn>
                 </ButtonContainer>
             </Modal>
