@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
-import { Backdrop } from '../common/ModalComponents';
+import { Backdrop, Input } from '../common/ModalComponents';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { CREATE_TEAM } from 'graphql/mutations';
@@ -58,7 +58,7 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
         <Backdrop>
             <Modal ref={modalRef}>
                 <Header>Create team</Header>
-                <Input onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" />
+                <Input cardType='team' onChange={handleTeamNameChange} type="text" placeholder="Enter team's name" />
                 <CustomSelect selectItems={getSelectResult} />
                 <MemberContainer>
                     <MemberList>
@@ -102,22 +102,6 @@ const Header = styled.div`
     margin-bottom: 36px;
 `;
 
-const Input = styled.input`
-    font-family: 'ProximaNovaMedium', sans-serif;
-    height: 23px;
-    width: 348px;
-    outline: 0;
-    border: 0;
-    padding-bottom: 5px;
-    padding-right: 0;
-    margin-bottom: 36px;
-    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.25)};
-    font-size: 16px;
-    &::placeholder {
-        font-size: 16px;
-        color: ${(props) => rgba(props.theme.colors.black, 0.25)};
-    }
-`;
 const MemberContainer = styled.div`
     display: flex;
     flex-flow: row wrap;

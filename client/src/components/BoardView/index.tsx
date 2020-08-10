@@ -17,7 +17,7 @@ import CardDetailModal from './CardDetailModal'
 interface BoardViewProps {}
 
 const BoardView = (props: BoardViewProps) => {
-    const context = useContext(DialogContext)
+    const dialogContext = useContext(DialogContext)
     // get board ID from url params
     const match = useRouteMatch<{ board_id: string }>();
 
@@ -198,7 +198,7 @@ const BoardView = (props: BoardViewProps) => {
             <BoardViewContainer>
                 <BoardContent>
                 {/* <CardDetailModal/> */}
-                {context.openModals.find((modal) => modal.modalType === ModalTypes.CardDetail) !== undefined && (
+                {dialogContext.openModals.find((modal) => modal.modalType === ModalTypes.CardDetail) !== undefined && (
                     <CardDetailModal />
                 )}
                     {!!columns && (

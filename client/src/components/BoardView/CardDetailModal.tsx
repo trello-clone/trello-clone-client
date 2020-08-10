@@ -1,4 +1,4 @@
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useContext } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 
@@ -61,6 +61,9 @@ const CloseBtn = styled.button`
     width: 20px;
     position: absolute;
     right: 32px;
+    &:hover{
+        cursor: pointer;
+    }
 `;
 const Header = styled.div`
     margin: 20px 12px;

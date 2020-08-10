@@ -1,47 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { rgba } from 'polished';
-import { useQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 
 import { selectTheme } from '../../theme';
 import { User } from '../../types';
 import { GET_USERS } from '../../graphql/queries';
+import { useDebounce } from '../../utils/index';
 
 const CustomSelect = (props: any, state: any) => {
-    const [keywordSearching, setKeyWordSearching] = useState('');
-    const [memberOptions, setMemberOptions] = useState([]);
-    const { data, loading } = useQuery(GET_USERS, {
-        variables: { keyword: keywordSearching },
-    });
+    // State and setter for search term
+    const [searchTerm, setSearchTerm] = useState('');
+    // State and setter for search results
+    const [results, setResults] = useState<[User] | undefined>();
+    // State for search status (whether there is a pending API request)
+    const [isSearching, setIsSearching] = useState(false);
 
-    const handleInputChange = (input: string) => {
-        if (input !== '') {
-            setKeyWordSearching(input);
-        }
-        if (!loading && data) {
-            setMemberOptions(data.users);
-        }
-    };
+
+    // Now we call our hook, passing in the current searchTerm value.
+    // The hook will only return the latest value (what we passed in) ...
+    // ... if it's been more than 500ms since it was last called.
+    // Otherwise, it will return the previous value of searchTerm.
+    // The goal is to only have the API call fire when user stops typing ...
+    // ... so that we aren't hitting our API rapidly.
+    const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+    const [getUsers, { data, loading }] = useLazyQuery<{ users: [User] }, { keyword: string }>(GET_USERS);
+
+
+    useEffect(
+        () => {
+            // Make sure we have a value (user has entered something in input)
+            if (debouncedSearchTerm) {
+                // Set isSearching state
+                setIsSearching(true);
+                // Fire off our API call
+                getUsers({ variables: { keyword: debouncedSearchTerm } });
+                if (!loading && data) {
+                    // Set back to false since request finished
+                    setIsSearching(false);
+                    // Set results state
+                    setResults(data.users);
+                }
+            } else {
+                setResults(undefined);
+            }
+        },
+        [data, debouncedSearchTerm, getUsers, loading]
+    );
+
     const customStyles = {
         option: (provided: any, state: any) => ({
             ...provided,
-            borderBottom: '1px dotted pink',
-            color: state.isSelected ? 'red' : 'blue',
-            padding: 20,
+            color: state.isSelected ? 'red' : `${selectTheme.black}`,
+            fontFamily: `ProximaNovaSemiBold`,
+            padding: '16px 0',
+            paddingLeft: '20%',
+            fontSize: '14px',
         }),
         control: (provided: any) => ({
             ...provided,
-            minHeight: '23px',
-            border: state.isFocused ? 0 : 0,
             // This line disable the blue border
             boxShadow: state.isFocused ? 0 : 0,
-            '&:hover': {
-                border: state.isFocused ? 0 : 0,
-                borderBottom: `1px solid ${rgba(selectTheme.black, 0.25)}`,
-            },
-            borderBottom: `1px solid ${rgba(selectTheme.black, 0.25)}`,
-            borderRadius: 0,
+            border: 0,
+            borderRadius: '8px',
             marginBottom: '12px',
+            backgroundColor: `${rgba(selectTheme.blue, 0.1)}`,
         }),
         dropdownIndicator: (provided: any) => ({
             ...provided,
@@ -54,38 +78,38 @@ const CustomSelect = (props: any, state: any) => {
             marginBottom: '5px',
             fontFamily: `ProximaNovaMedium`,
             height: '23px',
-            fontSize: '16px',
+            fontSize: '14px',
             alignItem: 'center',
         }),
         placeholder: (provided: any) => ({
             ...provided,
             margin: 0,
             padding: 0,
-            paddingLeft: '2px',
-            fontSize: '16px',
+            paddingLeft: '12px',
+            fontSize: '14px',
+            fontFamily: 'ProximaNovaMedium',
             color: ` ${rgba(selectTheme.black, 0.25)}`,
         }),
         input: (provided: any) => ({
             ...provided,
-            padding: 0,
-            paddingLeft: '2px',
+            paddingLeft: '12px',
             margin: 0,
             fontFamily: 'ProximaNovaMedium',
-            fontSize: '16px',
+            fontSize: '14px',
         }),
     };
     return (
         <>
             <Select
                 styles={customStyles}
-                options={memberOptions}
+                options={results}
                 getOptionLabel={(option: User) => `${option.name}`}
                 // getOptionValue={(option)=>`${option.name}`}
-                placeholder="Enter member's name"
+                placeholder="Search member"
                 isSearchable
                 onChange={(item) => props.selectItems(item)}
                 value={null}
-                onInputChange={handleInputChange}
+                onInputChange={(input) => setSearchTerm(input)}
             />
         </>
     );

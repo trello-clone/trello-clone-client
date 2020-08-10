@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
-import { Backdrop } from '../common/ModalComponents';
+import { Backdrop, Input } from '../common/ModalComponents';
 import { DialogContext, ModalTypes, CreateBoardOptions } from '../../contexts/DialogContext';
 import CustomSelect from './CustomSelect';
 import { Team, User, OpenModal } from '../../types.js';
@@ -65,7 +65,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
         context.closeModal!({ modalType: ModalTypes.CreateBoard });
     };
 
-    useOnClickOutside(modalRef,cancelAddingNewBoard)
+    useOnClickOutside(modalRef, cancelAddingNewBoard);
 
     return (
         <Backdrop>
@@ -176,21 +176,6 @@ const TypeNav = styled.a<{ active: boolean }>`
     }
 `;
 
-const Input = styled.input`
-    height: 23px;
-    width: 348px;
-    outline: 0;
-    border: 0;
-    padding-bottom: 5px;
-    padding-right: 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid ${(props) => rgba(props.theme.colors.black, 0.25)};
-    font-size: 16px;
-    &::placeholder {
-        font-size: 16px;
-        color: ${(props) => rgba(props.theme.colors.black, 0.25)};
-    }
-`;
 const MemberContainer = styled.div`
     display: flex;
     flex-flow: row wrap;
