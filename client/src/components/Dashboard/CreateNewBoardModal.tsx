@@ -8,11 +8,12 @@ import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
 import { Backdrop, Input } from '../common/ModalComponents';
 import { DialogContext, ModalTypes, CreateBoardOptions } from '../../contexts/DialogContext';
-import CustomSelect from './CustomSelect';
+import CustomSelect from '../CustomSelect';
 import { Team, User, OpenModal } from '../../types.js';
 import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM } from 'graphql/mutations';
 import { GET_TEAMS } from 'graphql/queries';
 import { useOnClickOutside } from '../../utils/index';
+import AddMemberPopover from '../AddMemberPopover';
 
 interface BoardModalProps {
     dataRefetch: any;
@@ -41,6 +42,23 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
             setSelectedItemName(selectedItemName.concat(item.name));
             setSelectedItemID(selectedItemID.concat(item._id));
         }
+    };
+
+    // deselect the item from the selectedItem arr
+    const deselectItem = (item: User) => {
+        const index = selectedItem.indexOf(item);
+
+        const newSelectedItem = [...selectedItem];
+        newSelectedItem.splice(index, 1);
+        setSelectedItem(newSelectedItem);
+
+        const newSelectedItemName = [...selectedItemName];
+        newSelectedItemName.splice(index, 1);
+        setSelectedItemName(newSelectedItemName);
+
+        const newSelectedItemID = [...selectedItemName];
+        newSelectedItemID.splice(index, 1);
+        setSelectedItemID(newSelectedItemID);
     };
 
     //create a new board by members
@@ -105,7 +123,8 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 )}
                 {boardModalOption === CreateBoardOptions.ByMembers && (
                     <>
-                        <CustomSelect selectItems={getSelectResult} />
+                        <AddMemberPopover selectItems={getSelectResult} memberNames={selectedItemName} deselectMember={deselectItem} />
+                        {/* <CustomSelect selectItems={getSelectResult} /> */}
                         <MemberContainer>
                             <MemberList>
                                 {selectedItemName.map((item: any, index: any) => (

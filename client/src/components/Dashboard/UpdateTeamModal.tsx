@@ -7,7 +7,7 @@ import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
 import { Backdrop, Input } from '../common/ModalComponents';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
-import CustomSelect from './CustomSelect';
+import CustomSelect from '../CustomSelect';
 import { UPDATE_TEAM } from 'graphql/mutations';
 import { Team, User, OpenModal } from '../../types.js';
 import { useOnClickOutside } from '../../utils/index';

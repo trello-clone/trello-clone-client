@@ -8,7 +8,7 @@ import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
 import { Backdrop, Input } from '../common/ModalComponents';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
-import CustomSelect from './CustomSelect';
+import CustomSelect from '../CustomSelect';
 import { CREATE_TEAM } from 'graphql/mutations';
 import { User } from '../../types';
 import { useOnClickOutside } from '../../utils/index';

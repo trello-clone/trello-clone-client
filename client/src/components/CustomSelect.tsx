@@ -3,10 +3,10 @@ import Select from 'react-select';
 import { rgba } from 'polished';
 import { useLazyQuery } from '@apollo/react-hooks';
 
-import { selectTheme } from '../../theme';
-import { User } from '../../types';
-import { GET_USERS } from '../../graphql/queries';
-import { useDebounce } from '../../utils/index';
+import { selectTheme } from '../theme';
+import { User } from '../types';
+import { GET_USERS } from '../graphql/queries';
+import { useDebounce } from '../utils/index';
 
 const CustomSelect = (props: any, state: any) => {
     // State and setter for search term
@@ -107,9 +107,11 @@ const CustomSelect = (props: any, state: any) => {
                 // getOptionValue={(option)=>`${option.name}`}
                 placeholder="Search member"
                 isSearchable
+                /* get the selected items */
                 onChange={(item) => props.selectItems(item)}
                 value={null}
                 onInputChange={(input) => setSearchTerm(input)}
+           
             />
         </>
     );
