@@ -45,8 +45,8 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
     };
 
     // deselect the item from the selectedItem arr
-    const deselectItem = (item: User) => {
-        const index = selectedItem.indexOf(item);
+    const deselectItem = (name: string) => {
+        const index = selectedItem.findIndex(user => user.name === name);
 
         const newSelectedItem = [...selectedItem];
         newSelectedItem.splice(index, 1);
