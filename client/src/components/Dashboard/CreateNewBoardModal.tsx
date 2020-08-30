@@ -8,7 +8,6 @@ import avatar from '../../icons/avatar.jpg';
 import background from '../../icons/teamBackground.jpg';
 import { Backdrop, Input } from '../common/ModalComponents';
 import { DialogContext, ModalTypes, CreateBoardOptions } from '../../contexts/DialogContext';
-import CustomSelect from '../CustomSelect';
 import { Team, User, OpenModal } from '../../types.js';
 import { CREATE_BOARD_BY_MEMBERS, CREATE_BOARD_BY_TEAM } from 'graphql/mutations';
 import { GET_TEAMS } from 'graphql/queries';
@@ -113,7 +112,7 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                         <TeamContainer>
                             {!teamLoading &&
                                 (teamData.teams as Team[]).map((team) => (
-                                    <TeamItem onClick={() => setTeamIDSelected(team._id)} isSelected={team._id === teamIDSelected}>
+                                    <TeamItem key={team._id} onClick={() => setTeamIDSelected(team._id)} isSelected={team._id === teamIDSelected}>
                                         <TeamImage src={background} alt="background" />
                                         <TeamLabel>{team.name}</TeamLabel>
                                     </TeamItem>
@@ -124,7 +123,6 @@ const CreateNewBoardModal = (props: BoardModalProps) => {
                 {boardModalOption === CreateBoardOptions.ByMembers && (
                     <>
                         <AddMemberPopover selectItems={getSelectResult} memberNames={selectedItemName} deselectMember={deselectItem} />
-                        {/* <CustomSelect selectItems={getSelectResult} /> */}
                         <MemberContainer>
                             <MemberList>
                                 {selectedItemName.map((item: any, index: any) => (

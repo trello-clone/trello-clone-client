@@ -13,7 +13,6 @@ const AddMemberPopover = (props: any) => {
     const { selectItems, memberNames, deselectMember, ...otherProps } = props;
     const [open, setOpen] = useState(false);
     const numberOfMember = memberNames.length;
-    console.log(memberNames);
     return (
         <MenuSurfaceAnchor>
             <CustomMenuSurface anchorCorner="bottomStart" open={open} onClose={(evt: MouseEvent) => setOpen(false)}>

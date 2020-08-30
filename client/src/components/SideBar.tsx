@@ -40,12 +40,13 @@ const Wrapper = styled.div`
     bottom: 0;
 `;
 
-const SideNavItem = styled.a`
-    text-decoration: none;
+const SideNavItem = styled.button`
+    padding: 0;
+    border: none;
+    border-radius: 2px;
     font-size: 25px;
-    display: block;
     display: flex;
-    justify-content: center;
+    margin: auto;
     margin-bottom: 21px;
     &:first-child {
         margin-top: 17.5px;
