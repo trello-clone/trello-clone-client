@@ -29,7 +29,6 @@ const AddBtn = styled.button`
     opacity: 0.25;
     font-family: 'ProximaNovaMedium', sans-serif;
     font-size: 70px;
-
     &:hover {
         cursor: pointer;
     }

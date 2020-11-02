@@ -10,12 +10,11 @@ import { ThemeProvider } from 'styled-components';
 import { DialogProvider } from './contexts/DialogContext';
 import { myTheme } from './theme';
 import GlobalFonts from './fonts/fonts';
-
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:4000/api',
+    uri: process.env.NODE_ENV === 'development' ? 'http://localhost:4000/api' : 'https://tqkn-trello-clone-server.herokuapp.com/api',
 });
 
 const cleanTypeName = new ApolloLink((operation, forward) => {
