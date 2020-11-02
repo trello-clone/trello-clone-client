@@ -1,7 +1,7 @@
 ## TRELLO CLONE - CLIENT SIDE
 
 ## Project Screen Shot(s)
-![The demo]('./demo/trello_clone_demo.gif')
+![The demo](https://github.com/trello-clone/trello-clone-client/blob/master/demo/trello_clone_demo.gif)
 
 ## Features
 ⚡️ Well organized documentation
