@@ -1,8 +1,6 @@
 import react from 'react';
 import styed from 'styled-components';
 
-const DropDownMenu = () => {
-
-};
+const DropDownMenu = () => {};
 
 export default DropDownMenu;

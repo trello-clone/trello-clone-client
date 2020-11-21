@@ -12,9 +12,9 @@ Installation:
 
 `npm install`
 
-To Start Server:
+To Start App:
 
-`npm start`  
+`npm run dev`  
 
 To Visit App:
 
@@ -22,9 +22,11 @@ To Visit App:
 
 ## Technologies used 🛠️
 
+- Typescript
 - [GraphQL](https://graphql.org/) - Query language for APIs
 - [React](https://es.reactjs.org/) - Front-End JavaScript library
-
+- React DnD
+- Styled-component
 ## Authors
 
 * **Nguyen Tran** - [nguyen-tran-qk ](https://github.com/nguyen-tran-qk)

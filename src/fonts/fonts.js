@@ -3,7 +3,6 @@ import ProximaNovaBold from './FontsFree-Net-Proxima-Nova-Bold.otf';
 import ProximaNovaSemiBold from './Proxima-Nova-Sbold.otf';
 import ProximaNovaMedium from './Proxima-nova-medium.ttf';
 
-
 export default createGlobalStyle`
     @font-face {
         font-family: 'ProximaNovaBold';
