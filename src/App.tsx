@@ -14,8 +14,10 @@ import CreateNewBoardModal from './components/Dashboard/CreateNewBoardModal';
 import CreateNewTeamModal from './components/Dashboard/CreateNewTeamModal';
 import UpdateTeamModal from './components/Dashboard/UpdateTeamModal';
 import UpdateBoardModal from './components/Dashboard/UpdateBoardModal';
-import { ModalTypes, DialogContext, CreateBoardOptions } from './contexts/DialogContext';
 import BoardView from './components/BoardView';
+import Spinner from './components/common/Spinner';
+
+import { ModalTypes, DialogContext, CreateBoardOptions } from './contexts/DialogContext';
 import { Board, Team, OpenModal } from './types';
 import { GET_BOARDS, GET_TEAMS } from 'graphql/queries';
 
@@ -43,6 +45,7 @@ function App() {
           <Route path="/teams">
             <Title>Teams</Title>
             <TeamContainer>
+              {teamLoading && <Spinner />}
               {!teamLoading && (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} dataRefetch={teamRefetch} />)}
               <AddTeamCard />
             </TeamContainer>
@@ -50,12 +53,14 @@ function App() {
           <Route path="/">
             <Title>Personal boards</Title>
             <BoardContainer>
+              {boardLoading && <Spinner />}
               {!boardLoading &&
                 (boardData.boards as Board[])
                   .filter(isPersonalBoard)
                   .map((board) => <BoardCard key={board._id} data={board} dataRefetch={boardRefetch} />)}
               <AddBoardCard createBoardOption={CreateBoardOptions.ByMembers} />
             </BoardContainer>
+            {teamLoading && <Spinner />}
             {!teamLoading &&
               !boardLoading &&
               (teamData.teams as Team[]).map((team) => (
