@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import archiveIcon from '../../icons/BoardCard/archive.svg';
@@ -6,19 +6,52 @@ import attachmentIcon from '../../icons/BoardCard/attachment.svg';
 import checklistIcon from '../../icons/BoardCard/checklist.svg';
 import copyIcon from '../../icons/BoardCard/copy.svg';
 import dueDateIcon from '../../icons/BoardCard/duedate.svg';
-import addMemberIcon from '../../icons/BoardCard/Group 40.svg';
 import addLabelIcon from '../../icons/BoardCard/label.svg';
 import moveIcon from '../../icons/BoardCard/move.svg';
 import { UtilButton, BtnDescription, Icon } from '../common/ModalComponents';
+import { User } from '../../types.js';
+import AddMemberPopover from '../AddMemberPopover';
 
 const SideBarInCard = () => {
+  const [selectedItem, setSelectedItem] = useState<User[]>([]);
+  const [selectedItemName, setSelectedItemName] = useState<String[]>([]);
+  const [selectedItemID, setSelectedItemID] = useState<String[]>([]);
+
+  // handle changes from custom select
+  const getSelectResult = (item: User) => {
+    if (selectedItem.find((itemInArr) => itemInArr === item) === undefined) {
+      setSelectedItem(selectedItem.concat(item));
+      setSelectedItemName(selectedItemName.concat(item.name));
+      setSelectedItemID(selectedItemID.concat(item._id));
+    }
+  };
+
+  // deselect the item from the selectedItem arr
+  const deselectItem = (name: string) => {
+    const index = selectedItem.findIndex((user) => user.name === name);
+
+    const newSelectedItem = [...selectedItem];
+    newSelectedItem.splice(index, 1);
+    setSelectedItem(newSelectedItem);
+
+    const newSelectedItemName = [...selectedItemName];
+    newSelectedItemName.splice(index, 1);
+    setSelectedItemName(newSelectedItemName);
+
+    const newSelectedItemID = [...selectedItemName];
+    newSelectedItemID.splice(index, 1);
+    setSelectedItemID(newSelectedItemID);
+  };
+
   return (
     <Wrapper>
       <ModuleTitle>Add to card</ModuleTitle>
-      <UtilButton>
-        <Icon addMember src={addMemberIcon} />
-        <BtnDescription>Members</BtnDescription>
-      </UtilButton>
+      <AddMemberPopover
+        isSideBar
+        selectItems={getSelectResult}
+        memberNames={selectedItemName}
+        deselectMember={deselectItem}
+      />
       <UtilButton>
         <Icon src={addLabelIcon} />
         <BtnDescription>Labels</BtnDescription>
