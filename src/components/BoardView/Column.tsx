@@ -16,7 +16,6 @@ interface ColumnProps {
 const Column = (props: ColumnProps) => {
   const { data, index } = props;
   const [cards, setCards] = useState<Card[]>(arrangeDataByOrder(data.cards, data.cards_order));
-
   useEffect(() => {
     setCards(arrangeDataByOrder(data.cards, data.cards_order));
   }, [data]);

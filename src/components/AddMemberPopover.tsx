@@ -10,37 +10,47 @@ import CrossMark from '../icons/crossmark.svg';
 import DeleteIcon from '../icons/trash-can-red.svg';
 
 const AddMemberPopover = (props: any) => {
-  const { selectItems, memberNames, deselectMember, ...otherProps } = props;
+  const { selectItems, memberNames, deselectMember, isSideBar, ...otherProps } = props;
   const [open, setOpen] = useState(false);
   const numberOfMember = memberNames.length;
   return (
     <MenuSurfaceAnchor>
-      <CustomMenuSurface anchorCorner="bottomStart" open={open} onClose={(evt: MouseEvent) => setOpen(false)}>
+      <CustomMenuSurface
+        isSideBar={isSideBar}
+        anchorCorner="bottomStart"
+        open={open}
+        onClose={(evt: MouseEvent) => setOpen(false)}
+      >
         <ContentWrapper>
           <CloseBtn onClick={(evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => setOpen(false)} />
           <Title>Members</Title>
           <CustomSelectMember selectItems={selectItems} />
-          {numberOfMember === 0 && <MenuItem disabled={true}>There is no member !!!</MenuItem>}
+          {numberOfMember === 0 && <CustomMenuItem disabled={true}>There is no member !!!</CustomMenuItem>}
           {numberOfMember !== 0 &&
             memberNames.map((item: string, index: any) => (
-              <MenuItem key={index} disabled={true}>
+              <CustomMenuItem key={index} disabled={true}>
                 {item}
                 <CloseBtn isMenuItem onClick={() => deselectMember(item)} />
-              </MenuItem>
+              </CustomMenuItem>
             ))}
         </ContentWrapper>
       </CustomMenuSurface>
       <UtilButton onClick={(evt) => setOpen(!open)}>
         <Icon addMember src={addMemberIcon} />
-        <BtnDescription>Add Members</BtnDescription>
+        <BtnDescription>{isSideBar ? 'Members' : 'Add Members'}</BtnDescription>
       </UtilButton>
     </MenuSurfaceAnchor>
   );
 };
 export default AddMemberPopover;
 
-const CustomMenuSurface = styled(({ ...props }) => <MenuSurface {...props} />)`
+const CustomMenuSurface = styled(({ isSideBar, ...props }) => <MenuSurface {...props} />)`
   width: 100%;
+  ${(props) => (props.isSideBar ? `left:unset !important; right: 0; width: 240px` : ``)};
+`;
+
+const CustomMenuItem = styled(({ ...props }) => <MenuItem {...props} />)`
+  font-size: 1rem;
 `;
 const ContentWrapper = styled.div`
   position: relative;
@@ -50,6 +60,7 @@ const ContentWrapper = styled.div`
 const Title = styled.div`
   font-family: 'ProximaNovaBold', sans-serif;
   margin-bottom: 12px;
+  font-size: 1rem;
 `;
 const CloseBtn = styled.button<{ isMenuItem?: boolean }>`
   border: 0;

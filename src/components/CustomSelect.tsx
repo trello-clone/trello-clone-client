@@ -102,7 +102,7 @@ const CustomSelect = (props: any, state: any) => {
         // getOptionValue={(option)=>`${option.name}`}
         placeholder="Search member"
         isSearchable
-        /* get the selected items */
+        // get the selected items
         onChange={(item) => props.selectItems(item)}
         value={null}
         onInputChange={(input) => setSearchTerm(input)}
