@@ -89,6 +89,7 @@ export const GET_LISTS_BY_BOARD_ID = gql`
         _id
         title
         description
+        members
         _created
         _changed
       }
