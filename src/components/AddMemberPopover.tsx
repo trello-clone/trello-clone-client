@@ -44,7 +44,7 @@ const AddMemberPopover = (props: any) => {
 };
 export default AddMemberPopover;
 
-const CustomMenuSurface = styled(({ ...props }) => <MenuSurface {...props} />)`
+const CustomMenuSurface = styled(({ isSideBar, ...props }) => <MenuSurface {...props} />)`
   width: 100%;
   ${(props) => (props.isSideBar ? `left:unset !important; right: 0; width: 240px` : ``)};
 `;

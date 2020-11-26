@@ -13,6 +13,7 @@ import { useDebounce, arrangeDataByOrder, getItemsOrderArray } from '../../utils
 import BoardViewContext from 'contexts/BoardViewContext';
 import { DialogContext, ModalTypes } from 'contexts/DialogContext';
 import CardDetailModal from './CardDetailModal';
+import SpinnerWithBackdrop from '../common/SpinnerWithBackdrop';
 
 interface BoardViewProps {}
 
@@ -22,7 +23,9 @@ const BoardView = (props: BoardViewProps) => {
   const match = useRouteMatch<{ board_id: string }>();
 
   // fetch data of board and lists in board
-  const listsData = useQuery<{ lists: ColumnT[] }>(GET_LISTS_BY_BOARD_ID, { variables: { board_id: match.params.board_id } });
+  const listsData = useQuery<{ lists: ColumnT[] }>(GET_LISTS_BY_BOARD_ID, {
+    variables: { board_id: match.params.board_id },
+  });
   const boardData = useQuery<{ board: Board }>(GET_BOARD, { variables: { id: match.params.board_id } });
 
   // Graphql mutation to persist columns data into DB
@@ -32,7 +35,9 @@ const BoardView = (props: BoardViewProps) => {
   >(UPDATE_CARDS_IN_LIST);
 
   // Graphql mutation to update lists order in board
-  const [gqlUpdateListsOrder] = useMutation<{ updateListOrder: Board }, { board_id: string; lists_order: string }>(UPDATE_LISTS_ORDER);
+  const [gqlUpdateListsOrder] = useMutation<{ updateListOrder: Board }, { board_id: string; lists_order: string }>(
+    UPDATE_LISTS_ORDER
+  );
 
   // init columns and columns order data in state
   const [columns, setColumns] = useState<ColumnT[] | undefined>();
@@ -168,7 +173,9 @@ const BoardView = (props: BoardViewProps) => {
       const currentListsOrder = [...(columnsOrder || [])];
       const newListsOrder = currentListsOrder.length ? currentListsOrder.concat(column_id) : [column_id];
       setColumnsOrder(newListsOrder);
-      gqlUpdateListsOrder({ variables: { board_id: match.params.board_id, lists_order: newListsOrder.join(',') } }).then(() => {
+      gqlUpdateListsOrder({
+        variables: { board_id: match.params.board_id, lists_order: newListsOrder.join(',') },
+      }).then(() => {
         listsData.refetch();
         boardData.refetch();
       });
@@ -197,8 +204,9 @@ const BoardView = (props: BoardViewProps) => {
     <BoardViewContext.Provider value={{ onCardAdded }}>
       <BoardViewContainer>
         <BoardContent>
-          {/* <CardDetailModal/> */}
-          {dialogContext.openModals.find((modal) => modal.modalType === ModalTypes.CardDetail) !== undefined && <CardDetailModal />}
+          {dialogContext.openModals.find((modal) => modal.modalType === ModalTypes.CardDetail) !== undefined && (
+            <CardDetailModal />
+          )}
           {!!columns && (
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="board-columns" direction="horizontal" type="column">
@@ -211,6 +219,7 @@ const BoardView = (props: BoardViewProps) => {
               </Droppable>
             </DragDropContext>
           )}
+          {!columns && <SpinnerWithBackdrop />}
           <AddColumn onColumnAdded={onColumnAdded} boardId={match.params.board_id} />
         </BoardContent>
       </BoardViewContainer>
