@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Card } from '../../types';
 import { rgba } from 'polished';
 import { DialogContext, ModalTypes } from '../../contexts/DialogContext';
+import { CardInListContext } from '../../contexts/CardInListContext';
 
 interface CardProps {
   data: Card;
@@ -15,7 +16,12 @@ interface CardProps {
 const CardInList = (props: CardProps) => {
   const { data, index } = props;
   const { _id, title } = data;
-  const context = useContext(DialogContext);
+  const dialogContext = useContext(DialogContext);
+  const cardInListContext = useContext(CardInListContext);
+  const handleOnClickCard = () => {
+    dialogContext.openModal!({ modalType: ModalTypes.CardDetail });
+    cardInListContext.setCurrentCard!(data)
+  };
   return (
     <Draggable draggableId={_id} index={index}>
       {(provided) => (
@@ -23,7 +29,7 @@ const CardInList = (props: CardProps) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          onClick={() => context.openModal!({ modalType: ModalTypes.CardDetail })}
+          onClick={handleOnClickCard}
         >
           <CardHeader>
             <CardTitle>{title}</CardTitle>

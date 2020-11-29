@@ -46,7 +46,10 @@ function App() {
             <Title>Teams</Title>
             <TeamContainer>
               {teamLoading && <Spinner />}
-              {!teamLoading && (teamData.teams as Team[]).map((team) => <TeamCard key={team._id} data={team} dataRefetch={teamRefetch} />)}
+              {!teamLoading &&
+                (teamData.teams as Team[]).map((team) => (
+                  <TeamCard key={team._id} data={team} dataRefetch={teamRefetch} />
+                ))}
               <AddTeamCard />
             </TeamContainer>
           </Route>

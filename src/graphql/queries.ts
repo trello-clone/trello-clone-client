@@ -97,6 +97,19 @@ export const GET_LISTS_BY_BOARD_ID = gql`
   }
 `;
 
+//get all users
+export const GET_ALL_USERS = gql`
+  query all_users {
+    all_users {
+      _id
+      name
+      avatar
+      email
+      _created
+    }
+  }
+`;
+
 // Query to request a user from database with specific keywords
 export const GET_USERS = gql`
   query users($keyword: String!) {
@@ -105,6 +118,19 @@ export const GET_USERS = gql`
       name
       email
       avatar
+      _created
+    }
+  }
+`;
+
+// query user by ID
+export const GET_USER_BY_ID = gql`
+  query user($id: ID!) {
+    user(id: $id) {
+      _id
+      name
+      avatar
+      email
       _created
     }
   }

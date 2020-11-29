@@ -7,12 +7,27 @@ import CrossMark from '../../icons/crossmark.svg';
 import SideBar from './SideBarInCard';
 import { useOnClickOutside } from '../../utils/index';
 import { ModalTypes, DialogContext } from '../../contexts/DialogContext';
+import { CardInListContext } from '../../contexts/CardInListContext';
+import BoardViewContext from '../../contexts/BoardViewContext';
+import { User } from '../../types';
 
 const CardDetailModal = () => {
+  const baseImgUrl = 'https://trelloclone-f19f.restdb.io/media/';
   const cardModalRef = useRef(null);
-  const context = useContext(DialogContext);
-  const closeModal = () => context.closeModal!({ modalType: ModalTypes.CardDetail });
+  const dialogContext = useContext(DialogContext);
+  const cardInListContext = useContext(CardInListContext);
+  const boardViewContext = useContext(BoardViewContext);
+  const allMembers = boardViewContext.all_users!;
+  console.log('allMembers', allMembers);
+
+  const cardInfo = cardInListContext.cardInfo!;
+  console.log('cardInListContext.cardInfo!', cardInfo);
+  
+  const closeModal = () => dialogContext.closeModal!({ modalType: ModalTypes.CardDetail });
   useOnClickOutside(cardModalRef, closeModal);
+  const cardMembersId = cardInfo.members;
+  const cardMembers = allMembers.filter((member: User) => cardMembersId?.includes(member._id));
+  console.log('cardMembers', cardMembers);
   return (
     <Backdrop>
       <CardDetailContainer ref={cardModalRef}>
@@ -25,6 +40,11 @@ const CardDetailModal = () => {
         </Header>
         <Body>
           <MainContent>
+            <div>
+              {cardMembers.map((member: User) => (
+                <MemberAva src={`${baseImgUrl}${member.avatar[0]}?s=w`} alt={member.name} />
+              ))}
+            </div>
             <ModuleTitle>Description</ModuleTitle>
             <Input placeholder="Type something for the description"></Input>
             <ModuleTitle>Attachments</ModuleTitle>
@@ -111,4 +131,10 @@ const Input = styled.textarea`
   &::placeholder {
     color: ${(props) => rgba(props.theme.colors.black, 0.4)};
   }
+`;
+
+const MemberAva = styled.img`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
 `;
