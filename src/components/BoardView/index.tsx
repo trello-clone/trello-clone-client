@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
@@ -7,11 +7,12 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import Column from './Column';
 import AddColumn from './AddColumn';
 import { Column as ColumnT, Board, Card } from '../../types';
-import { GET_LISTS_BY_BOARD_ID, GET_BOARD } from '../../graphql/queries';
+import { GET_LISTS_BY_BOARD_ID, GET_BOARD, GET_ALL_USERS } from '../../graphql/queries';
 import { UPDATE_CARDS_IN_LIST, UPDATE_LISTS_ORDER } from '../../graphql/mutations';
 import { useDebounce, arrangeDataByOrder, getItemsOrderArray } from '../../utils';
 import BoardViewContext from 'contexts/BoardViewContext';
 import { DialogContext, ModalTypes } from 'contexts/DialogContext';
+import { CardInListProvider } from 'contexts/CardInListContext';
 import CardDetailModal from './CardDetailModal';
 import SpinnerWithBackdrop from '../common/SpinnerWithBackdrop';
 
@@ -19,6 +20,16 @@ interface BoardViewProps {}
 
 const BoardView = (props: BoardViewProps) => {
   const dialogContext = useContext(DialogContext);
+
+  const { data, loading, error } = useQuery(GET_ALL_USERS);
+
+  const all_users = useMemo(() => {
+    if (loading || error) return null;
+
+    // mutate data here
+    return data.all_users;
+  }, [loading, error, data]);
+
   // get board ID from url params
   const match = useRouteMatch<{ board_id: string }>();
 
@@ -201,28 +212,30 @@ const BoardView = (props: BoardViewProps) => {
   };
 
   return (
-    <BoardViewContext.Provider value={{ onCardAdded }}>
-      <BoardViewContainer>
-        <BoardContent>
-          {dialogContext.openModals.find((modal) => modal.modalType === ModalTypes.CardDetail) !== undefined && (
-            <CardDetailModal />
-          )}
-          {!!columns && (
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="board-columns" direction="horizontal" type="column">
-                {(provided) => (
-                  <ColumnsWrapper {...provided.droppableProps} ref={provided.innerRef}>
-                    {columns.map((column, index) => <Column key={column._id} data={column} index={index} />) || null}
-                    {provided.placeholder}
-                  </ColumnsWrapper>
-                )}
-              </Droppable>
-            </DragDropContext>
-          )}
-          {!columns && <SpinnerWithBackdrop />}
-          <AddColumn onColumnAdded={onColumnAdded} boardId={match.params.board_id} />
-        </BoardContent>
-      </BoardViewContainer>
+    <BoardViewContext.Provider value={{ onCardAdded, all_users }}>
+      <CardInListProvider>
+        <BoardViewContainer>
+          <BoardContent>
+            {dialogContext.openModals.find((modal) => modal.modalType === ModalTypes.CardDetail) !== undefined && (
+              <CardDetailModal />
+            )}
+            {!!columns && (
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="board-columns" direction="horizontal" type="column">
+                  {(provided) => (
+                    <ColumnsWrapper {...provided.droppableProps} ref={provided.innerRef}>
+                      {columns.map((column, index) => <Column key={column._id} data={column} index={index} />) || null}
+                      {provided.placeholder}
+                    </ColumnsWrapper>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            )}
+            {!columns && <SpinnerWithBackdrop />}
+            <AddColumn onColumnAdded={onColumnAdded} boardId={match.params.board_id} />
+          </BoardContent>
+        </BoardViewContainer>
+      </CardInListProvider>
     </BoardViewContext.Provider>
   );
 };

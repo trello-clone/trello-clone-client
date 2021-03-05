@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from 'react';
+import React, { useRef, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 
@@ -7,12 +7,22 @@ import CrossMark from '../../icons/crossmark.svg';
 import SideBar from './SideBarInCard';
 import { useOnClickOutside } from '../../utils/index';
 import { ModalTypes, DialogContext } from '../../contexts/DialogContext';
+import { CardInListContext } from '../../contexts/CardInListContext';
+import BoardViewContext from '../../contexts/BoardViewContext';
+import { User } from '../../types';
 
 const CardDetailModal = () => {
+  const baseImgUrl = 'https://trelloclone-f19f.restdb.io/media/';
   const cardModalRef = useRef(null);
-  const context = useContext(DialogContext);
-  const closeModal = () => context.closeModal!({ modalType: ModalTypes.CardDetail });
+  const dialogContext = useContext(DialogContext);
+  const cardInListContext = useContext(CardInListContext);
+  const boardViewContext = useContext(BoardViewContext);
+  const allMembers = boardViewContext.all_users!;
+  const cardInfo = cardInListContext.cardInfo!;
+  const closeModal = () => dialogContext.closeModal!({ modalType: ModalTypes.CardDetail });
   useOnClickOutside(cardModalRef, closeModal);
+  const cardMembersId = cardInfo.members;
+  const cardMembers = allMembers.filter((member: User) => cardMembersId?.includes(member._id));
   return (
     <Backdrop>
       <CardDetailContainer ref={cardModalRef}>
@@ -25,6 +35,12 @@ const CardDetailModal = () => {
         </Header>
         <Body>
           <MainContent>
+            <MemberWrapper>
+              {cardMembers.map((member: User) => (
+                <MemberAva src={`${baseImgUrl}${member.avatar[0]}?s=w`} alt={member.name} />
+              ))}
+              <AddMemberBtn>+</AddMemberBtn>
+            </MemberWrapper>
             <ModuleTitle>Description</ModuleTitle>
             <Input placeholder="Type something for the description"></Input>
             <ModuleTitle>Attachments</ModuleTitle>
@@ -110,5 +126,28 @@ const Input = styled.textarea`
   resize: none;
   &::placeholder {
     color: ${(props) => rgba(props.theme.colors.black, 0.4)};
+  }
+`;
+const MemberWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+`;
+const MemberAva = styled.img`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
+const AddMemberBtn = styled.button`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border: dashed 2px ${(props) => rgba(props.theme.colors.dark_blue, 1)};
+  opacity: 0.25;
+  &:hover {
+    cursor: pointer;
   }
 `;
