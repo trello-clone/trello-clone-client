@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from 'react';
+import React, { useRef, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { rgba } from 'polished';
 
@@ -18,16 +18,11 @@ const CardDetailModal = () => {
   const cardInListContext = useContext(CardInListContext);
   const boardViewContext = useContext(BoardViewContext);
   const allMembers = boardViewContext.all_users!;
-  console.log('allMembers', allMembers);
-
   const cardInfo = cardInListContext.cardInfo!;
-  console.log('cardInListContext.cardInfo!', cardInfo);
-  
   const closeModal = () => dialogContext.closeModal!({ modalType: ModalTypes.CardDetail });
   useOnClickOutside(cardModalRef, closeModal);
   const cardMembersId = cardInfo.members;
   const cardMembers = allMembers.filter((member: User) => cardMembersId?.includes(member._id));
-  console.log('cardMembers', cardMembers);
   return (
     <Backdrop>
       <CardDetailContainer ref={cardModalRef}>
@@ -40,11 +35,12 @@ const CardDetailModal = () => {
         </Header>
         <Body>
           <MainContent>
-            <div>
+            <MemberWrapper>
               {cardMembers.map((member: User) => (
                 <MemberAva src={`${baseImgUrl}${member.avatar[0]}?s=w`} alt={member.name} />
               ))}
-            </div>
+              <AddMemberBtn>+</AddMemberBtn>
+            </MemberWrapper>
             <ModuleTitle>Description</ModuleTitle>
             <Input placeholder="Type something for the description"></Input>
             <ModuleTitle>Attachments</ModuleTitle>
@@ -132,9 +128,26 @@ const Input = styled.textarea`
     color: ${(props) => rgba(props.theme.colors.black, 0.4)};
   }
 `;
-
+const MemberWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+`;
 const MemberAva = styled.img`
   height: 50px;
   width: 50px;
   border-radius: 50%;
+  margin-right: 10px;
+`;
+
+const AddMemberBtn = styled.button`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border: dashed 2px ${(props) => rgba(props.theme.colors.dark_blue, 1)};
+  opacity: 0.25;
+  &:hover {
+    cursor: pointer;
+  }
 `;

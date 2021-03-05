@@ -41,11 +41,15 @@ const CreateNewTeamdModal = (props: TeamModalProps) => {
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
-    addTeam({ variables: { name: teamName, members: selectedItemID } });
-    context.closeModal!({ modalType: ModalTypes.CreateTeam });
-    dataRefetch();
-    // redirect to /teams after submit
-    history.push('/teams');
+    if(teamName && selectedItemID){
+      addTeam({ variables: { name: teamName, members: selectedItemID } });
+      context.closeModal!({ modalType: ModalTypes.CreateTeam });
+      dataRefetch();
+      // redirect to /teams after submit
+      history.push('/teams');
+    }else{
+      alert("Your team's name is missing or you haven't added any member yet!!!")
+    }
   };
 
   const cancelAddingNewTeam = () => {
